@@ -908,10 +908,43 @@ tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 <div class="nav">
   <button class="nbtn2 ng" id="prev" onclick="go(-1)" disabled>← Previous</button>
-  <button class="nbtn2 ng" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+  <button class="nbtn2 ng" onclick="enterFullscreen()">⛶ Fullscreen</button>
   <button class="nbtn2 ns" id="next" onclick="go(1)">Next →</button>
 </div>
 <div class="thumbs" id="thumbs"></div>
+
+<!-- FULLSCREEN OVERLAY -->
+<div id="fs-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#0a0a1a;flex-direction:column;align-items:center;justify-content:center;">
+
+  <!-- Progress bar -->
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.06)">
+    <div id="fs-prog" style="height:100%;background:linear-gradient(90deg,#6772e5,#00d4ff);transition:width .4s ease;width:6.67%"></div>
+  </div>
+
+  <!-- Counter -->
+  <div id="fs-counter" style="position:absolute;top:14px;right:20px;font-family:'SF Mono','Menlo',monospace;font-size:12px;color:rgba(255,255,255,.3)">1 / 15</div>
+
+  <!-- Close button -->
+  <button onclick="exitFullscreen()" style="position:absolute;top:10px;left:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">✕ Exit</button>
+
+  <!-- Slide container — scales to fill screen -->
+  <div id="fs-slide-wrap" style="width:92vw;max-width:1400px;height:calc(92vw * 0.5510);max-height:86vh;position:relative;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 32px 80px rgba(0,0,0,.7)">
+    <div id="fs-inner" style="position:absolute;inset:0;transform-origin:top left"></div>
+  </div>
+
+  <!-- Nav buttons -->
+  <div style="display:flex;gap:16px;margin-top:20px;align-items:center">
+    <button id="fs-prev" onclick="go(-1)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:14px;font-weight:500;padding:10px 28px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;min-width:120px" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'" disabled>← Previous</button>
+
+    <!-- Dot indicators -->
+    <div id="fs-dots" style="display:flex;gap:5px;align-items:center"></div>
+
+    <button id="fs-next" onclick="go(1)" style="background:#6772e5;border:none;color:#fff;font-size:14px;font-weight:500;padding:10px 28px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;min-width:120px;box-shadow:0 2px 12px rgba(103,114,229,.4)" onmouseover="this.style.background='#7c88ff'" onmouseout="this.style.background='#6772e5'">Next →</button>
+  </div>
+
+  <!-- Keyboard hint -->
+  <div style="position:absolute;bottom:14px;font-size:11px;color:rgba(255,255,255,.2);font-family:'SF Mono','Menlo',monospace;letter-spacing:.04em">← → ARROW KEYS · ESC TO EXIT</div>
+</div>
 
 <script>
 const TOTAL=15;
@@ -1114,14 +1147,110 @@ function goTo(n){
   document.getElementById('next').disabled=cur===TOTAL;
   document.getElementById('th-'+cur).scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   if(notesOpen)renderNotes(cur);
+  if(fsActive)syncFS();
 }
 function go(d){if(cur+d>=1&&cur+d<=TOTAL)goTo(cur+d);}
-function toggleFullscreen(){!document.fullscreenElement?document.documentElement.requestFullscreen():document.exitFullscreen();}
-document.addEventListener('keydown',e=>{
+
+// ── FULLSCREEN SYSTEM ─────────────────────────────────────────────
+let fsActive = false;
+
+function enterFullscreen(){
+  fsActive = true;
+  const overlay = document.getElementById('fs-overlay');
+  overlay.style.display = 'flex';
+
+  // Build dot indicators
+  const dotsEl = document.getElementById('fs-dots');
+  dotsEl.innerHTML = '';
+  for(let i=0;i<TOTAL;i++){
+    const d = document.createElement('div');
+    d.id = 'fsd-'+(i+1);
+    d.style.cssText = `width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .2s`;
+    d.onclick = (function(n){return function(){goTo(n);};})(i+1);
+    dotsEl.appendChild(d);
+  }
+
+  // Try native fullscreen for true immersion
+  if(overlay.requestFullscreen) overlay.requestFullscreen().catch(()=>{});
+
+  syncFS();
+  document.addEventListener('keydown', fsKeyHandler);
+}
+
+function exitFullscreen(){
+  fsActive = false;
+  document.getElementById('fs-overlay').style.display = 'none';
+  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  document.removeEventListener('keydown', fsKeyHandler);
+}
+
+function syncFS(){
+  if(!fsActive) return;
+  const slide = document.getElementById('slide-'+cur);
+  const inner = document.getElementById('fs-inner');
+  const wrap  = document.getElementById('fs-slide-wrap');
+
+  // Clone the current slide into the fs inner container
+  inner.innerHTML = '';
+  const clone = slide.cloneNode(true);
+  clone.style.cssText = 'display:flex!important;position:absolute;inset:0;animation:none;border-radius:0';
+  clone.id = 'fs-clone';
+  inner.appendChild(clone);
+
+  // Scale clone to fill the wrap container
+  requestAnimationFrame(()=>{
+    const wW = wrap.offsetWidth;
+    const wH = wrap.offsetHeight;
+    const cW = slide.offsetWidth  || 980;
+    const cH = slide.offsetHeight || 540;
+    const scale = Math.min(wW/cW, wH/cH);
+    clone.style.transform = `scale(${scale})`;
+    clone.style.transformOrigin = 'top left';
+    clone.style.width  = cW + 'px';
+    clone.style.height = cH + 'px';
+    inner.style.width  = Math.round(cW * scale) + 'px';
+    inner.style.height = Math.round(cH * scale) + 'px';
+    wrap.style.width   = Math.round(cW * scale) + 'px';
+    wrap.style.height  = Math.round(cH * scale) + 'px';
+  });
+
+  // Sync progress bar
+  document.getElementById('fs-prog').style.width = (cur/TOTAL*100)+'%';
+  document.getElementById('fs-counter').textContent = cur+' / '+TOTAL;
+
+  // Sync prev/next buttons
+  document.getElementById('fs-prev').disabled = cur===1;
+  document.getElementById('fs-next').style.opacity = cur===TOTAL ? '.4' : '1';
+  document.getElementById('fs-next').disabled = cur===TOTAL;
+
+  // Sync dots
+  for(let i=1;i<=TOTAL;i++){
+    const d = document.getElementById('fsd-'+i);
+    if(d) d.style.background = i===cur ? '#6772e5' : 'rgba(255,255,255,.25)';
+    if(d) d.style.width  = i===cur ? '18px' : '6px';
+    if(d) d.style.borderRadius = '3px';
+  }
+}
+
+function fsKeyHandler(e){
+  if(e.key==='Escape'){exitFullscreen();return;}
   if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
   if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}
-  if(e.key==='f'||e.key==='F')toggleFullscreen();
-  if(e.key==='n'||e.key==='N')toggleNotes();
+}
+
+// Handle native fullscreen exit (user pressed Esc in browser)
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement && fsActive) exitFullscreen();
+});
+
+window.addEventListener('resize', ()=>{ if(fsActive) syncFS(); });
+
+document.addEventListener('keydown',e=>{
+  if(fsActive) return; // handled by fsKeyHandler
+  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
+  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}
+  if(e.key==='f'||e.key==='F') enterFullscreen();
+  if(e.key==='n'||e.key==='N') toggleNotes();
 });
 
 // Canvas — Stripe violet/cyan palette
