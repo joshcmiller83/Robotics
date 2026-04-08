@@ -4,210 +4,488 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robotics — Josh Miller</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
-  --white:#ffffff; --bg:#f5f5f7; --surface:#f5f5f7; --rule:#d2d2d7; --rule-lt:#e8e8ed;
-  --ink:#1d1d1f; --ink2:#424245; --ink3:#6e6e73; --ink4:#98989d;
-  --blue:#0071e3; --blue-dk:#0057b0; --blue-lt:#d6e8fb; --blue-xs:#eef5fd;
-  --green:#1a8a4a; --green-lt:#d0f2e1; --green-xs:#edfaf3;
-  --font:-apple-system,"Helvetica Neue",sans-serif;
-  --mono:"SF Mono","Menlo",monospace;
-  --r:12px; --rlg:18px;
-  --sh:0 2px 8px rgba(0,0,0,.06),0 12px 40px rgba(0,0,0,.09);
+  /* Stripe core palette */
+  --bg:        #0a0a1a;
+  --surface:   #0f0f2e;
+  --card:      #13132b;
+  --card2:     #1a1a3e;
+  --border:    rgba(255,255,255,.08);
+  --border2:   rgba(255,255,255,.14);
+  --white:     #ffffff;
+  --off:       #f6f9fc;
+  --ink:       #ffffff;
+  --ink2:      rgba(255,255,255,.75);
+  --ink3:      rgba(255,255,255,.50);
+  --ink4:      rgba(255,255,255,.30);
+
+  /* Stripe accent — electric violet + indigo */
+  --violet:    #6772e5;
+  --violet-lt: #7c88ff;
+  --violet-xs: rgba(103,114,229,.15);
+  --indigo:    #4f46e5;
+  --cyan:      #00d4ff;
+  --cyan-dim:  rgba(0,212,255,.12);
+  --teal:      #0ea5e9;
+  --green:     #21c55d;
+  --green-dim: rgba(33,197,93,.12);
+
+  /* Stripe gradient mesh */
+  --grad1: linear-gradient(135deg,#6772e5 0%,#9c6fe4 50%,#00d4ff 100%);
+  --grad2: linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+  --grad3: linear-gradient(135deg,#0ea5e9 0%,#6772e5 100%);
+
+  --font: 'Inter', -apple-system, sans-serif;
+  --mono: 'SF Mono','Menlo',monospace;
+  --r:    10px;
+  --rlg:  16px;
+  --sh:   0 0 0 1px rgba(255,255,255,.06), 0 8px 32px rgba(0,0,0,.5);
+  --sh2:  0 0 0 1px rgba(103,114,229,.3), 0 8px 40px rgba(103,114,229,.15);
 }
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
 body{font-family:var(--font);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:28px 16px 72px;min-height:100vh;color:var(--ink)}
 
 /* CHROME */
 .chrome{width:980px;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.chrome-title{font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--ink4);text-transform:uppercase}
+.chrome-title{font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--ink4);text-transform:uppercase}
 .chrome-count{font-family:var(--mono);font-size:11px;color:var(--ink4)}
-.prog{width:980px;max-width:100%;height:1px;background:var(--rule-lt);margin-bottom:16px;overflow:hidden}
-.prog-fill{height:100%;background:var(--blue);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog{width:980px;max-width:100%;height:1px;background:rgba(255,255,255,.06);margin-bottom:16px;overflow:hidden}
+.prog-fill{height:100%;background:var(--grad1);transition:width .5s cubic-bezier(.4,0,.2,1)}
 
-/* SLIDE */
+/* SLIDE SHELL */
 .wrap{width:980px;max-width:100%}
-.slide{display:none;width:100%;min-height:540px;background:var(--white);border-radius:var(--rlg);box-shadow:var(--sh);border:.5px solid var(--rule-lt);overflow:hidden;flex-direction:column;animation:ap .3s ease}
+.slide{display:none;width:100%;min-height:540px;background:var(--surface);border-radius:var(--rlg);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden;flex-direction:column;animation:ap .3s ease;position:relative}
 .slide.active{display:flex}
 @keyframes ap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
+/* Mesh glow — Stripe's signature bg shimmer */
+.slide::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(103,114,229,.12) 0%,transparent 70%),
+             radial-gradient(ellipse 40% 30% at 10% 80%,rgba(0,212,255,.07) 0%,transparent 70%)}
+
 /* LAYOUT */
-.sh{padding:36px 56px 0;flex-shrink:0}
-.sb{flex:1;padding:20px 56px 36px;display:flex;flex-direction:column}
-.sb.row{flex-direction:row;gap:44px}
+.sh{padding:36px 52px 0;flex-shrink:0;position:relative;z-index:1}
+.sb{flex:1;padding:20px 52px 36px;display:flex;flex-direction:column;position:relative;z-index:1}
+.sb.row{flex-direction:row;gap:40px}
 .col{flex:1;display:flex;flex-direction:column}
-.vr{width:.5px;background:var(--rule-lt);align-self:stretch;flex-shrink:0}
-.sf{border-top:.5px solid var(--rule-lt);padding:9px 56px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.sf-l{font-size:10px;font-weight:500;letter-spacing:.05em;color:var(--ink4);text-transform:uppercase}
-.sf-n{font-family:var(--mono);font-size:10px;color:var(--rule)}
+.vr{width:1px;background:var(--border);align-self:stretch;flex-shrink:0}
+.sf{border-top:1px solid var(--border);padding:9px 52px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(0,0,0,.2);position:relative;z-index:1}
+.sf-l{font-size:10px;font-weight:500;letter-spacing:.06em;color:var(--ink4);text-transform:uppercase}
+.sf-n{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.15)}
 
-/* TAGS */
-.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
-.tag::before{content:'';width:14px;height:2px;border-radius:1px;background:currentColor;flex-shrink:0}
-.tag.b{color:var(--blue)}.tag.g{color:var(--green)}.tag.k{color:var(--ink3)}
+/* SECTION TAG */
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.tag::before{content:'';width:16px;height:1.5px;border-radius:1px;background:currentColor;flex-shrink:0}
+.tag.v{color:var(--violet-lt)}.tag.c{color:var(--cyan)}.tag.g{color:var(--green)}.tag.k{color:var(--ink3)}
 
-/* TYPE */
-h2{font-size:33px;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-bottom:6px}
-.sub{font-size:16px;font-weight:300;color:var(--ink3);line-height:1.6;letter-spacing:-.01em;margin-bottom:4px}
-.body{font-size:14px;color:var(--ink2);line-height:1.65;margin-bottom:10px}
-strong{color:var(--ink);font-weight:600}
+/* TYPOGRAPHY */
+h2{font-size:32px;font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--white);margin-bottom:6px}
+.sub{font-size:15px;font-weight:400;color:var(--ink3);line-height:1.65;letter-spacing:-.005em;margin-bottom:4px}
+strong{color:var(--white);font-weight:600}
 
 /* PILLS */
 .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.pill{padding:3px 11px;border-radius:100px;font-size:11.5px;font-weight:500}
-.pill.b{background:var(--blue-lt);color:var(--blue-dk)}
-.pill.g{background:var(--green-lt);color:var(--green)}
-.pill.gh{background:var(--surface);color:var(--ink3);border:.5px solid var(--rule-lt)}
+.pill{padding:3px 11px;border-radius:100px;font-size:11.5px;font-weight:500;border:1px solid}
+.pill.v{background:var(--violet-xs);color:var(--violet-lt);border-color:rgba(124,136,255,.3)}
+.pill.g{background:var(--green-dim);color:var(--green);border-color:rgba(33,197,93,.3)}
+.pill.gh{background:rgba(255,255,255,.05);color:var(--ink3);border-color:var(--border)}
 
 /* CARDS */
-.card{border:.5px solid var(--rule-lt);border-radius:var(--r);padding:16px 18px;background:var(--white)}
-.card.bl{border-left:2px solid var(--blue)}
+.card{border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;background:var(--card);transition:border-color .2s,box-shadow .2s}
+.card:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(103,114,229,.1)}
+.card.vl{border-left:2px solid var(--violet)}
 .card.gl{border-left:2px solid var(--green)}
-.card.surf{background:var(--surface);border-color:transparent}
-.ci{font-size:20px;margin-bottom:6px}
-.ct{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:2px}
-.cb{font-size:12.5px;color:var(--ink3);line-height:1.5}
+.card.cl{border-left:2px solid var(--cyan)}
+.card.surf{background:rgba(255,255,255,.04);border-color:var(--border)}
+.ci{font-size:20px;margin-bottom:7px}
+.ct{font-size:13.5px;font-weight:600;color:var(--white);margin-bottom:3px}
+.cb{font-size:12.5px;color:var(--ink3);line-height:1.55}
 .c2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .c3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
 
 /* STATS */
 .stats{display:flex;gap:10px}
-.stat{flex:1;border-radius:var(--r);padding:14px}
-.stat.b{background:var(--blue-xs);border:.5px solid var(--blue-lt)}
-.stat.g{background:var(--green-xs);border:.5px solid var(--green-lt)}
-.sn{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1}
-.stat.b .sn{color:var(--blue-dk)}.stat.g .sn{color:var(--green)}
-.sl{font-size:9px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink4);margin-top:3px}
+.stat{flex:1;border-radius:var(--r);padding:16px;border:1px solid}
+.stat.v{background:var(--violet-xs);border-color:rgba(103,114,229,.3)}
+.stat.c{background:var(--cyan-dim);border-color:rgba(0,212,255,.25)}
+.stat.g{background:var(--green-dim);border-color:rgba(33,197,93,.25)}
+.sn{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.stat.v .sn{color:var(--violet-lt)}
+.stat.c .sn{color:var(--cyan)}
+.stat.g .sn{color:var(--green)}
+.sl{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4);margin-top:4px}
 
 /* STEPS */
-.steps{display:flex;flex-direction:column;gap:11px}
-.step{display:flex;align-items:center;gap:12px}
-.snum{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:#fff}
-.snum.b{background:var(--blue)}.snum.g{background:var(--green)}.snum.k{background:var(--ink2)}
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{display:flex;align-items:center;gap:13px}
+.snum{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff}
+.snum.v{background:var(--violet)}.snum.g{background:var(--green)}.snum.k{background:rgba(255,255,255,.2)}
 .stxt{font-size:14px;color:var(--ink2);line-height:1.4}
 
 /* BLIST */
-.blist{list-style:none;display:flex;flex-direction:column;gap:8px}
+.blist{list-style:none;display:flex;flex-direction:column;gap:9px}
 .blist li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--ink2);line-height:1.5}
 .blist li::before{content:'';flex-shrink:0;width:5px;height:5px;border-radius:50%;margin-top:7px}
-.blist.b li::before{background:var(--blue)}.blist.g li::before{background:var(--green)}
+.blist.v li::before{background:var(--violet-lt)}
+.blist.g li::before{background:var(--green)}
 
 /* CALLOUT */
-.callout{border-radius:var(--r);padding:12px 16px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
-.callout.b{background:var(--blue-xs);border-left:2px solid var(--blue)}
-.callout.g{background:var(--green-xs);border-left:2px solid var(--green)}
+.callout{border-radius:var(--r);padding:13px 17px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
+.callout.v{background:var(--violet-xs);border-left:2px solid var(--violet);border:1px solid rgba(103,114,229,.2);border-left:2px solid var(--violet)}
+.callout.g{background:var(--green-dim);border:1px solid rgba(33,197,93,.2);border-left:2px solid var(--green)}
+.callout.c{background:var(--cyan-dim);border:1px solid rgba(0,212,255,.2);border-left:2px solid var(--cyan)}
 
 /* QUOTE */
-.quote{border-left:1.5px solid var(--rule);padding:10px 16px;background:var(--surface);border-radius:0 var(--r) var(--r) 0}
-.quote p{font-family:'Instrument Serif',Georgia,serif;font-size:16px;font-style:italic;color:var(--ink2);line-height:1.6}
-.quote .attr{font-size:10.5px;color:var(--ink4);margin-top:4px}
+.quote{border-left:2px solid var(--violet);padding:10px 17px;background:rgba(103,114,229,.08);border-radius:0 var(--r) var(--r) 0}
+.quote p{font-family:'Instrument Serif',serif;font-size:16px;font-style:italic;color:var(--ink2);line-height:1.6}
+.quote .attr{font-size:10.5px;color:var(--ink4);margin-top:5px}
 
 /* SCRIPTURE */
-.scr{border-radius:var(--r);padding:13px 16px;background:var(--green-xs);border:.5px solid var(--green-lt)}
-.scr-v{font-family:'Instrument Serif',Georgia,serif;font-size:14px;font-style:italic;color:var(--ink);line-height:1.6;margin-bottom:4px}
-.scr-r{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--green)}
+.scr{border-radius:var(--r);padding:13px 17px;background:var(--green-dim);border:1px solid rgba(33,197,93,.2)}
+.scr-v{font-family:'Instrument Serif',serif;font-size:14px;font-style:italic;color:var(--ink2);line-height:1.6;margin-bottom:5px}
+.scr-r{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}
 
 /* TABLE */
-.tbl{border:.5px solid var(--rule-lt);border-radius:var(--r);overflow:hidden}
+.tbl{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 table{width:100%;border-collapse:collapse}
-th{background:var(--surface);padding:8px 13px;font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);text-align:left;border-bottom:.5px solid var(--rule-lt)}
-td{padding:8px 13px;font-size:12.5px;color:var(--ink2);border-bottom:.5px solid var(--rule-lt)}
+th{background:rgba(255,255,255,.04);padding:8px 13px;font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink4);text-align:left;border-bottom:1px solid var(--border)}
+td{padding:8px 13px;font-size:12.5px;color:var(--ink3);border-bottom:1px solid var(--border)}
 tr:last-child td{border-bottom:none}
-td:first-child{font-weight:600;color:var(--ink)}
+td:first-child{font-weight:600;color:var(--ink2)}
+tr:hover td{background:rgba(255,255,255,.02)}
 
 /* CODE */
-.code{font-family:var(--mono);font-size:11.5px;background:var(--surface);border-radius:var(--r);padding:11px 14px;color:var(--blue-dk);line-height:1.9;border:.5px solid var(--rule-lt)}
+.code{font-family:var(--mono);font-size:11.5px;background:rgba(0,0,0,.4);border-radius:var(--r);padding:12px 15px;color:var(--violet-lt);line-height:1.9;border:1px solid var(--border)}
 
 /* TITLE SLIDE */
-.title-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;flex-direction:column}
+.title-wrap{flex:1;position:relative;overflow:hidden;background:#050510;display:flex;flex-direction:column}
 #tc{position:absolute;inset:0;width:100%;height:100%;display:block}
-.title-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:60px 68px 48px}
-.title-eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:18px}
-.title-h1{font-size:82px;font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff;margin-bottom:auto}
-.title-divider{border:none;border-top:.5px solid rgba(255,255,255,.12);margin:32px 0 20px}
-.title-by-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
-.title-by-name{font-size:24px;font-weight:600;letter-spacing:-.01em;color:rgba(255,255,255,.9)}
+.title-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:64px 72px 52px}
+.title-divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0 20px}
+.title-by-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);margin-bottom:5px}
+.title-by-name{font-size:24px;font-weight:700;letter-spacing:-.02em;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
-/* HORIZONTAL TIMELINE */
+/* HORIZ TIMELINE */
 .htl{display:flex;align-items:flex-start;position:relative;padding-top:8px}
-.htl-track{position:absolute;top:20px;left:0;right:0;height:.5px;background:var(--rule-lt)}
+.htl-track{position:absolute;top:20px;left:0;right:0;height:1px;background:var(--border)}
 .htl-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;padding:0 4px}
-.htl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-bottom:10px;border:1.5px solid var(--white)}
-.htl-dot.b{background:var(--blue)}.htl-dot.g{background:var(--green)}
-.htl-yr{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--ink4);margin-bottom:5px;text-align:center}
-.htl-txt{font-size:11.5px;color:var(--ink2);line-height:1.4;text-align:center}
+.htl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-bottom:10px;border:1.5px solid var(--surface)}
+.htl-dot.v{background:var(--violet)}.htl-dot.g{background:var(--green)}
+.htl-yr{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--ink4);margin-bottom:5px;text-align:center}
+.htl-txt{font-size:11px;color:var(--ink3);line-height:1.4;text-align:center}
 
-/* BAR CHART (slide 9) */
-.bar-wrap{display:flex;flex-direction:column;gap:6px}
+/* BAR CHART */
+.bar-wrap{display:flex;flex-direction:column;gap:7px}
 .bar-row{display:flex;align-items:center;gap:8px}
-.bar-label{width:115px;flex-shrink:0;font-size:11px;font-weight:600;color:var(--ink);text-align:right}
-.bar-track{flex:1;height:20px;background:var(--surface);border-radius:4px;overflow:hidden;border:.5px solid var(--rule-lt)}
-.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
-.bar-val{width:44px;flex-shrink:0;font-family:var(--mono);font-size:10px;color:var(--ink3)}
+.bar-label{width:118px;flex-shrink:0;font-size:11px;font-weight:600;color:var(--ink2);text-align:right}
+.bar-track{flex:1;height:20px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.bar-val{width:44px;flex-shrink:0;font-family:var(--mono);font-size:10px;color:var(--ink4)}
 
-/* PHOTO SLIDE */
-.photo-slide{flex:1;position:relative;overflow:hidden;background:#111;display:flex;min-height:540px}
-.photo-bg{position:absolute;inset:0;background-size:cover;background-position:center}
-.photo-panel{position:absolute;top:50%;transform:translateY(-50%);left:-520px;width:440px;background:var(--white);border-radius:var(--rlg);box-shadow:0 8px 48px rgba(0,0,0,.4);padding:32px 30px;display:flex;flex-direction:column;gap:8px;transition:left .9s cubic-bezier(.22,1,.36,1);z-index:10}
-.photo-panel.in{left:32px}
+/* IMAGE FRAME */
+.img-frame{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:rgba(0,0,0,.3);position:relative}
+.img-frame img{width:100%;display:block;object-fit:cover}
+.img-src{font-family:var(--mono);font-size:8px;color:var(--ink4);letter-spacing:.04em;padding:5px 10px;border-top:1px solid var(--border);background:rgba(0,0,0,.3)}
 
 /* NOTES */
-.nshell{width:980px;max-width:100%;border-radius:0 0 var(--r) var(--r);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08)}
-.nbtn{width:100%;background:#1d1d1f;border:none;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s}
-.nbtn:hover{background:#2d2d2f}
-.nbtn-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#48484a;text-transform:uppercase}
-.narr{color:#48484a;font-size:10px;transition:transform .2s}
+.nshell{width:980px;max-width:100%;border-radius:0 0 var(--r) var(--r);overflow:hidden}
+.nbtn{width:100%;background:#07071a;border:none;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-top:1px solid var(--border);transition:background .2s}
+.nbtn:hover{background:#0d0d28}
+.nbtn-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.2);text-transform:uppercase}
+.narr{color:rgba(255,255,255,.2);font-size:10px;transition:transform .2s}
 .nbtn.open .narr{transform:rotate(180deg)}
-.npanel{background:#1d1d1f;max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:.5px solid #2d2d2f}
+.npanel{background:#07071a;max-height:0;overflow:hidden;transition:max-height .3s ease}
 .npanel.open{max-height:440px}
 .ninner{padding:18px 26px 22px;display:none}
 .npanel.open .ninner{display:block}
-.ntag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#48484a;text-transform:uppercase;margin-bottom:10px;display:block}
+.ntag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.2);text-transform:uppercase;margin-bottom:10px;display:block}
 .ninner ul{list-style:none;display:flex;flex-direction:column;gap:6px}
-.ninner li{font-size:13px;color:#8e8e93;line-height:1.7;padding-left:14px;position:relative}
-.ninner li::before{content:'–';position:absolute;left:0;color:#48484a}
-.ninner strong{color:#aeaeb2}
+.ninner li{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;padding-left:14px;position:relative}
+.ninner li::before{content:'–';position:absolute;left:0;color:rgba(255,255,255,.2)}
+.ninner strong{color:rgba(255,255,255,.6)}
 
 /* NAV */
-.nav{width:980px;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:15px}
-.nbtn2{padding:8px 20px;border-radius:980px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
-.ng{background:var(--white);color:var(--ink3);border:.5px solid var(--rule)}
-.ng:hover{border-color:var(--ink3);color:var(--ink)}
+.nav{width:980px;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.nbtn2{padding:8px 20px;border-radius:6px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
+.ng{background:rgba(255,255,255,.06);color:var(--ink3);border:1px solid var(--border)}
+.ng:hover{background:rgba(255,255,255,.1);color:var(--ink2)}
 .ng:disabled{opacity:.3;cursor:default}
-.ns{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(0,113,227,.3)}
-.ns:hover{background:var(--blue-dk)}
+.ns{background:var(--violet);color:#fff;box-shadow:0 2px 12px rgba(103,114,229,.4)}
+.ns:hover{background:var(--violet-lt);box-shadow:0 4px 18px rgba(103,114,229,.5)}
 .ns:disabled{opacity:.35;cursor:default}
 
 /* THUMBS */
 .thumbs{width:980px;max-width:100%;display:flex;gap:5px;margin-top:11px;overflow-x:auto;padding-bottom:4px}
-.thumb{flex-shrink:0;width:68px;height:42px;background:var(--white);border-radius:var(--r);border:1.5px solid transparent;cursor:pointer;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .15s}
-.thumb:hover{transform:translateY(-2px)}
-.thumb.active{border-color:var(--blue)}
+.thumb{flex-shrink:0;width:68px;height:42px;background:var(--card);border-radius:var(--r);border:1.5px solid transparent;cursor:pointer;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:all .15s}
+.thumb:hover{transform:translateY(-2px);border-color:var(--border2)}
+.thumb.active{border-color:var(--violet)}
 .th-bar{height:3px;width:100%;flex-shrink:0}
 .th-num{flex:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink4)}
 
-/* IMAGE FRAME */
-.img-frame{border-radius:var(--r);overflow:hidden;border:.5px solid var(--rule-lt);background:var(--surface);position:relative}
-.img-frame img{width:100%;display:block;object-fit:cover}
-.img-src{font-family:var(--mono);font-size:8px;color:var(--ink4);letter-spacing:.05em;padding:5px 10px;border-top:.5px solid var(--rule-lt)}
+/* GRADIENT BADGE */
+.grad-badge{display:inline-block;padding:3px 12px;border-radius:100px;font-size:11px;font-weight:600;background:var(--grad1);color:#fff;letter-spacing:.02em}
 
 @media(max-width:760px){
   .wrap,.chrome,.prog,.nav,.thumbs,.nshell{width:100%}
   .sh{padding:22px 20px 0}.sb{padding:14px 20px 22px}
   .sb.row{flex-direction:column;gap:18px}
-  .vr{width:100%;height:.5px}
-  h2{font-size:24px}
-  .sf{padding:9px 20px}
-  .c2,.c3{grid-template-columns:1fr}
-  .stats{flex-wrap:wrap}
-  #tc{display:none}
-  .title-content{padding:36px 28px 32px}
-  .htl{flex-direction:column;gap:14px}
-  .htl-track{display:none}
+  .vr{width:100%;height:1px}
+  h2{font-size:24px}.sf{padding:9px 20px}
+  .c2,.c3{grid-template-columns:1fr}.stats{flex-wrap:wrap}
+  #tc{display:none}.title-content{padding:36px 28px 32px}
+  .htl{flex-direction:column;gap:14px}.htl-track{display:none}
   .htl-item{flex-direction:row;align-items:flex-start;gap:10px}
   .htl-dot{margin-bottom:0;margin-top:2px}
 }
+
+/* ═══ LIGHT ALTERNATING SLIDES (2,4,6,8,10,12,14) ═══ */
+.slide.light{background:#f6f9fc;border-color:#e0e6ed}
+.slide.light::before{background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(103,114,229,.07) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 10% 80%,rgba(0,212,255,.04) 0%,transparent 70%)}
+.slide.light h2{color:#1a1f36}
+.slide.light .sub{color:#4f566b}
+.slide.light .sf{border-top-color:#e0e6ed;background:#eef2f7}
+.slide.light .sf-l{color:#8792a2}
+.slide.light .sf-n{color:#c8d0da}
+.slide.light .tag.v{color:#5469d4}
+.slide.light .tag.c{color:#0a7abf}
+.slide.light .tag.g{color:#1a9e54}
+.slide.light .tag.k{color:#697386}
+.slide.light .vr{background:#e0e6ed}
+.slide.light strong{color:#1a1f36}
+
+/* Cards */
+.slide.light .card{background:#ffffff;border-color:#e0e6ed;color:#4f566b}
+.slide.light .card:hover{border-color:#c4cdd6;box-shadow:0 4px 20px rgba(103,114,229,.08)}
+.slide.light .card.vl{border-left:2px solid #5469d4}
+.slide.light .card.gl{border-left:2px solid #1a9e54}
+.slide.light .card.cl{border-left:2px solid #0a7abf}
+.slide.light .card.surf{background:#f6f9fc;border-color:#e0e6ed}
+.slide.light .ct{color:#1a1f36}
+.slide.light .cb{color:#4f566b}
+
+/* Stats */
+.slide.light .stat.v{background:#eef0ff;border-color:#b7bff8}
+.slide.light .stat.c{background:#e6f6fd;border-color:#9dd6f5}
+.slide.light .stat.g{background:#eafaf1;border-color:#9ddcb8}
+.slide.light .stat.v .sn{color:#3d4eac}
+.slide.light .stat.c .sn{color:#0a7abf}
+.slide.light .stat.g .sn{color:#1a8a4a}
+.slide.light .sl{color:#8792a2}
+
+/* Steps */
+.slide.light .stxt{color:#4f566b}
+.slide.light .stxt strong{color:#1a1f36}
+
+/* Bullets */
+.slide.light .blist li{color:#4f566b}
+.slide.light .blist li strong{color:#1a1f36}
+.slide.light .blist.v li::before{background:#5469d4}
+.slide.light .blist.g li::before{background:#1a9e54}
+
+/* Callouts */
+.slide.light .callout{color:#1a1f36}
+.slide.light .callout.v{background:#eef0ff;border-left:2px solid #5469d4;border:1px solid #c4caff;border-left:2px solid #5469d4}
+.slide.light .callout.g{background:#eafaf1;border:1px solid #9ddcb8;border-left:2px solid #1a9e54}
+.slide.light .callout.c{background:#e6f6fd;border:1px solid #9dd6f5;border-left:2px solid #0a7abf}
+
+/* Quote */
+.slide.light .quote{background:#eef2f7;border-left:2px solid #b7bff8}
+.slide.light .quote p{color:#4f566b}
+.slide.light .quote .attr{color:#8792a2}
+
+/* Scripture */
+.slide.light .scr{background:#eafaf1;border-color:#9ddcb8}
+.slide.light .scr-v{color:#1a1f36}
+.slide.light .scr-r{color:#1a9e54}
+
+/* Table */
+.slide.light .tbl{border-color:#e0e6ed}
+.slide.light th{background:#eef2f7;border-bottom-color:#e0e6ed;color:#697386}
+.slide.light td{border-bottom-color:#e0e6ed;color:#4f566b}
+.slide.light td:first-child{color:#1a1f36}
+.slide.light tr:hover td{background:rgba(103,114,229,.03)}
+
+/* Code */
+.slide.light .code{background:#eef2f7;border-color:#e0e6ed;color:#3d4eac}
+
+/* Pills */
+.slide.light .pill.v{background:#eef0ff;color:#3d4eac;border-color:#b7bff8}
+.slide.light .pill.g{background:#eafaf1;color:#1a8a4a;border-color:#9ddcb8}
+.slide.light .pill.gh{background:#f6f9fc;color:#697386;border-color:#e0e6ed}
+
+/* Bar chart */
+.slide.light .bar-track{background:#eef2f7;border-color:#e0e6ed}
+.slide.light .bar-label{color:#1a1f36}
+.slide.light .bar-val{color:#697386}
+
+/* Image frame */
+.slide.light .img-frame{border-color:#e0e6ed;background:#eef2f7}
+.slide.light .img-src{color:#8792a2;border-top-color:#e0e6ed;background:#f6f9fc}
+
+/* Timeline */
+.slide.light .htl-track{background:#e0e6ed}
+.slide.light .htl-dot{border-color:#f6f9fc}
+.slide.light .htl-yr{color:#8792a2}
+.slide.light .htl-txt{color:#4f566b}
+
+/* Section label above spotlight cards */
+.slide.light [style*="color:var(--green)"],
+.slide.light [style*="color:var(--ink4)"]{color:#697386 !important}
+
+/* ═══════════════════════════════════════════════
+   REFERENCE-STYLE LAYOUT  (slides 2-8, 12-15)
+   Light background · Stripe palette · Template feel
+═══════════════════════════════════════════════ */
+
+/* Shell */
+.rs { background:#f6f9fc; border-color:#dce2ea; }
+.rs::before { background: radial-gradient(ellipse 50% 30% at 95% 5%, rgba(84,105,212,.06) 0%, transparent 70%); }
+
+/* Top accent bar — gradient stripe across the top */
+.rs-bar {
+  height: 5px; width: 100%; flex-shrink: 0;
+  background: linear-gradient(90deg, #5469d4 0%, #00c2ff 100%);
+}
+
+/* Left panel — colored sidebar used on some slides */
+.rs-left {
+  width: 280px; flex-shrink: 0;
+  background: linear-gradient(160deg, #5469d4 0%, #00c2ff 100%);
+  padding: 40px 32px;
+  display: flex; flex-direction: column; justify-content: center; gap: 16px;
+  position: relative; overflow: hidden;
+}
+.rs-left::after {
+  content: ''; position: absolute;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  right: -60px; bottom: -60px;
+}
+.rs-left h2 { color: #fff; font-size: 28px; margin-bottom: 0; }
+.rs-left .rs-lsub { font-size: 13px; color: rgba(255,255,255,.75); line-height: 1.6; }
+.rs-left .rs-ldots { display:flex; gap:6px; margin-top:auto; }
+.rs-left .rs-ldot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4); }
+.rs-left .rs-ldot.on { background:#fff; }
+
+/* Right content area */
+.rs-right { flex:1; padding: 36px 44px; display:flex; flex-direction:column; }
+
+/* Section label in reference style */
+.rs-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: #5469d4;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.rs-tag::before {
+  content: ''; width: 20px; height: 2px;
+  background: linear-gradient(90deg,#5469d4,#00c2ff);
+  border-radius: 1px; flex-shrink: 0;
+}
+
+/* Headings */
+.rs h2 { color: #1a1f36; font-size: 26px; margin-bottom: 4px; }
+.rs .sub { color: #697386; font-size: 14px; }
+
+/* Icon circle — teal gradient, reference style */
+.ic {
+  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #5469d4, #00c2ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; box-shadow: 0 4px 14px rgba(84,105,212,.3);
+}
+.ic.sm { width:36px; height:36px; font-size:16px; }
+
+/* Feature row — icon + text side by side */
+.frow { display:flex; align-items:flex-start; gap:14px; }
+.frow-body .ft { font-size:13.5px; font-weight:600; color:#1a1f36; margin-bottom:2px; }
+.frow-body .fb { font-size:12px; color:#697386; line-height:1.5; }
+
+/* Cards in reference style */
+.rs .card { background:#fff; border:1px solid #e0e6ed; border-radius:10px; padding:16px 18px; }
+.rs .card:hover { box-shadow:0 4px 16px rgba(84,105,212,.08); border-color:#c4caff; }
+.rs .card.vl { border-left:3px solid #5469d4; }
+.rs .card.gl { border-left:3px solid #1a9e54; }
+.rs .card.cl { border-left:3px solid #00a8d4; }
+.rs .ct { color:#1a1f36; }
+.rs .cb { color:#697386; }
+
+/* Stats in reference style */
+.rs .stat.v { background:#eef0ff; border-color:#b7bff8; }
+.rs .stat.c { background:#e3f9ff; border-color:#8de0f8; }
+.rs .stat.g { background:#eafaf1; border-color:#9ddcb8; }
+.rs .stat.v .sn { color:#3d4eac; }
+.rs .stat.c .sn { color:#0a7abf; }
+.rs .stat.g .sn { color:#1a8a4a; }
+.rs .sl { color:#8792a2; }
+
+/* Callout */
+.rs .callout.v { background:#eef0ff; border:1px solid #c4caff; border-left:3px solid #5469d4; color:#1a1f36; }
+.rs .callout.g { background:#eafaf1; border:1px solid #9ddcb8; border-left:3px solid #1a9e54; color:#1a1f36; }
+.rs .callout.c { background:#e3f9ff; border:1px solid #8de0f8; border-left:3px solid #0a7abf; color:#1a1f36; }
+
+/* Quote */
+.rs .quote { background:#f0f4ff; border-left:3px solid #5469d4; }
+.rs .quote p { color:#4f566b; }
+.rs .quote .attr { color:#8792a2; }
+
+/* Scripture */
+.rs .scr { background:#eafaf1; border:1px solid #9ddcb8; }
+.rs .scr-v { color:#1a1f36; }
+.rs .scr-r { color:#1a9e54; }
+
+/* Blist */
+.rs .blist li { color:#4f566b; }
+.rs .blist li strong { color:#1a1f36; }
+.rs .blist.v li::before { background:#5469d4; }
+.rs .blist.g li::before { background:#1a9e54; }
+
+/* Steps */
+.rs .stxt { color:#4f566b; }
+.rs .stxt strong { color:#1a1f36; }
+
+/* Pills */
+.rs .pill.v { background:#eef0ff; color:#3d4eac; border-color:#b7bff8; }
+.rs .pill.g { background:#eafaf1; color:#1a8a4a; border-color:#9ddcb8; }
+.rs .pill.gh { background:#f0f4f8; color:#697386; border-color:#dce2ea; }
+
+/* Table */
+.rs .tbl { border-color:#e0e6ed; }
+.rs th { background:#f0f4f8; border-bottom-color:#e0e6ed; color:#697386; }
+.rs td { border-bottom-color:#e0e6ed; color:#4f566b; }
+.rs td:first-child { color:#1a1f36; }
+.rs tr:hover td { background:#fafbff; }
+
+/* Code */
+.rs .code { background:#f0f4f8; border-color:#dce2ea; color:#3d4eac; }
+
+/* Bar chart */
+.rs .bar-track { background:#eef0ff; border-color:#dce2ea; }
+.rs .bar-label { color:#1a1f36; }
+.rs .bar-val { color:#8792a2; }
+
+/* VR divider */
+.rs .vr { background:#e0e6ed; }
+
+/* Footer */
+.rs .sf { border-top-color:#e0e6ed; background:#eef2f7; }
+.rs .sf-l { color:#8792a2; }
+.rs .sf-n { color:#c8d0da; }
+
+/* Dot nav in footer */
+.rs-dots { display:flex; gap:5px; align-items:center; }
+.rs-dot { width:5px; height:5px; border-radius:50%; background:#dce2ea; }
+.rs-dot.on { background:#5469d4; width:14px; border-radius:3px; }
+
+/* 3-col icon grid */
+.icon-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+.icon-cell { display:flex; flex-direction:column; align-items:flex-start; gap:10px; padding:16px; background:#fff; border-radius:10px; border:1px solid #e0e6ed; }
+.icon-cell .ic { margin-bottom:0; }
+.icon-cell .ft { font-size:13px; font-weight:600; color:#1a1f36; }
+.icon-cell .fb { font-size:11.5px; color:#697386; line-height:1.5; }
+
 </style>
 </head>
 <body>
@@ -231,101 +509,123 @@ td:first-child{font-weight:600;color:var(--ink)}
 </div>
 
 <!-- SLIDE 2: WHAT IS ROBOTICS -->
-<div class="slide" id="slide-2">
-  <div class="sh"><div class="tag b">Section 1 of 5 — What is Robotics?</div><h2>A Field That Bridges Software &amp; the Physical World</h2><p class="sub">Machines that <strong>Sense · Think · Act</strong> — with autonomy in the physical world.</p></div>
-  <div class="sb row">
-    <div class="col" style="justify-content:center;gap:14px">
-      <div class="callout b"><strong>Robotics</strong> = software + hardware that senses, decides, and acts</div>
-      <div class="pills"><span class="pill b">Engineering</span><span class="pill b">Computer Science</span><span class="pill b">AI</span><span class="pill gh">Control Theory</span></div>
+<div class="slide rs light" id="slide-2">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 1 of 5</div>
+      <h2>What is Robotics?</h2>
+      <p class="rs-lsub">Machines that Sense · Think · Act — operating with autonomy in the physical world.</p>
+      <div class="callout" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-left:3px solid #fff;color:#fff;font-size:12.5px;margin-top:8px"><strong style="color:#fff">Robotics</strong> = software + hardware that senses, decides, and acts</div>
+      <div class="rs-ldots" style="margin-top:16px"><div class="rs-ldot on"></div><div class="rs-ldot"></div><div class="rs-ldot"></div></div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center;gap:9px">
-      <div class="card bl"><div class="ci">📡</div><div class="ct">Sense</div><div class="cb">Cameras · GPS · Gyroscopes · Touch · Temperature</div></div>
-      <div class="card bl"><div class="ci">🧠</div><div class="ct">Think</div><div class="cb">Code · Algorithms · AI models · Decision-making</div></div>
-      <div class="card gl"><div class="ci">⚙️</div><div class="ct">Act</div><div class="cb">Motors · Hydraulics · Pneumatics · Movement</div></div>
+    <div class="rs-right" style="gap:12px;justify-content:center">
+      <div class="rs-tag">Core Components</div>
+      <div class="icon-grid">
+        <div class="icon-cell"><div class="ic">📡</div><div class="ft">Sense</div><div class="fb">Cameras · GPS · Gyroscopes · Touch</div></div>
+        <div class="icon-cell"><div class="ic">🧠</div><div class="ft">Think</div><div class="fb">Code · Algorithms · AI models</div></div>
+        <div class="icon-cell"><div class="ic">⚙️</div><div class="ft">Act</div><div class="fb">Motors · Hydraulics · Pneumatics</div></div>
+      </div>
+      <div class="pills"><span class="pill v">Engineering</span><span class="pill v">Computer Science</span><span class="pill v">AI</span><span class="pill gh">Control Theory</span></div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">What is Robotics?</span><span class="sf-n">02</span></div>
+  <div class="sf"><span class="sf-l">What is Robotics?</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">02</span></div>
 </div>
 
-<!-- SLIDE 3: HISTORY — HORIZONTAL TIMELINE -->
-<div class="slide" id="slide-3">
-  <div class="sh"><div class="tag b">Section 1 — A Brief History</div><h2>From Word to World-Changer</h2></div>
-  <div class="sb" style="justify-content:center;gap:28px">
-    <div class="stats">
-      <div class="stat b"><div class="sn">1920</div><div class="sl">Word "robot" coined</div></div>
-      <div class="stat g"><div class="sn">1961</div><div class="sl">First factory robot</div></div>
-      <div class="stat b"><div class="sn">3.9M</div><div class="sl">In factories today</div></div>
+<!-- SLIDE 3: HISTORY -->
+<div class="slide rs" id="slide-3">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 1 — History</div>
+      <h2>From Word to World-Changer</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">1920</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Word coined</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">1961</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">First factory robot</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">3.9M</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">In factories today</div></div>
+      </div>
     </div>
-    <!-- Horizontal timeline -->
-    <div style="position:relative;padding:0 8px">
-      <div class="htl-track"></div>
-      <div class="htl">
-        <div class="htl-item"><div class="htl-dot b"></div><div class="htl-yr">1920</div><div class="htl-txt">Čapek coins "robot" in <em>R.U.R.</em></div></div>
-        <div class="htl-item"><div class="htl-dot b"></div><div class="htl-yr">1954</div><div class="htl-txt">Devol patents first programmable arm</div></div>
-        <div class="htl-item"><div class="htl-dot g"></div><div class="htl-yr">1961</div><div class="htl-txt">Unimate on GM assembly line</div></div>
-        <div class="htl-item"><div class="htl-dot g"></div><div class="htl-yr">1997</div><div class="htl-txt">NASA Sojourner lands on Mars</div></div>
-        <div class="htl-item"><div class="htl-dot b"></div><div class="htl-yr">2002</div><div class="htl-txt">iRobot Roomba — robots enter the home</div></div>
-        <div class="htl-item"><div class="htl-dot g"></div><div class="htl-yr">2020s</div><div class="htl-txt">AI humanoids go commercial</div></div>
+    <div class="rs-right" style="justify-content:center;gap:20px">
+      <div class="rs-tag">Key Milestones</div>
+      <div style="position:relative;padding:0 4px">
+        <div class="htl-track" style="background:#e0e6ed"></div>
+        <div class="htl">
+          <div class="htl-item"><div class="htl-dot v" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1920</div><div class="htl-txt" style="color:#4f566b">Čapek coins "robot" in <em>R.U.R.</em></div></div>
+          <div class="htl-item"><div class="htl-dot v" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1954</div><div class="htl-txt" style="color:#4f566b">Devol patents first arm</div></div>
+          <div class="htl-item"><div class="htl-dot g" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1961</div><div class="htl-txt" style="color:#4f566b">Unimate on GM line</div></div>
+          <div class="htl-item"><div class="htl-dot g" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1997</div><div class="htl-txt" style="color:#4f566b">NASA Sojourner on Mars</div></div>
+          <div class="htl-item"><div class="htl-dot v" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">2002</div><div class="htl-txt" style="color:#4f566b">Roomba enters the home</div></div>
+          <div class="htl-item"><div class="htl-dot g" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">2020s</div><div class="htl-txt" style="color:#4f566b">AI humanoids go commercial</div></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">What is Robotics?</span><span class="sf-n">03</span></div>
+  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">What is Robotics?</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">03</span></div>
 </div>
 
 <!-- SLIDE 4: THE LOOP -->
-<div class="slide" id="slide-4">
-  <div class="sh"><div class="tag" style="color:#0a6e82">Section 2 of 5 — How It Works</div><h2>The Continuous Loop</h2><p class="sub">Runs hundreds of times per second. Every robot follows this same cycle.</p></div>
-  <div class="sb row">
-    <div class="col" style="justify-content:center;gap:14px">
-      <div class="quote"><p>Robotics = automation in the physical world.</p><div class="attr">Your trading tool analyzes data. A robot acts on it.</div></div>
-      <div class="callout g"><strong>↻ Repeat</strong> — never stops while the robot runs</div>
+<div class="slide rs light" id="slide-4">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 2 of 5</div>
+      <h2>The Continuous Loop</h2>
+      <p class="rs-lsub">Runs hundreds of times per second. Every robot follows this same cycle.</p>
+      <div class="callout" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-left:3px solid #fff;color:rgba(255,255,255,.9);font-size:12px;margin-top:12px"><strong style="color:#fff">↻ Repeat</strong> — never stops while the robot runs</div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center">
-      <div class="steps">
-        <div class="step"><div class="snum b">01</div><div class="stxt"><strong>Sense</strong> — Cameras, LiDAR, GPS, touch &amp; temperature</div></div>
-        <div class="step"><div class="snum b">02</div><div class="stxt"><strong>Think</strong> — Obstacle? Path? Stop or go?</div></div>
-        <div class="step"><div class="snum b">03</div><div class="stxt"><strong>Plan</strong> — Path, speed &amp; movement sequence</div></div>
-        <div class="step"><div class="snum g">04</div><div class="stxt"><strong>Act</strong> — Motors &amp; servos execute precisely</div></div>
-        <div class="step"><div class="snum g">05</div><div class="stxt"><strong>Feedback</strong> — Constant self-correction in real time</div></div>
+    <div class="rs-right" style="justify-content:center">
+      <div class="rs-tag">5-Step Process</div>
+      <div class="steps" style="gap:11px">
+        <div class="step"><div class="snum v">01</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Sense</strong> — Cameras, LiDAR, GPS, touch &amp; temperature</div></div>
+        <div class="step"><div class="snum v">02</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Think</strong> — Obstacle? Path? Stop or go?</div></div>
+        <div class="step"><div class="snum v">03</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Plan</strong> — Path, speed &amp; movement sequence</div></div>
+        <div class="step"><div class="snum g">04</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Act</strong> — Motors &amp; servos execute precisely</div></div>
+        <div class="step"><div class="snum g">05</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Feedback</strong> — Constant self-correction in real time</div></div>
       </div>
+      <div class="quote" style="margin-top:14px"><p>Robotics = automation in the physical world.</p><div class="attr">Your trading tool analyzes data. A robot acts on it.</div></div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">How It Works</span><span class="sf-n">04</span></div>
+  <div class="sf"><span class="sf-l">How It Works</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n">04</span></div>
 </div>
 
 <!-- SLIDE 5: TWO WAYS ROBOTS THINK -->
-<div class="slide" id="slide-5">
-  <div class="sh"><div class="tag" style="color:#0a6e82">Section 2 — The Robot's Brain</div><h2>Two Ways Robots Think</h2></div>
-  <div class="sb" style="gap:10px">
-    <div class="c2" style="flex:1;align-content:start">
-      <div class="card bl" style="background:var(--blue-xs)">
-        <div class="ci">📋</div><div class="ct">A · Rule-Based Logic</div>
-        <div class="code" style="margin-top:8px">IF obstacle → STOP<br>IF clear → MOVE<br>IF battery low → RETURN</div>
-        <div class="pills" style="margin-top:8px"><span class="pill b">Predictable</span><span class="pill b">Simple robots</span></div>
-      </div>
-      <div class="card gl" style="background:var(--green-xs)">
-        <div class="ci">🧠</div><div class="ct">B · Learning-Based AI</div>
-        <div class="cb" style="margin-top:4px">Learns patterns from data. Improves over time. Handles scenarios it was never shown.</div>
-        <div class="pills" style="margin-top:8px"><span class="pill g">Adaptive</span><span class="pill g">Autonomous</span></div>
-      </div>
-      <div class="card bl">
-        <div class="ci">📷</div><div class="ct">Sensors &amp; Compute</div>
-        <div class="cb">Cameras · LiDAR · GPS · Edge AI chips</div>
-      </div>
-      <div class="card gl">
-        <div class="ci">💡</div><div class="ct">The Core Insight</div>
-        <div class="cb"><strong>Most robots use both</strong> — rule-based safety + AI-powered perception</div>
+<div class="slide rs" id="slide-5">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 2 — Brain</div>
+      <h2>Two Ways Robots Think</h2>
+      <p class="rs-lsub">Most robots use both — rule-based safety with AI-powered perception layered on top.</p>
+      <div style="display:flex;gap:8px;margin-top:12px"><span class="pill v" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">Predictable</span><span class="pill g" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.25)">Adaptive</span></div>
+    </div>
+    <div class="rs-right" style="gap:12px">
+      <div class="rs-tag">Logic Models</div>
+      <div class="c2" style="gap:10px">
+        <div class="card vl" style="background:#eef0ff">
+          <div class="ic sm">📋</div>
+          <div class="ct" style="margin-top:8px">A · Rule-Based Logic</div>
+          <div class="code" style="margin-top:8px;font-size:11px">IF obstacle → STOP<br>IF clear → MOVE<br>IF low battery → RETURN</div>
+        </div>
+        <div class="card gl" style="background:#eafaf1">
+          <div class="ic sm">🧠</div>
+          <div class="ct" style="margin-top:8px">B · Learning-Based AI</div>
+          <div class="cb" style="margin-top:6px">Learns from data. Improves over time. Handles unknown scenarios.</div>
+        </div>
+        <div class="card vl"><div class="frow"><div class="ic sm">📷</div><div class="frow-body" style="padding-top:2px"><div class="ft">Sensors &amp; Compute</div><div class="fb">Cameras · LiDAR · GPS · Edge AI</div></div></div></div>
+        <div class="card gl"><div class="frow"><div class="ic sm">💡</div><div class="frow-body" style="padding-top:2px"><div class="ft">Core Insight</div><div class="fb"><strong style="color:#1a1f36">Most robots use both</strong></div></div></div></div>
       </div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">How It Works</span><span class="sf-n">05</span></div>
+  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">How It Works</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div></div><span class="sf-n" style="color:#c8d0da">05</span></div>
 </div>
+
 <!-- SLIDE 6: WHERE ROBOTS WORK TODAY -->
-<div class="slide" id="slide-6">
-  <div class="sh"><div class="tag b">Section 3 of 5 — Current Applications</div><h2>Where Robots Work Today</h2><p class="sub">3.9 million industrial robots operating worldwide — growing ~10% annually.</p></div>
-  <div class="sb">
+<div class="slide rs light" id="slide-6">
+  <div class="rs-bar"></div>
+  <div class="rs-right" style="padding-top:28px;padding-bottom:16px">
+    <div class="rs-tag">Section 3 of 5 — Current Applications</div>
+    <h2 style="color:#1a1f36;margin-bottom:4px">Where Robots Work Today</h2>
+    <p class="sub" style="color:#697386;margin-bottom:12px">3.9 million industrial robots operating worldwide — growing ~10% annually.</p>
     <div class="tbl">
       <table>
         <thead><tr><th>Industry</th><th>What Robots Do</th><th>Real Example</th><th>Why It Matters</th></tr></thead>
@@ -340,226 +640,258 @@ td:first-child{font-weight:600;color:var(--ink)}
       </table>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Current Applications</span><span class="sf-n">06</span></div>
+  <div class="sf"><span class="sf-l">Current Applications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">06</span></div>
 </div>
 
 <!-- SLIDE 7: WHY ADOPTION IS ACCELERATING -->
-<div class="slide" id="slide-7">
-  <div class="sh"><div class="tag b">Section 3 — Real-World Impact</div><h2>Why Adoption Is Accelerating</h2></div>
-  <div class="sb row">
-    <div class="col" style="justify-content:center">
-      <ul class="blist b">
-        <li><strong>Economics</strong> — Prices down ~50% since 2010; ROI under 2 years</li>
-        <li><strong>Precision</strong> — Micron-level consistency; humans fatigue</li>
-        <li><strong>Safety</strong> — Removes people from dangerous roles</li>
-        <li><strong>24/7 Operation</strong> — No breaks, no sick days</li>
-        <li><strong>Post-COVID</strong> — 5 years of automation compressed into 18 months</li>
-      </ul>
+<div class="slide rs" id="slide-7">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 3 — Impact</div>
+      <h2>Why Adoption Is Accelerating</h2>
+      <p class="rs-lsub">The economics, precision, and safety case has already been made.</p>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+        <div class="card vl" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);padding:10px 14px"><div class="ft" style="color:#fff">Amazon Robotics</div><div class="fb" style="color:rgba(255,255,255,.7)">750K+ robots · 75 → 15 min</div></div>
+        <div class="card vl" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);padding:10px 14px"><div class="ft" style="color:#fff">da Vinci Surgery</div><div class="fb" style="color:rgba(255,255,255,.7)">7,500+ systems · 10M+ procedures</div></div>
+        <div class="card vl" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);padding:10px 14px"><div class="ft" style="color:#fff">Zipline Africa</div><div class="fb" style="color:rgba(255,255,255,.7)">Drones where roads don't reach</div></div>
+      </div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="gap:9px">
-      <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:4px">Spotlight Cases</div>
-      <div class="card gl"><div class="ct">Amazon Robotics</div><div class="cb">750K+ robots · Order time: 75 → 15 min</div></div>
-      <div class="card gl"><div class="ct">da Vinci Surgical System</div><div class="cb">7,500+ systems · 10M+ procedures worldwide</div></div>
-      <div class="card gl"><div class="ct">Zipline — Africa</div><div class="cb">Drones delivering blood &amp; vaccines where roads don't reach</div></div>
+    <div class="rs-right" style="justify-content:center">
+      <div class="rs-tag">Driving Factors</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="frow"><div class="ic sm">💵</div><div class="frow-body"><div class="ft">Economics</div><div class="fb">Prices down ~50% since 2010; ROI under 2 years</div></div></div>
+        <div class="frow"><div class="ic sm">🎯</div><div class="frow-body"><div class="ft">Precision</div><div class="fb">Micron-level consistency; humans fatigue</div></div></div>
+        <div class="frow"><div class="ic sm">🛡️</div><div class="frow-body"><div class="ft">Safety</div><div class="fb">Removes people from dangerous roles</div></div></div>
+        <div class="frow"><div class="ic sm">⏰</div><div class="frow-body"><div class="ft">24/7 Operation</div><div class="fb">No breaks, no sick days</div></div></div>
+        <div class="frow"><div class="ic sm">📦</div><div class="frow-body"><div class="ft">Post-COVID</div><div class="fb">5 years of automation compressed into 18 months</div></div></div>
+      </div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Current Applications</span><span class="sf-n">07</span></div>
+  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Current Applications</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">07</span></div>
 </div>
 
 <!-- SLIDE 8: NEXT 5-10 YEARS -->
-<div class="slide" id="slide-8">
-  <div class="sh"><div class="tag g">Section 4 of 5 — Future Applications</div><h2>The Next 5–10 Years</h2></div>
-  <div class="sb row">
-    <div class="col" style="justify-content:center;gap:10px">
-      <div class="stat b" style="flex:none;padding:11px 14px;display:flex;justify-content:space-between;align-items:baseline"><div class="sl">Global robotics market by 2030</div><div class="sn" style="font-size:22px">$260B</div></div>
-      <div class="stat g" style="flex:none;padding:11px 14px;display:flex;justify-content:space-between;align-items:baseline"><div class="sl">Humanoid units projected by 2035</div><div class="sn" style="font-size:22px">1M+</div></div>
-      <div class="stat b" style="flex:none;padding:11px 14px;display:flex;justify-content:space-between;align-items:baseline"><div class="sl">Jobs potentially automated by 2030</div><div class="sn" style="font-size:22px">800M</div></div>
-      <div class="callout b" style="font-size:12.5px"><strong>RaaS</strong> — Subscribe monthly instead of buying. Like SaaS, but for physical automation.</div>
+<div class="slide rs light" id="slide-8">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 4 of 5</div>
+      <h2>The Next 5–10 Years</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Market 2030</span><span style="font-size:20px;font-weight:800;color:#fff">$260B</span></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Humanoids 2035</span><span style="font-size:20px;font-weight:800;color:#fff">1M+</span></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Jobs by 2030</span><span style="font-size:20px;font-weight:800;color:#fff">800M</span></div>
+      </div>
+      <div style="margin-top:12px;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.85)"><strong style="color:#fff">RaaS</strong> — Subscribe monthly instead of buying. Like SaaS, but physical.</div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center">
-      <ul class="blist g">
-        <li><strong>Humanoid Labor</strong> — Optimus, Figure AI &amp; Digit in warehouses now</li>
-        <li><strong>Autonomous Trucking</strong> — Aurora &amp; Kodiak targeting highway freight</li>
-        <li><strong>Robotic Construction</strong> — 3D-printed housing at scale</li>
-        <li><strong>AI-Powered Healthcare</strong> — Robotic nurses, elder-care assistants</li>
-        <li><strong>Automated Farms</strong> — AI-optimized planting &amp; harvesting</li>
-        <li><strong>Personal Home Robots</strong> — Cook, clean, assist elderly</li>
-      </ul>
+    <div class="rs-right" style="justify-content:center">
+      <div class="rs-tag">What's Coming</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Humanoid Labor</div><div class="fb">Optimus, Figure AI &amp; Digit in warehouses now</div></div></div>
+        <div class="frow"><div class="ic sm">🚛</div><div class="frow-body"><div class="ft">Autonomous Trucking</div><div class="fb">Aurora &amp; Kodiak targeting highway freight</div></div></div>
+        <div class="frow"><div class="ic sm">🏗️</div><div class="frow-body"><div class="ft">Robotic Construction</div><div class="fb">3D-printed housing at scale</div></div></div>
+        <div class="frow"><div class="ic sm">🏥</div><div class="frow-body"><div class="ft">AI-Powered Healthcare</div><div class="fb">Robotic nurses, elder-care assistants</div></div></div>
+        <div class="frow"><div class="ic sm">🌾</div><div class="frow-body"><div class="ft">Automated Farms</div><div class="fb">AI-optimized planting &amp; harvesting</div></div></div>
+      </div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Future Applications</span><span class="sf-n">08</span></div>
+  <div class="sf"><span class="sf-l">Future Applications</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div></div><span class="sf-n">08</span></div>
 </div>
 
 <!-- SLIDE 9: WHO'S SHIPPING HUMANOID ROBOTS -->
-<div class="slide" id="slide-9">
+<div class="slide light" id="slide-9">
   <div class="sh">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px">
-      <div><div class="tag b">The Humanoid Race</div><h2>Who's Shipping Humanoid Robots?</h2><p class="sub">2025 global shipments · Source: Visual Capitalist / Rest of World</p></div>
-      <div class="stat b" style="flex:none;min-width:140px;text-align:center;padding:12px 16px"><div class="sn">~90%</div><div class="sl">from China</div></div>
+      <div><div class="tag v">The Humanoid Race</div><h2>Who's Shipping Humanoid Robots?</h2><p class="sub">2025 global shipments · Source: Visual Capitalist / Rest of World</p></div>
+      <div class="stat v" style="flex:none;min-width:130px;text-align:center;padding:12px 16px"><div class="sn">~90%</div><div class="sl">from China</div></div>
     </div>
   </div>
   <div class="sb row" style="gap:28px">
     <div class="col" style="justify-content:center">
       <div class="bar-wrap" id="bars"></div>
       <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--blue-dk)"></div><span style="font-size:11px;color:var(--ink3)">🇨🇳 China</span></div>
-        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div><span style="font-size:11px;color:var(--ink3)">🇺🇸 United States</span></div>
-        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--ink4)"></div><span style="font-size:11px;color:var(--ink3)">🇰🇷 South Korea</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--violet)"></div><span style="font-size:11px;color:var(--ink4)">🇨🇳 China</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div><span style="font-size:11px;color:var(--ink4)">🇺🇸 United States</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--cyan)"></div><span style="font-size:11px;color:var(--ink4)">🇰🇷 South Korea</span></div>
       </div>
     </div>
     <div class="vr"></div>
     <div class="col" style="justify-content:center;gap:10px">
       <div class="img-frame" style="flex:1">
-        <img src="https://www.visualcapitalist.com/wp-content/uploads/2025/03/Humanoid-Robots_Site.jpg" alt="Humanoid robots ranked — Visual Capitalist" onerror="this.parentElement.innerHTML='<div style=\'padding:24px;text-align:center;font-size:12px;color:var(--ink4)\'>📊 Image: visualcapitalist.com</div>'"/>
+        <img src="https://www.visualcapitalist.com/wp-content/uploads/2025/03/Humanoid-Robots_Site.jpg" alt="Humanoid robots ranked" onerror="this.parentElement.innerHTML='<div style=\'padding:24px;text-align:center;font-size:12px;color:var(--ink4)\'>📊 visualcapitalist.com</div>'"/>
         <div class="img-src">SOURCE: VISUALCAPITALIST.COM · REST OF WORLD · 2025</div>
       </div>
-      <div class="callout b" style="font-size:12px"><strong>Total 2025 shipments:</strong> 14,500+ globally. China's Yangtze River Delta supply chain is the structural advantage.</div>
+      <div class="callout v" style="font-size:12px"><strong>Total 2025:</strong> 14,500+ globally. China's Yangtze River Delta supply chain is the structural advantage.</div>
     </div>
   </div>
   <div class="sf"><span class="sf-l">The Humanoid Race</span><span class="sf-n">09</span></div>
 </div>
+
 <!-- SLIDE 10: TESLA OPTIMUS GEN 3 -->
-<div class="slide" id="slide-10">
-  <div class="sh"><div class="tag b">Spotlight — Tesla Optimus Gen 3</div><h2>Tesla Optimus Gen 3</h2><p class="sub">March 2026 · The "superhero suit" era begins</p></div>
+<div class="slide light" id="slide-10">
+  <div class="sh"><div class="tag v">Spotlight — Tesla Optimus Gen 3</div><h2>Tesla Optimus Gen 3</h2><p class="sub">March 2026 · The "superhero suit" era begins</p></div>
   <div class="sb row" style="gap:28px">
     <div class="col" style="flex:0 0 340px;gap:10px">
       <div class="img-frame" style="flex:1">
-        <img src="https://www.notateslaapp.com/img/containers/article_images/optimus/optimus-human-hands-1.webp/5eda2cf04bea6526acda329d6188bfc1/optimus-human-hands-1.jpg"
-          alt="Tesla Optimus Gen 3 human-like hands"
-          style="height:260px"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div style="display:none;height:260px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--ink4);font-size:12px;text-align:center;padding:20px">🤖<br>Tesla Optimus Gen 3<br><span style="font-size:10px">notateslaapp.com</span></div>
-        <div class="img-src">SOURCE: NOTATESLAAPP.COM · @MARIONAWFAL / X · MARCH 2026</div>
+        <img src="https://www.notateslaapp.com/img/containers/article_images/optimus/optimus-human-hands-1.webp/5eda2cf04bea6526acda329d6188bfc1/optimus-human-hands-1.jpg" alt="Tesla Optimus Gen 3" style="height:260px" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div style="display:none;height:260px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--ink4);font-size:12px;text-align:center;padding:20px">🤖<br>Tesla Optimus Gen 3</div>
+        <div class="img-src">SOURCE: NOTATESLAAPP.COM · @MARIONAWFAL / X · 2026</div>
       </div>
     </div>
     <div class="col" style="justify-content:center;gap:9px">
-      <div class="card bl"><div class="ci">🤲</div><div class="ct">22 Degrees of Freedom Per Hand</div><div class="cb">Human hand has 27 DoF — the closest any robot has come</div></div>
-      <div class="card bl"><div class="ci">🏭</div><div class="ct">Production Begins Summer 2026</div><div class="cb">Fremont retooled (Model S &amp; X discontinued) · 1M/yr target</div></div>
+      <div class="card vl"><div class="ci">🤲</div><div class="ct">22 Degrees of Freedom Per Hand</div><div class="cb">Human hand has 27 DoF — the closest any robot has come</div></div>
+      <div class="card vl"><div class="ci">🏭</div><div class="ct">Production Begins Summer 2026</div><div class="cb">Fremont retooled (Model S &amp; X discontinued) · 1M/yr target</div></div>
       <div class="card gl"><div class="ci">💰</div><div class="ct">~$20,000 Price Target at Scale</div><div class="cb">Public sales: 2027 · Giga Texas: 10M units/year</div></div>
-      <div class="callout b" style="font-size:12.5px">"Get Optimus to high-volume production as fast as possible." — Tesla, 2026</div>
+      <div class="callout v" style="font-size:12.5px">"Get Optimus to high-volume production as fast as possible." — Tesla, 2026</div>
     </div>
   </div>
   <div class="sf"><span class="sf-l">Tesla Optimus Gen 3</span><span class="sf-n">10</span></div>
 </div>
 
 <!-- SLIDE 11: BOSTON DYNAMICS ATLAS -->
-<div class="slide" id="slide-11">
+<div class="slide light" id="slide-11">
   <div class="sh"><div class="tag g">Spotlight — Boston Dynamics Atlas</div><h2>Enterprise Humanoid Design</h2><p class="sub">Electric Atlas — production-ready 2026 · Deployed at Hyundai &amp; Google DeepMind</p></div>
   <div class="sb row" style="gap:28px">
     <div class="col" style="flex:0 0 300px;gap:10px">
       <div class="img-frame" style="flex:1">
-        <img src="https://techcrunch.com/wp-content/uploads/2024/04/DSC07581243.jpg"
-          alt="Boston Dynamics electric Atlas robot"
-          style="height:260px"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div style="display:none;height:260px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--ink4);font-size:12px;text-align:center;padding:20px">🤖<br>Boston Dynamics Atlas<br><span style="font-size:10px">techcrunch.com</span></div>
-        <div class="img-src">SOURCE: BOSTON DYNAMICS / TECHCRUNCH · APRIL 2024</div>
+        <img src="https://techcrunch.com/wp-content/uploads/2024/04/DSC07581243.jpg" alt="Boston Dynamics Atlas" style="height:260px" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div style="display:none;height:260px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--ink4);font-size:12px;text-align:center;padding:20px">🤖<br>Boston Dynamics Atlas</div>
+        <div class="img-src">SOURCE: BOSTON DYNAMICS / TECHCRUNCH · 2024</div>
       </div>
     </div>
     <div class="col" style="gap:8px">
       <div class="c2" style="flex:1;align-content:start">
         <div class="card gl"><div class="ci">🏗️</div><div class="ct">1 · Designed for Real-World Use</div><div class="cb">Built for factories &amp; warehouses — not to look human</div></div>
         <div class="card gl"><div class="ci">🔧</div><div class="ct">2 · Modular Architecture</div><div class="cb">Reusable actuators → faster upgrades &amp; lower costs</div></div>
-        <div class="card bl"><div class="ci">⚡</div><div class="ct">3 · Advanced Actuation</div><div class="cb">Continuous rotation → wider range of motion</div></div>
-        <div class="card bl"><div class="ci">🛡️</div><div class="ct">4 · Safety by Design</div><div class="cb">No pinch points · Padding protects humans &amp; robot</div></div>
+        <div class="card vl"><div class="ci">⚡</div><div class="ct">3 · Advanced Actuation</div><div class="cb">Continuous rotation → wider range of motion</div></div>
+        <div class="card vl"><div class="ci">🛡️</div><div class="ct">4 · Safety by Design</div><div class="cb">No pinch points · Padding protects humans &amp; robot</div></div>
       </div>
-      <div class="card gl"><div class="ci">🌡️</div><div class="ct">5 · Passive Thermal Management</div><div class="cb">No fans — natural airflow → simpler, more reliable. 6.2 ft tall · 66 lb payload · 4hr battery · IP67 rated</div></div>
+      <div class="card cl"><div class="ci">🌡️</div><div class="ct">5 · Passive Thermal Management</div><div class="cb">No fans — natural airflow. 6.2 ft · 66 lb payload · 4hr battery · IP67</div></div>
     </div>
   </div>
   <div class="sf"><span class="sf-l">Boston Dynamics Atlas</span><span class="sf-n">11</span></div>
 </div>
 
 <!-- SLIDE 12: AI + ROBOTICS + DATA -->
-<div class="slide" id="slide-12">
-  <div class="sh"><div class="tag g">Section 4 — The 20-Year Horizon &amp; Business Opportunity</div><h2>AI + Robotics + Data Integration</h2></div>
-  <div class="sb" style="gap:12px">
-    <div class="c3">
-      <div class="card gl"><div class="ci">🛸</div><div class="ct">Space Economy</div><div class="cb">Robots build lunar bases, mine asteroids, maintain satellites</div></div>
-      <div class="card bl"><div class="ci">💊</div><div class="ct">Nano-Robotics</div><div class="cb">Injectable micro-robots targeting cancer cells &amp; vessels</div></div>
-      <div class="card gl"><div class="ci">🌿</div><div class="ct">Climate Remediation</div><div class="cb">Coral restoration · Ocean cleanup · Reforestation at scale</div></div>
+<div class="slide rs light" id="slide-12">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 4 — Horizon</div>
+      <h2>AI + Robotics + Data</h2>
+      <p class="rs-lsub">The biggest opportunity is not building robots — it's building the layers around them.</p>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">💻</strong> Software Layer</div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">📊</strong> Data Layer</div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">🔗</strong> Integration Layer</div>
+      </div>
     </div>
-    <div class="callout b"><strong>Biggest opportunity:</strong> The <strong>software · data · integration</strong> layers — not building robots</div>
-    <div class="c3">
-      <div class="card surf"><div class="ct">💻 Software Layer</div><div class="cb">Control systems · Dashboards · Optimization tools</div></div>
-      <div class="card surf"><div class="ct">📊 Data Layer</div><div class="cb">Predictive analytics · Performance tracking</div></div>
-      <div class="card surf"><div class="ct">🔗 Integration Layer</div><div class="cb">APIs connecting robots to business workflows</div></div>
+    <div class="rs-right" style="gap:12px;justify-content:center">
+      <div class="rs-tag">20-Year Horizon</div>
+      <div class="icon-grid">
+        <div class="icon-cell"><div class="ic">🛸</div><div class="ft">Space Economy</div><div class="fb">Robots build lunar bases, mine asteroids</div></div>
+        <div class="icon-cell"><div class="ic">💊</div><div class="ft">Nano-Robotics</div><div class="fb">Injectable micro-robots targeting cancer cells</div></div>
+        <div class="icon-cell"><div class="ic">🌿</div><div class="ft">Climate</div><div class="fb">Coral restoration · Ocean cleanup at scale</div></div>
+      </div>
+      <div class="callout v" style="font-size:12.5px"><strong>Biggest opportunity:</strong> Software · data · integration layers — not the robots themselves</div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Future Applications</span><span class="sf-n">12</span></div>
+  <div class="sf"><span class="sf-l">Future Applications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">12</span></div>
 </div>
+
 <!-- SLIDE 13: HUMAN DIGNITY & JUSTICE -->
-<div class="slide" id="slide-13">
-  <div class="sh"><div class="tag k">Section 5 of 5 — Theological Implications</div><h2>Human Dignity &amp; the Call to Justice</h2></div>
-  <div class="sb row">
-    <div class="col" style="justify-content:center;gap:10px">
-      <div class="scr"><div class="scr-v">"So God created mankind in his own image."</div><div class="scr-r">Genesis 1:27</div></div>
-      <div class="scr"><div class="scr-v">"The worker deserves his wages."</div><div class="scr-r">Luke 10:7</div></div>
+<div class="slide rs" id="slide-13">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 5 of 5</div>
+      <h2>Human Dignity &amp; Justice</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:12px 14px">
+          <div style="font-family:'Instrument Serif',serif;font-size:13px;font-style:italic;color:#fff;line-height:1.6">"So God created mankind in his own image."</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">Genesis 1:27</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:12px 14px">
+          <div style="font-family:'Instrument Serif',serif;font-size:13px;font-style:italic;color:#fff;line-height:1.6">"The worker deserves his wages."</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">Luke 10:7</div>
+        </div>
+      </div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center;gap:8px">
-      <div class="card bl"><div class="ct">🪞 Imago Dei</div><div class="cb">AI may simulate relationship — but can it participate in one?</div></div>
-      <div class="card bl"><div class="ct">⚖️ Justice for Workers</div><div class="cb">Low-wage workers bear the greatest burden. Proverbs 14:31</div></div>
-      <div class="card gl"><div class="ct">🌿 Creation Stewardship</div><div class="cb">Toward what end, and for whom?</div></div>
-      <div class="card gl"><div class="ct">⚡ Accountability Gap</div><div class="cb">Programmer? Manufacturer? Operator? Romans 13.</div></div>
+    <div class="rs-right" style="justify-content:center;gap:10px">
+      <div class="rs-tag">Theological Implications</div>
+      <div class="frow"><div class="ic sm">🪞</div><div class="frow-body"><div class="ft">Imago Dei</div><div class="fb">AI may simulate relationship — but can it participate in one?</div></div></div>
+      <div class="frow"><div class="ic sm">⚖️</div><div class="frow-body"><div class="ft">Justice for Workers</div><div class="fb">Low-wage workers bear the greatest burden. Proverbs 14:31</div></div></div>
+      <div class="frow"><div class="ic sm">🌿</div><div class="frow-body"><div class="ft">Creation Stewardship</div><div class="fb">Toward what end, and for whom?</div></div></div>
+      <div class="frow"><div class="ic sm">⚡</div><div class="frow-body"><div class="ft">Accountability Gap</div><div class="fb">Programmer? Manufacturer? Operator? Romans 13.</div></div></div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Theological Implications</span><span class="sf-n">13</span></div>
+  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Theological Implications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">13</span></div>
 </div>
 
 <!-- SLIDE 14: MARRIAGE & DISCUSSION -->
-<div class="slide" id="slide-14">
-  <div class="sh"><div class="tag k">Section 5 — Marriage, Intimacy &amp; Discussion</div><h2>God's Design in an Age of Companion Robots</h2></div>
-  <div class="sb row">
-    <div class="col" style="gap:9px">
-      <div class="scr"><div class="scr-v">"A man shall leave his father and mother and be united to his wife."</div><div class="scr-r">Matthew 19:5 (cf. Genesis 2:24)</div></div>
-      <div class="scr"><div class="scr-v">"Your body is a temple of the Holy Spirit."</div><div class="scr-r">1 Corinthians 6:19</div></div>
-      <ul class="blist g" style="margin-top:6px">
-        <li><strong>Marriage</strong> — covenant between a man and a woman</li>
-        <li><strong>Intimacy</strong> — belongs within that covenant</li>
-        <li><strong>Robots cannot love</strong> — they can only simulate it</li>
-        <li><strong>Loneliness</strong> — God's answer is community, not machines</li>
-      </ul>
+<div class="slide rs light" id="slide-14">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 5 — Marriage</div>
+      <h2>God's Design &amp; Companion Robots</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:11px 13px"><div style="font-family:'Instrument Serif',serif;font-size:12.5px;font-style:italic;color:#fff;line-height:1.6">"A man shall leave his father and mother and be united to his wife."</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">Matthew 19:5</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:11px 13px"><div style="font-family:'Instrument Serif',serif;font-size:12.5px;font-style:italic;color:#fff;line-height:1.6">"Your body is a temple of the Holy Spirit."</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">1 Corinthians 6:19</div></div>
+      </div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center;gap:8px">
-      <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Discussion Questions</div>
-      <div class="card bl"><div class="ct">🪞 What Makes Us Human?</div></div>
-      <div class="card bl"><div class="ct">⚖️ Who Owns the Gains?</div></div>
-      <div class="card gl"><div class="ct">💍 Marriage in an Age of Robots</div></div>
-      <div class="card gl"><div class="ct">⚔️ Autonomous Weapons</div></div>
-      <div class="card bl"><div class="ct">🙏 The Church's Prophetic Role</div></div>
+    <div class="rs-right" style="gap:12px;justify-content:center">
+      <div class="rs-tag">Core Beliefs &amp; Discussion</div>
+      <div class="c2" style="gap:9px;margin-bottom:4px">
+        <div class="frow"><div class="ic sm">💍</div><div class="frow-body"><div class="ft">Marriage</div><div class="fb">Covenant between a man and a woman</div></div></div>
+        <div class="frow"><div class="ic sm">❤️</div><div class="frow-body"><div class="ft">Intimacy</div><div class="fb">Belongs within that covenant</div></div></div>
+        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Robots Cannot Love</div><div class="fb">They can only simulate it</div></div></div>
+        <div class="frow"><div class="ic sm">🏘️</div><div class="frow-body"><div class="ft">Loneliness</div><div class="fb">God's answer is community, not machines</div></div></div>
+      </div>
+      <div class="rs-tag" style="margin-bottom:6px">Discussion Questions</div>
+      <div class="c2" style="gap:7px">
+        <div class="card vl" style="padding:10px 13px"><div class="ct" style="font-size:12px">🪞 What Makes Us Human?</div></div>
+        <div class="card vl" style="padding:10px 13px"><div class="ct" style="font-size:12px">⚖️ Who Owns the Gains?</div></div>
+        <div class="card gl" style="padding:10px 13px"><div class="ct" style="font-size:12px">⚔️ Autonomous Weapons</div></div>
+        <div class="card cl" style="padding:10px 13px"><div class="ct" style="font-size:12px">🙏 The Church's Role</div></div>
+      </div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Theological Implications</span><span class="sf-n">14</span></div>
+  <div class="sf"><span class="sf-l">Theological Implications</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot on"></div></div><span class="sf-n">14</span></div>
 </div>
 
 <!-- SLIDE 15: SUMMARY -->
-<div class="slide" id="slide-15">
-  <div class="sh"><div class="tag b">Conclusion</div><h2>Five Questions. Five Answers.</h2></div>
-  <div class="sb row">
-    <div class="col" style="justify-content:center">
-      <div class="steps">
-        <div class="step"><div class="snum b">1</div><div class="stxt"><strong>What is it?</strong> — Machines that sense, think &amp; act</div></div>
-        <div class="step"><div class="snum b">2</div><div class="stxt"><strong>How does it work?</strong> — Sense → Think → Plan → Act → Feedback</div></div>
-        <div class="step"><div class="snum g">3</div><div class="stxt"><strong>Current use?</strong> — Factories, hospitals, farms &amp; space</div></div>
-        <div class="step"><div class="snum g">4</div><div class="stxt"><strong>Future use?</strong> — Humanoids, autonomous vehicles, nano-medicine</div></div>
-        <div class="step"><div class="snum k">5</div><div class="stxt"><strong>Theology?</strong> — Dignity, justice, marriage &amp; accountability</div></div>
+<div class="slide rs" id="slide-15">
+  <div class="rs-bar"></div>
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="rs-left">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Conclusion</div>
+      <h2>Five Questions. Five Answers.</h2>
+      <p class="rs-lsub">A framework for evaluating any emerging technology through a biblical worldview.</p>
+      <div class="quote" style="background:rgba(255,255,255,.12);border-left:3px solid rgba(255,255,255,.5);margin-top:14px">
+        <p style="color:rgba(255,255,255,.9);font-size:13px">"Technology is always embedded in a social, economic, and spiritual context."</p>
+        <div class="attr" style="color:rgba(255,255,255,.5)">— Albert Borgmann</div>
       </div>
     </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center;gap:12px">
-      <div class="quote"><p>"Technology is always embedded in a social, economic, and spiritual context."</p><div class="attr">— Albert Borgmann, philosopher of technology</div></div>
-      <div class="callout b"><strong>Biggest insight:</strong> Build the software, data &amp; integration layers — not the robots themselves.</div>
-      <div class="pills"><span class="pill b">End of Presentation</span><span class="pill g">Questions Welcome</span></div>
+    <div class="rs-right" style="justify-content:center;gap:6px">
+      <div class="rs-tag">Summary</div>
+      <div class="steps" style="gap:11px">
+        <div class="step"><div class="snum v">1</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">What is it?</strong> — Machines that sense, think &amp; act</div></div>
+        <div class="step"><div class="snum v">2</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">How does it work?</strong> — Sense → Think → Plan → Act → Feedback</div></div>
+        <div class="step"><div class="snum g">3</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Current use?</strong> — Factories, hospitals, farms &amp; space</div></div>
+        <div class="step"><div class="snum g">4</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Future use?</strong> — Humanoids, autonomous vehicles, nano-medicine</div></div>
+        <div class="step"><div class="snum k">5</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Theology?</strong> — Dignity, justice, marriage &amp; accountability</div></div>
+      </div>
+      <div class="callout v" style="margin-top:10px;font-size:12.5px"><strong>Biggest insight:</strong> Build the software, data &amp; integration layers — not the robots themselves.</div>
+      <div class="pills" style="margin-top:8px"><span class="pill v">End of Presentation</span><span class="pill g">Questions Welcome</span></div>
     </div>
   </div>
-  <div class="sf"><span class="sf-l">Summary</span><span class="sf-n">15</span></div>
+  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Summary</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">15</span></div>
 </div>
 
 </div><!-- /wrap -->
-<!-- SPEAKER NOTES -->
+<!-- NOTES + NAV -->
 <div class="nshell">
   <button class="nbtn" id="nbtn" onclick="toggleNotes()">
     <span class="nbtn-l">🎤 Speaker Notes</span>
@@ -569,96 +901,77 @@ td:first-child{font-weight:600;color:var(--ink)}
     <div class="ninner" id="ninner"></div>
   </div>
 </div>
-
-<!-- NAV -->
 <div class="nav">
   <button class="nbtn2 ng" id="prev" onclick="go(-1)" disabled>← Previous</button>
   <button class="nbtn2 ng" onclick="toggleFullscreen()">⛶ Fullscreen</button>
   <button class="nbtn2 ns" id="next" onclick="go(1)">Next →</button>
 </div>
 <div class="thumbs" id="thumbs"></div>
+
 <script>
-const TOTAL=15,BARS_DATA=[
-  '#000','#0a2d6e','#0a2d6e','#0a6e82','#0a6e82',
-  '#0a2d6e','#0a2d6e','#1a6e44','#1a6e44',
-  '#0a2d6e','#1a6e44','#1a6e44','#0d1b2a','#0d1b2a',
-  '#0a2d6e'
-];
+const TOTAL=15;
+const BARS_DATA=['#050510','#6772e5','#6772e5','#4f46e5','#4f46e5','#6772e5','#6772e5','#21c55d','#21c55d','#6772e5','#21c55d','#21c55d','#1a1a3e','#1a1a3e','#6772e5'];
 let cur=1,notesOpen=false;
 
 const NOTES={
-1:{t:"Title Slide",p:["Welcome students. This is a 20-minute overview covering 5 questions about robotics — from how they work to deep theological implications.","The animated canvas behind ROBOTICS uses a fluid swirl clipped through the letters — the same style as the DATA ANALYSIS reference image you shared.","Encourage questions throughout. The theological section especially benefits from conversation."]},
-2:{t:"What is Robotics?",p:["One-line definition to anchor everything: Robotics = software + hardware creating machines that sense, think, and act.","SENSE: Camera = eyes. GPS = spatial awareness. Gyroscope = inner ear. Touch = skin.","THINK: Where software lives — and where AI has transformed everything. Old robots were programmed; new robots are trained.","ACT: Actuators are how the digital meets the physical. Motors for precision, hydraulics for force.","Bridge: A trading algorithm senses market data → thinks → acts. Robotics is the same architecture applied to the physical world."]},
-3:{t:"A Brief History",p:["'Robot' comes from Czech robota — forced labor. Čapek's play featured artificial workers who eventually rebelled. The anxiety has been with us from the start.","1961 Unimate at GM: first machines that could be reprogrammed for different tasks. Industrial automation begins.","1997 Sojourner: a robot making decisions 140 million miles from the nearest programmer.","2002 Roomba: robots move from factories into homes. Public relationship with robotics changes permanently.","The horizontal timeline shows acceleration — decades between early milestones, then months between modern ones."]},
-4:{t:"The Continuous Loop",p:["This loop is the single most important concept. Every robot does these five things — the sophistication of each stage is what separates a Roomba from a humanoid.","SENSE: A humanoid has 28+ cameras, force sensors in fingertips, an IMU, microphones — all streaming simultaneously.","THINK: Rule-based (IF/THEN) or AI-based (neural networks). Most robots use both.","PLAN: A warehouse robot calculates the optimal path in milliseconds. This is computational geometry + AI.","FEEDBACK: The most underappreciated step. Without it, tiny errors compound. This is Control Systems Engineering."]},
-5:{t:"Two Ways Robots Think",p:["Rule-Based vs AI is one of the most important distinctions in all of technology.","Rule-Based: fast, reliable, brittle. Works perfectly until an unexpected scenario arises.","Learning-Based: generalizes from data. Show it 10,000 images of boxes, it learns to recognize boxes.","Most real robots use BOTH: safety-critical decisions are rule-based; perception and navigation are AI-based.","Ask students: Which do you trust more for a surgical robot? Why? This surfaces the reliability vs capability tension."]},
-6:{t:"Where Robots Work Today",p:["3.9 million is industrial robots only — total deployed robotic systems is many times higher.","Manufacturing dominates because ROI is clearest: controlled environment, repetitive tasks, high volume.","Amazon paid $775M for Kiva Systems in 2012 — now one of the largest robotics deployments in history.","da Vinci costs $2M+ per unit but hospitals pay because it enables procedures otherwise requiring open surgery.","Space: 20-minute communication delay means the rover must make decisions autonomously."]},
-7:{t:"Why Adoption Is Accelerating",p:["The cost crossover has already happened. A cobot costs ~$35K. At $20/hr wages, it pays for itself in under 2 years.","Safety: 340 warehouse workers die annually in the US. Robot-human collaboration has measurably reduced injuries.","Post-COVID: Goldman Sachs estimates COVID pulled forward 5 years of automation investment in 18 months.","Amazon: the shelf comes to the worker — not the other way around. Workers no longer walk miles per shift.","Zipline: saving lives that road infrastructure couldn't save. One of the most inspiring humanitarian robotics stories."]},
-8:{t:"The Next 5-10 Years",p:["$260B by 2030 from multiple analyst projections. The humanoid category makes the range wide.","Tesla Optimus is already doing battery cell sorting in Gigafactories. Figure AI raised $675M from Microsoft, OpenAI, NVIDIA in 2024.","RaaS (Robotics-as-a-Service): subscribe for $2K/month instead of buying a $100K robot. Dramatically lowers adoption barrier.","Autonomous trucking may be closer than robotaxis. Highways are simpler environments. Freight industry faces severe driver shortage.","800M jobs: McKinsey's midpoint. Not all disappear — many transform. But disruption is real and closer than most expect."]},
-9:{t:"Who's Shipping Humanoid Robots?",p:["China dominates with ~90% of global shipments in 2025. Unitree and AgiBot alone shipped over 10,000 combined.","Unitree's G1 starts at $13,500 — compare to Tesla's projected $20K-$30K. China's supply chain gives a structural cost advantage.","US companies (Tesla, Figure AI, Agility) each shipped ~150 units in 2025. These are pilot deployments, not commercial scale.","China's structural advantages: Yangtze River Delta supply chain, rare earth mineral dominance (~60% global), government subsidies.","Ask students: what does it mean for the US that China leads 90/10? Economic, military, and societal implications?"]},
-10:{t:"Tesla Optimus Gen 3",p:["March 2026 — the most current news in humanoid robotics. 22 DoF per hand vs the human hand's 27.","The 'holy grail' quote is from Tesla engineers themselves. This is the benchmark the entire humanoid industry is chasing.","The Fremont retooling is a massive signal. Tesla discontinued Model S and X to make space for Optimus production.","$20K price point: at that price with human-like dexterity, small and medium businesses could automate — not just giant corporations.","Giga Texas target: 10 million units per year. Toyota produces ~10 million cars per year globally. That's the scale Musk is projecting."]},
-11:{t:"Boston Dynamics Atlas",p:["Boston Dynamics represents the most technically sophisticated humanoid robotics — but they are not the volume leaders.","Design for Real Use: every decision is evaluated against: does this make it more useful in a factory or warehouse?","Modular Architecture: reusable actuator modules mean you can produce at scale, repair faster, and upgrade without redesigning the whole robot.","Electric vs hydraulic: the 2024 switch eliminated fluid maintenance, reduced noise, and improved energy efficiency.","Safety by Design: eliminating pinch points and adding padding meets occupational safety standards for human-robot collaboration.","Passive Thermal: no fans = fewer moving parts, less noise, fewer failure modes. Brilliant engineering choice."]},
-12:{t:"AI + Robotics + Data Integration",p:["The 20-year horizon: every item on this slide has a funded research program or commercial prototype. Direction is clear; timeline uncertain.","Space: NASA Artemis explicitly calls for robotic construction before humans arrive on the Moon.","Nano-robotics: ETH Zurich has demonstrated micro-robots navigating blood vessels in animal models. 20-year timeline for human use.","The three opportunity layers: highest-margin robotics businesses are software companies. Think monitoring dashboards, AI anomaly detection, robot-to-ERP APIs.","For students interested in startups: you don't need to build robots to build a successful robotics business."]},
-13:{t:"Human Dignity & Justice",p:["Genesis 1:27 is the foundation of human rights in Western civilization. Robotics asks: does intelligence in a machine confer moral standing?","Two camps on Imago Dei: (1) Rational capacity. (2) Covenantal capacity — ability to be in relationship with God and neighbor.","Justice & Labor: Proverbs 14:31 — 'Whoever oppresses the poor shows contempt for their Maker.' Automation displacing low-wage workers without redistribution is structurally similar to what the prophets condemned.","Accountability Gap: When Uber's test vehicle killed a pedestrian in 2018, prosecutors struggled. Romans 13 insists persons answer for systems.","The church's role: not just charity (helping displaced workers) but prophecy (naming the injustice) and formation."]},
-14:{t:"Marriage & Discussion",p:["Companion and sex robots are not hypothetical — companies like Realbotix and Harmony AI actively market them. This is a live pastoral issue.","Matthew 19:4-6: Jesus himself defines marriage citing Genesis. This is not cultural opinion but authoritative teaching.","1 Corinthians 13: Biblical love is self-giving and sacrificial. A machine cannot love — it can only simulate the appearance of love.","Pastoral note: be sensitive — some students may be experiencing genuine loneliness. The message should be grace-filled: God's design is beautiful, not punitive.","Autonomous Weapons: just-war theory requires discrimination and proportionality. Can an algorithm meet a moral standard? The UN has debated a ban."]},
-15:{t:"Summary",p:["Bring it home: technology is embedded in social, economic, and spiritual context. It is never neutral.","The five-question structure gives students a repeatable framework for evaluating any technology — not just robots.","The biggest insight: the best opportunities are in the software, data, and integration layers. You don't need to build robots.","Close with the Borgmann quote — applies to every emerging technology students will encounter in their careers.","Final challenge: where will YOU engage with these technologies — as a passive consumer, or as an active, thoughtful participant with a biblical worldview?"]}
+1:{t:"Title Slide",p:["Welcome students. 20-minute overview — 5 questions about robotics from technical foundations to theological implications.","The animated canvas behind ROBOTICS uses a fluid swirl of Stripe's blue-violet-cyan palette clipped through the letters.","Encourage questions throughout. The theological section especially benefits from conversation."]},
+2:{t:"What is Robotics?",p:["One-line definition: Robotics = software + hardware creating machines that sense, think, and act.","SENSE: Camera = eyes. GPS = spatial awareness. Gyroscope = inner ear. Touch = skin.","THINK: Where AI has transformed everything. Old robots were programmed; new robots are trained.","ACT: Actuators are how the digital meets the physical. Motors for precision, hydraulics for force.","Bridge: A trading algorithm senses market data → thinks → acts. Robotics is the same architecture applied to the physical world."]},
+3:{t:"A Brief History",p:["'Robot' from Czech robota — forced labor. Čapek's play featured workers who rebelled. The anxiety is built in from the start.","1961 Unimate at GM: first machines reprogrammable for different tasks. Industrial automation begins.","1997 Sojourner: a robot making decisions 140 million miles from the nearest programmer.","2002 Roomba: robots enter homes. Public relationship with robotics changes permanently.","The horizontal timeline shows acceleration — decades between early milestones, then years between modern ones."]},
+4:{t:"The Continuous Loop",p:["This loop is the single most important concept. Every robot does these five things — sophistication of each stage separates a Roomba from a humanoid.","FEEDBACK: The most underappreciated step. Without it, tiny errors compound. This is Control Systems Engineering.","The trading bridge: Sense market data → Think → Plan → Act (execute trade) → Feedback (measure result). Same loop, different domain."]},
+5:{t:"Two Ways Robots Think",p:["Rule-Based vs AI is one of the most important distinctions in all of technology — not just robotics.","Rule-Based: fast, reliable, brittle. Fails when programmer didn't anticipate a scenario.","Learning-Based: generalizes from data. Show it 10,000 images of boxes, it learns to recognize boxes.","Most real robots use BOTH: safety-critical decisions are rule-based; perception and navigation are AI-based.","Ask: Which do you trust more for a surgical robot? Why? This surfaces the reliability vs capability tension."]},
+6:{t:"Where Robots Work Today",p:["3.9 million industrial robots — doesn't count service robots, drones, surgical, or consumer robots.","Amazon paid $775M for Kiva Systems in 2012 — now one of the largest robotics deployments in history.","da Vinci costs $2M+ per unit but enables procedures otherwise requiring open surgery.","Space: 20-minute communication delay means the rover must make decisions autonomously."]},
+7:{t:"Why Adoption Is Accelerating",p:["The cost crossover has already happened. A cobot costs ~$35K. At $20/hr wages, ROI in under 2 years.","Post-COVID: Goldman Sachs estimates COVID pulled forward 5 years of automation investment in 18 months.","Zipline: saving lives that road infrastructure couldn't save. One of the most inspiring humanitarian robotics stories."]},
+8:{t:"The Next 5-10 Years",p:["Tesla Optimus is already doing battery cell sorting in Gigafactories. Figure AI raised $675M from Microsoft, OpenAI, NVIDIA in 2024.","RaaS: subscribe for $2K/month instead of buying a $100K robot. Dramatically lowers adoption barrier.","800M jobs: McKinsey's midpoint. Not all disappear — many transform. But disruption is real."]},
+9:{t:"Who's Shipping Humanoid Robots?",p:["China dominates with ~90% of global shipments. Unitree and AgiBot alone shipped over 10,000 combined.","Unitree's G1 starts at $13,500 — vs Tesla's projected $20K-$30K. China's supply chain = structural cost advantage.","US companies each shipped ~150 units in 2025. Pilot deployments, not commercial scale.","Ask: what does it mean for the US that China leads 90/10? Economic, military, and societal implications?"]},
+10:{t:"Tesla Optimus Gen 3",p:["22 DoF per hand vs the human hand's 27. The 'holy grail' quote is from Tesla engineers themselves.","The Fremont retooling is a massive signal — Tesla discontinued Model S and X to build Optimus.","$20K price point: small and medium businesses could automate, not just giant corporations.","Giga Texas target: 10 million units per year. Toyota produces ~10 million cars annually. That's the scale."]},
+11:{t:"Boston Dynamics Atlas",p:["Boston Dynamics = most technically sophisticated humanoid robotics — but not the volume leader.","Modular Architecture: reusable actuator modules mean you can repair faster and upgrade without a full redesign.","Electric vs hydraulic 2024: eliminated fluid maintenance, reduced noise, improved energy efficiency.","Passive Thermal: no fans = fewer failure modes. IP67 means you can literally hose it off."]},
+12:{t:"AI + Robotics + Data Integration",p:["Nano-robotics: ETH Zurich has demonstrated micro-robots navigating blood vessels in animal models.","The three opportunity layers: highest-margin robotics businesses are software companies.","For students interested in startups: you don't need to build robots to build a successful robotics business."]},
+13:{t:"Human Dignity & Justice",p:["Genesis 1:27 is the foundation of human rights in Western civilization. Imago Dei asks: does machine intelligence confer moral standing?","Justice & Labor: Proverbs 14:31 — automation displacing low-wage workers without redistribution mirrors what the prophets condemned.","Accountability Gap: When Uber's vehicle killed a pedestrian in 2018, prosecutors struggled. Romans 13 insists persons answer for systems."]},
+14:{t:"Marriage & Discussion",p:["Companion robots are not hypothetical — companies like Realbotix actively market them. This is a live pastoral issue.","Matthew 19:4-6: Jesus defines marriage citing Genesis. This is authoritative teaching, not cultural opinion.","Biblical love is self-giving and sacrificial. A machine cannot love — it can only simulate the appearance of love.","Pastoral note: be sensitive — some students may experience genuine loneliness. God's design is beautiful, not punitive."]},
+15:{t:"Summary",p:["Technology is embedded in social, economic, and spiritual context. It is never neutral.","The five-question structure is a repeatable framework for evaluating any emerging technology.","Biggest insight: build the software, data, and integration layers. You don't need to build robots.","Final challenge: passive consumer or active, thoughtful participant bringing a biblical worldview?"]}
 };
 
-// Build thumbnails
+// Thumbnails
 (function(){
   const row=document.getElementById('thumbs');
   for(let i=0;i<TOTAL;i++){
     const n=i+1,el=document.createElement('div');
     el.className='thumb'+(n===1?' active':'');
-    el.id='th-'+n;
-    el.onclick=()=>goTo(n);
-    const bar=document.createElement('div');
-    bar.className='th-bar';
-    bar.style.background=BARS_DATA[i];
-    const num=document.createElement('div');
-    num.className='th-num';
-    num.textContent=n;
-    el.appendChild(bar);el.appendChild(num);
-    row.appendChild(el);
+    el.id='th-'+n;el.onclick=()=>goTo(n);
+    const bar=document.createElement('div');bar.className='th-bar';bar.style.background=BARS_DATA[i];
+    const num=document.createElement('div');num.className='th-num';num.textContent=n;
+    el.appendChild(bar);el.appendChild(num);row.appendChild(el);
   }
 })();
 
 // Bar chart
 (function(){
   const data=[
-    {company:'Unitree',country:'cn',units:6000},
-    {company:'AgiBot',country:'cn',units:4200},
-    {company:'UBTECH',country:'cn',units:1100},
-    {company:'Galaxy General',country:'cn',units:800},
-    {company:'Fourier',country:'cn',units:600},
-    {company:'Leju Robotics',country:'cn',units:500},
-    {company:'Tesla',country:'us',units:150},
-    {company:'Figure AI',country:'us',units:150},
-    {company:'Agility Robotics',country:'us',units:150},
-    {company:'Boston Dynamics',country:'kr',units:100},
+    {company:'Unitree',country:'cn',units:6000},{company:'AgiBot',country:'cn',units:4200},
+    {company:'UBTECH',country:'cn',units:1100},{company:'Galaxy General',country:'cn',units:800},
+    {company:'Fourier',country:'cn',units:600},{company:'Leju Robotics',country:'cn',units:500},
+    {company:'Tesla',country:'us',units:150},{company:'Figure AI',country:'us',units:150},
+    {company:'Agility Robotics',country:'us',units:150},{company:'Boston Dynamics',country:'kr',units:100},
   ];
   const max=data[0].units;
-  const colors={cn:'#0057b0',us:'#1a8a4a',kr:'#98989d'};
+  const colors={cn:'#6772e5',us:'#21c55d',kr:'#00d4ff'};
   const flags={cn:'🇨🇳',us:'🇺🇸',kr:'🇰🇷'};
-  const wrap=document.getElementById('bars');
-  if(!wrap)return;
+  const wrap=document.getElementById('bars');if(!wrap)return;
   data.forEach(d=>{
     const pct=(d.units/max*100).toFixed(1);
-    const row=document.createElement('div');
-    row.className='bar-row';
-    row.innerHTML=`<div class="bar-label">${flags[d.country]} ${d.company}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colors[d.country]}"></div></div><div class="bar-val">${d.units>=1000?(d.units/1000).toFixed(1)+'K':d.units}</div>`;
+    const row=document.createElement('div');row.className='bar-row';
+    row.innerHTML=`<div class="bar-label">${flags[d.country]} ${d.company}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colors[d.country]};opacity:.85"></div></div><div class="bar-val">${d.units>=1000?(d.units/1000).toFixed(1)+'K':d.units}</div>`;
     wrap.appendChild(row);
   });
 })();
+
 // Notes
 function renderNotes(n){
-  const d=NOTES[n];
-  const el=document.getElementById('ninner');
+  const d=NOTES[n],el=document.getElementById('ninner');
   if(!d){el.innerHTML='<span class="ntag">No notes</span>';return;}
   let h=`<span class="ntag">Slide ${n} — ${d.t}</span><ul>`;
   d.p.forEach(p=>{h+=`<li>${p}</li>`;});
-  h+='</ul>';
-  el.innerHTML=h;
+  el.innerHTML=h+'</ul>';
 }
 function toggleNotes(){
   notesOpen=!notesOpen;
@@ -667,7 +980,7 @@ function toggleNotes(){
   if(notesOpen)renderNotes(cur);
 }
 
-// Navigation
+// Nav
 function goTo(n){
   document.getElementById('slide-'+cur).classList.remove('active');
   document.getElementById('th-'+cur).classList.remove('active');
@@ -683,7 +996,6 @@ function goTo(n){
 }
 function go(d){if(cur+d>=1&&cur+d<=TOTAL)goTo(cur+d);}
 function toggleFullscreen(){!document.fullscreenElement?document.documentElement.requestFullscreen():document.exitFullscreen();}
-
 document.addEventListener('keydown',e=>{
   if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
   if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}
@@ -691,21 +1003,15 @@ document.addEventListener('keydown',e=>{
   if(e.key==='n'||e.key==='N')toggleNotes();
 });
 
-// Canvas title animation
+// Canvas — Stripe violet/cyan palette
 (function(){
-  const canvas=document.getElementById('tc');
-  if(!canvas)return;
+  const canvas=document.getElementById('tc');if(!canvas)return;
   const ctx=canvas.getContext('2d');
   let W,H,t=0,raf;
-  function resize(){
-    W=canvas.offsetWidth;H=canvas.offsetHeight;
-    canvas.width=W*devicePixelRatio;canvas.height=H*devicePixelRatio;
-    ctx.scale(devicePixelRatio,devicePixelRatio);
-  }
+  function resize(){W=canvas.offsetWidth;H=canvas.offsetHeight;canvas.width=W*devicePixelRatio;canvas.height=H*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);}
   function frame(){
     t+=0.004;
-    const off=document.createElement('canvas');
-    off.width=W;off.height=H;
+    const off=document.createElement('canvas');off.width=W;off.height=H;
     const oc=off.getContext('2d');
     const cols=70,rows=44,cw=W/cols,ch=H/rows;
     for(let j=0;j<rows;j++){
@@ -714,38 +1020,37 @@ document.addEventListener('keydown',e=>{
         const w1=Math.sin(nx*5+t*1.1+Math.cos(ny*3.5+t*.7)*1.4);
         const w2=Math.cos(ny*4.5-t*.85+Math.sin(nx*2.5+t*.9)*1.1);
         const w3=Math.sin((nx+ny)*3.5+t*.55);
-        const cx=nx-.5,cy=ny-.5;
-        const spiral=Math.sin(Math.atan2(cy,cx)*3-Math.sqrt(cx*cx+cy*cy)*10+t*2);
+        const cx2=nx-.5,cy2=ny-.5;
+        const spiral=Math.sin(Math.atan2(cy2,cx2)*3-Math.sqrt(cx2*cx2+cy2*cy2)*10+t*2);
         const val=(w1*.5+w2*.35+w3*.15+spiral*.4);
         const b=(val+1.4)/2.8;
+        // Stripe palette: deep indigo → violet → cyan
         let r,g,bl;
-        if(b<.25){r=5;g=Math.floor(b/.25*40);bl=Math.floor(b/.25*80);}
-        else if(b<.5){const f=(b-.25)/.25;r=Math.floor(f*20);g=Math.floor(40+f*90);bl=Math.floor(80+f*110);}
-        else if(b<.75){const f=(b-.5)/.25;r=Math.floor(20+f*20);g=Math.floor(130+f*80);bl=Math.floor(190+f*40);}
-        else{const f=(b-.75)/.25;r=Math.floor(40+f*180);g=Math.floor(210+f*40);bl=Math.floor(230+f*20);}
+        if(b<.33){const f=b/.33;r=Math.floor(5+f*98);g=Math.floor(5+f*62);bl=Math.floor(16+f*213);}
+        else if(b<.66){const f=(b-.33)/.33;r=Math.floor(103+f*(-50));g=Math.floor(67+f*67);bl=Math.floor(229+f*(255-229));}
+        else{const f=(b-.66)/.34;r=Math.floor(53+f*(-53));g=Math.floor(134+f*(212-134));bl=255;}
         oc.fillStyle=`rgb(${r},${g},${bl})`;
         oc.fillRect(i*cw,j*ch,cw+1,ch+1);
       }
     }
+    // Sparkles
     for(let s=0;s<16;s++){
       const sx=W*(.5+Math.sin(s*2.3+t*.45)*.45);
       const sy=H*(.5+Math.cos(s*1.8+t*.35)*.42);
       const sr=1+Math.abs(Math.sin(s*2.9+t*.9))*3;
       const sa=.3+Math.abs(Math.sin(s*1.4+t*.7))*.7;
       oc.beginPath();oc.arc(sx,sy,sr,0,Math.PI*2);
-      oc.fillStyle=`rgba(180,240,255,${sa})`;oc.fill();
+      oc.fillStyle=`rgba(180,220,255,${sa})`;oc.fill();
     }
-    ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
-    const tmp=document.createElement('canvas');
-    tmp.width=W;tmp.height=H;
+    ctx.fillStyle='#050510';ctx.fillRect(0,0,W,H);
+    const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
     const tc2=tmp.getContext('2d');
     tc2.drawImage(off,0,0);
     tc2.globalCompositeOperation='destination-in';
     let fs=Math.min(W*.145,H*.42);
-    tc2.font=`700 ${fs}px -apple-system,"Helvetica Neue",sans-serif`;
-    while(tc2.measureText('ROBOTICS').width>W*.9&&fs>20){fs-=2;tc2.font=`700 ${fs}px -apple-system,"Helvetica Neue",sans-serif`;}
-    tc2.textAlign='center';tc2.textBaseline='middle';
-    tc2.fillStyle='#fff';
+    tc2.font=`800 ${fs}px 'Inter',-apple-system,sans-serif`;
+    while(tc2.measureText('ROBOTICS').width>W*.9&&fs>20){fs-=2;tc2.font=`800 ${fs}px 'Inter',-apple-system,sans-serif`;}
+    tc2.textAlign='center';tc2.textBaseline='middle';tc2.fillStyle='#fff';
     tc2.fillText('ROBOTICS',W/2,H*.40);
     ctx.drawImage(tmp,0,0);
     raf=requestAnimationFrame(frame);
