@@ -192,20 +192,20 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
 /* NOTES */
 .nshell{width:980px;max-width:100%;border-radius:0 0 var(--r) var(--r);overflow:hidden}
-.nbtn{width:100%;background:#07071a;border:none;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-top:1px solid var(--border);transition:background .2s}
-.nbtn:hover{background:#0d0d28}
-.nbtn-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.2);text-transform:uppercase}
-.narr{color:rgba(255,255,255,.2);font-size:10px;transition:transform .2s}
+.nbtn{width:100%;background:#ffffff;border:none;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-top:1px solid #e0e6ed;transition:background .2s}
+.nbtn:hover{background:#f6f9fc}
+.nbtn-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#697386;text-transform:uppercase}
+.narr{color:#697386;font-size:10px;transition:transform .2s}
 .nbtn.open .narr{transform:rotate(180deg)}
-.npanel{background:#07071a;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.npanel{background:#ffffff;max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:1px solid #e0e6ed}
 .npanel.open{max-height:440px}
 .ninner{padding:18px 26px 22px;display:none}
 .npanel.open .ninner{display:block}
-.ntag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.2);text-transform:uppercase;margin-bottom:10px;display:block}
-.ninner ul{list-style:none;display:flex;flex-direction:column;gap:6px}
-.ninner li{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;padding-left:14px;position:relative}
-.ninner li::before{content:'–';position:absolute;left:0;color:rgba(255,255,255,.2)}
-.ninner strong{color:rgba(255,255,255,.6)}
+.ntag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#8792a2;text-transform:uppercase;margin-bottom:10px;display:block}
+.ninner ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ninner li{font-size:13px;color:#4f566b;line-height:1.7;padding-left:14px;position:relative}
+.ninner li::before{content:'–';position:absolute;left:0;color:#b4c0cc}
+.ninner strong{color:#1a1f36;font-weight:600}
 
 /* NAV */
 .nav{width:980px;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:14px}
@@ -574,15 +574,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="callout" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-left:3px solid #fff;color:rgba(255,255,255,.9);font-size:12px;margin-top:12px"><strong style="color:#fff">↻ Repeat</strong> — never stops while the robot runs</div>
     </div>
     <div class="rs-right" style="justify-content:center">
-      <div class="rs-tag">5-Step Process</div>
-      <div class="steps" style="gap:11px">
-        <div class="step"><div class="snum v">01</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Sense</strong> — Cameras, LiDAR, GPS, touch &amp; temperature</div></div>
-        <div class="step"><div class="snum v">02</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Think</strong> — Obstacle? Path? Stop or go?</div></div>
-        <div class="step"><div class="snum v">03</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Plan</strong> — Path, speed &amp; movement sequence</div></div>
-        <div class="step"><div class="snum g">04</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Act</strong> — Motors &amp; servos execute precisely</div></div>
-        <div class="step"><div class="snum g">05</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Feedback</strong> — Constant self-correction in real time</div></div>
+      <div class="rs-tag">5-Step Process — Runs 100s of Times/Second</div>
+      <div class="steps" style="gap:10px">
+        <div class="step"><div class="snum v">01</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Sense</strong> — Cameras, LiDAR, GPS, touch &amp; temp gather real-world data continuously</div></div>
+        <div class="step"><div class="snum v">02</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Think</strong> — Controller software answers: obstacle ahead? safe path? emergency stop?</div></div>
+        <div class="step"><div class="snum v">03</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Plan</strong> — Calculates optimal path, speed, torque &amp; timing before acting</div></div>
+        <div class="step"><div class="snum g">04</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Act</strong> — Motors, hydraulics &amp; servos execute with precision across dozens of joints</div></div>
+        <div class="step"><div class="snum g">05</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Feedback</strong> — "Did I land correctly?" Sensors measure result and correct instantly</div></div>
       </div>
-      <div class="quote" style="margin-top:14px"><p>Robotics = automation in the physical world.</p><div class="attr">Your trading tool analyzes data. A robot acts on it.</div></div>
+      <div class="quote" style="margin-top:10px"><p>Robotics = automation in the physical world. Your trading algorithm senses data, thinks, and acts. A robot does the same — but in three dimensions.</p><div class="attr">The key bridge between software and robotics</div></div>
     </div>
   </div>
   <div class="sf"><span class="sf-l">How It Works</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n">04</span></div>
@@ -658,13 +658,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </div>
     </div>
     <div class="rs-right" style="justify-content:center">
-      <div class="rs-tag">Driving Factors</div>
+      <div class="rs-tag">5 Driving Forces Behind Rapid Adoption</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="frow"><div class="ic sm">💵</div><div class="frow-body"><div class="ft">Economics</div><div class="fb">Prices down ~50% since 2010; ROI under 2 years</div></div></div>
-        <div class="frow"><div class="ic sm">🎯</div><div class="frow-body"><div class="ft">Precision</div><div class="fb">Micron-level consistency; humans fatigue</div></div></div>
-        <div class="frow"><div class="ic sm">🛡️</div><div class="frow-body"><div class="ft">Safety</div><div class="fb">Removes people from dangerous roles</div></div></div>
-        <div class="frow"><div class="ic sm">⏰</div><div class="frow-body"><div class="ft">24/7 Operation</div><div class="fb">No breaks, no sick days</div></div></div>
-        <div class="frow"><div class="ic sm">📦</div><div class="frow-body"><div class="ft">Post-COVID</div><div class="fb">5 years of automation compressed into 18 months</div></div></div>
+        <div class="frow"><div class="ic sm">💵</div><div class="frow-body"><div class="ft">Economics</div><div class="fb">Robot prices down ~50% since 2010. A Universal Robots cobot costs ~$35K and pays for itself in under 2 years at $20/hr labor rates</div></div></div>
+        <div class="frow"><div class="ic sm">🎯</div><div class="frow-body"><div class="ft">Precision at Scale</div><div class="fb">Micron-level consistency across millions of repetitions. Human workers fatigue — robots don't drift after hour 8</div></div></div>
+        <div class="frow"><div class="ic sm">🛡️</div><div class="frow-body"><div class="ft">Workplace Safety</div><div class="fb">Removes people from chemical plants, mines, extreme heat &amp; repetitive-strain roles. 340 warehouse workers die annually in the US</div></div></div>
+        <div class="frow"><div class="ic sm">⏰</div><div class="frow-body"><div class="ft">24/7 Operation</div><div class="fb">No breaks, no sick days, no overtime. Lights-out factories — fully automated with no humans on the floor — already exist</div></div></div>
+        <div class="frow"><div class="ic sm">📦</div><div class="frow-body"><div class="ft">Post-COVID Acceleration</div><div class="fb">Supply-chain fragility compressed 5 years of automation investment into 18 months. Goldman Sachs confirmed the pull-forward</div></div></div>
       </div>
     </div>
   </div>
@@ -686,13 +686,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div style="margin-top:12px;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.85)"><strong style="color:#fff">RaaS</strong> — Subscribe monthly instead of buying. Like SaaS, but physical.</div>
     </div>
     <div class="rs-right" style="justify-content:center">
-      <div class="rs-tag">What's Coming</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Humanoid Labor</div><div class="fb">Optimus, Figure AI &amp; Digit in warehouses now</div></div></div>
-        <div class="frow"><div class="ic sm">🚛</div><div class="frow-body"><div class="ft">Autonomous Trucking</div><div class="fb">Aurora &amp; Kodiak targeting highway freight</div></div></div>
-        <div class="frow"><div class="ic sm">🏗️</div><div class="frow-body"><div class="ft">Robotic Construction</div><div class="fb">3D-printed housing at scale</div></div></div>
-        <div class="frow"><div class="ic sm">🏥</div><div class="frow-body"><div class="ft">AI-Powered Healthcare</div><div class="fb">Robotic nurses, elder-care assistants</div></div></div>
-        <div class="frow"><div class="ic sm">🌾</div><div class="frow-body"><div class="ft">Automated Farms</div><div class="fb">AI-optimized planting &amp; harvesting</div></div></div>
+      <div class="rs-tag">What's Coming in the Next Decade</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Humanoid Labor</div><div class="fb">Tesla Optimus, Figure AI &amp; Agility Digit now doing real warehouse tasks. Figure AI raised $675M from Microsoft, OpenAI &amp; NVIDIA</div></div></div>
+        <div class="frow"><div class="ic sm">🚛</div><div class="frow-body"><div class="ft">Autonomous Trucking</div><div class="fb">Aurora &amp; Kodiak targeting commercial highway freight. Highways are simpler than city streets — closer than you think</div></div></div>
+        <div class="frow"><div class="ic sm">🏗️</div><div class="frow-body"><div class="ft">Robotic Construction</div><div class="fb">3D-printed homes, automated bricklayers, robotic rebar tying — addressing the housing shortage and skilled-trades gap</div></div></div>
+        <div class="frow"><div class="ic sm">🏥</div><div class="frow-body"><div class="ft">AI-Powered Healthcare</div><div class="fb">Robotic nurses for vitals &amp; medication, elder-care assistants (Japan is 29% over 65), semi-autonomous surgery</div></div></div>
+        <div class="frow"><div class="ic sm">🌾</div><div class="frow-body"><div class="ft">Automated Farms</div><div class="fb">John Deere autonomous tractors already shipping. Iron Ox grows crops indoors with 90% less water using robots entirely</div></div></div>
       </div>
     </div>
   </div>
@@ -787,14 +787,19 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">🔗</strong> Integration Layer</div>
       </div>
     </div>
-    <div class="rs-right" style="gap:12px;justify-content:center">
-      <div class="rs-tag">20-Year Horizon</div>
+    <div class="rs-right" style="gap:10px;justify-content:center">
+      <div class="rs-tag">The 20-Year Horizon</div>
       <div class="icon-grid">
-        <div class="icon-cell"><div class="ic">🛸</div><div class="ft">Space Economy</div><div class="fb">Robots build lunar bases, mine asteroids</div></div>
-        <div class="icon-cell"><div class="ic">💊</div><div class="ft">Nano-Robotics</div><div class="fb">Injectable micro-robots targeting cancer cells</div></div>
-        <div class="icon-cell"><div class="ic">🌿</div><div class="ft">Climate</div><div class="fb">Coral restoration · Ocean cleanup at scale</div></div>
+        <div class="icon-cell"><div class="ic">🛸</div><div class="ft">Space Economy</div><div class="fb">NASA Artemis requires robots to build lunar habitats before humans arrive. Mars colonization depends on them</div></div>
+        <div class="icon-cell"><div class="ic">💊</div><div class="ft">Nano-Robotics</div><div class="fb">ETH Zurich has demonstrated micro-robots navigating blood vessels in animals. Drug delivery, diagnostics in 20 years</div></div>
+        <div class="icon-cell"><div class="ic">🌿</div><div class="ft">Climate Repair</div><div class="fb">Coral reef restoration bots, ocean plastic cleanup, AI-guided reforestation at scales humans alone can't achieve</div></div>
       </div>
-      <div class="callout v" style="font-size:12.5px"><strong>Biggest opportunity:</strong> Software · data · integration layers — not the robots themselves</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div class="card vl" style="padding:10px 12px"><div class="ft" style="font-size:11.5px">💻 Software Layer</div><div class="fb">Control systems, dashboards, optimization tools</div></div>
+        <div class="card gl" style="padding:10px 12px"><div class="ft" style="font-size:11.5px">📊 Data Layer</div><div class="fb">Predictive analytics, fleet performance tracking</div></div>
+        <div class="card cl" style="padding:10px 12px"><div class="ft" style="font-size:11.5px">🔗 Integration</div><div class="fb">APIs linking robots to ERP, WMS &amp; workflows</div></div>
+      </div>
+      <div class="callout v" style="font-size:12.5px"><strong>Biggest opportunity:</strong> The software, data &amp; integration layers — not building robots. These are high-margin, scalable software businesses riding the robotics wave</div>
     </div>
   </div>
   <div class="sf"><span class="sf-l">Future Applications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">12</span></div>
@@ -819,11 +824,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </div>
     </div>
     <div class="rs-right" style="justify-content:center;gap:10px">
-      <div class="rs-tag">Theological Implications</div>
-      <div class="frow"><div class="ic sm">🪞</div><div class="frow-body"><div class="ft">Imago Dei</div><div class="fb">AI may simulate relationship — but can it participate in one?</div></div></div>
-      <div class="frow"><div class="ic sm">⚖️</div><div class="frow-body"><div class="ft">Justice for Workers</div><div class="fb">Low-wage workers bear the greatest burden. Proverbs 14:31</div></div></div>
-      <div class="frow"><div class="ic sm">🌿</div><div class="frow-body"><div class="ft">Creation Stewardship</div><div class="fb">Toward what end, and for whom?</div></div></div>
-      <div class="frow"><div class="ic sm">⚡</div><div class="frow-body"><div class="ft">Accountability Gap</div><div class="fb">Programmer? Manufacturer? Operator? Romans 13.</div></div></div>
+      <div class="rs-tag">Four Theological Questions Robotics Forces Us to Answer</div>
+      <div class="frow"><div class="ic sm">👑</div><div class="frow-body"><div class="ft">Human Dignity</div><div class="fb">Genesis 1:27 — mankind bears God's image. Robotics asks: does intelligence in a machine confer moral standing? The church must answer carefully and clearly</div></div></div>
+      <div class="frow"><div class="ic sm">⚖️</div><div class="frow-body"><div class="ft">Justice for Workers</div><div class="fb">Proverbs 14:31 — "Whoever oppresses the poor shows contempt for their Maker." Automation that displaces low-wage workers without redistribution mirrors what the prophets condemned</div></div></div>
+      <div class="frow"><div class="ic sm">🌿</div><div class="frow-body"><div class="ft">Creation Stewardship</div><div class="fb">Technology is never neutral. Robots can restore coral reefs or accelerate resource extraction. The question is always: toward what end, and for whom? (Genesis 2:15)</div></div></div>
+      <div class="frow"><div class="ic sm">⚡</div><div class="frow-body"><div class="ft">Accountability Gap</div><div class="fb">When Uber's self-driving car killed a pedestrian in 2018, prosecutors couldn't find one person to charge. Scripture insists persons must answer for systems they build (Romans 13)</div></div></div>
     </div>
   </div>
   <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Theological Implications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">13</span></div>
@@ -841,20 +846,20 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:11px 13px"><div style="font-family:'Instrument Serif',serif;font-size:12.5px;font-style:italic;color:#fff;line-height:1.6">"Your body is a temple of the Holy Spirit."</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">1 Corinthians 6:19</div></div>
       </div>
     </div>
-    <div class="rs-right" style="gap:12px;justify-content:center">
-      <div class="rs-tag">Core Beliefs &amp; Discussion</div>
-      <div class="c2" style="gap:9px;margin-bottom:4px">
-        <div class="frow"><div class="ic sm">💍</div><div class="frow-body"><div class="ft">Marriage</div><div class="fb">Covenant between a man and a woman</div></div></div>
-        <div class="frow"><div class="ic sm">❤️</div><div class="frow-body"><div class="ft">Intimacy</div><div class="fb">Belongs within that covenant</div></div></div>
-        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Robots Cannot Love</div><div class="fb">They can only simulate it</div></div></div>
-        <div class="frow"><div class="ic sm">🏘️</div><div class="frow-body"><div class="ft">Loneliness</div><div class="fb">God's answer is community, not machines</div></div></div>
+    <div class="rs-right" style="gap:9px;justify-content:center">
+      <div class="rs-tag">What Scripture Says &amp; What We Must Discuss</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px">
+        <div class="frow"><div class="ic sm">💍</div><div class="frow-body"><div class="ft">Marriage is a Covenant</div><div class="fb">Between a man and a woman — Genesis 2:18–24, Matthew 19:4–6. This is not cultural preference; it is Christ's own teaching citing creation</div></div></div>
+        <div class="frow"><div class="ic sm">❤️</div><div class="frow-body"><div class="ft">Intimacy Belongs in Covenant</div><div class="fb">Hebrews 13:4, 1 Cor. 6:18–20 — the body is a temple of the Holy Spirit. Sexual intimacy is designed for the marriage covenant, not commercial products</div></div></div>
+        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Robots Cannot Love</div><div class="fb">1 Corinthians 13 — love is patient, kind, self-giving, sacrificial. A machine can simulate the appearance of care, but it cannot participate in love</div></div></div>
+        <div class="frow"><div class="ic sm">🏘️</div><div class="frow-body"><div class="ft">Loneliness Is Real — But God's Answer Is Community</div><div class="fb">Genesis 2:18 — "It is not good for man to be alone." God's answer is human covenant community, not a robot companion</div></div></div>
       </div>
-      <div class="rs-tag" style="margin-bottom:6px">Discussion Questions</div>
+      <div class="rs-tag" style="margin-bottom:5px">Class Discussion</div>
       <div class="c2" style="gap:7px">
-        <div class="card vl" style="padding:10px 13px"><div class="ct" style="font-size:12px">🪞 What Makes Us Human?</div></div>
-        <div class="card vl" style="padding:10px 13px"><div class="ct" style="font-size:12px">⚖️ Who Owns the Gains?</div></div>
-        <div class="card gl" style="padding:10px 13px"><div class="ct" style="font-size:12px">⚔️ Autonomous Weapons</div></div>
-        <div class="card cl" style="padding:10px 13px"><div class="ct" style="font-size:12px">🙏 The Church's Role</div></div>
+        <div class="card vl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">🪞 What makes us irreducibly human?</div></div>
+        <div class="card vl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">⚖️ Who owns the productivity gains?</div></div>
+        <div class="card gl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">⚔️ Can an algorithm wage just war?</div></div>
+        <div class="card cl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">🙏 Should the church lead or follow?</div></div>
       </div>
     </div>
   </div>
@@ -914,21 +919,137 @@ const BARS_DATA=['#050510','#6772e5','#6772e5','#4f46e5','#4f46e5','#6772e5','#6
 let cur=1,notesOpen=false;
 
 const NOTES={
-1:{t:"Title Slide",p:["Welcome students. 20-minute overview — 5 questions about robotics from technical foundations to theological implications.","The animated canvas behind ROBOTICS uses a fluid swirl of Stripe's blue-violet-cyan palette clipped through the letters.","Encourage questions throughout. The theological section especially benefits from conversation."]},
-2:{t:"What is Robotics?",p:["One-line definition: Robotics = software + hardware creating machines that sense, think, and act.","SENSE: Camera = eyes. GPS = spatial awareness. Gyroscope = inner ear. Touch = skin.","THINK: Where AI has transformed everything. Old robots were programmed; new robots are trained.","ACT: Actuators are how the digital meets the physical. Motors for precision, hydraulics for force.","Bridge: A trading algorithm senses market data → thinks → acts. Robotics is the same architecture applied to the physical world."]},
-3:{t:"A Brief History",p:["'Robot' from Czech robota — forced labor. Čapek's play featured workers who rebelled. The anxiety is built in from the start.","1961 Unimate at GM: first machines reprogrammable for different tasks. Industrial automation begins.","1997 Sojourner: a robot making decisions 140 million miles from the nearest programmer.","2002 Roomba: robots enter homes. Public relationship with robotics changes permanently.","The horizontal timeline shows acceleration — decades between early milestones, then years between modern ones."]},
-4:{t:"The Continuous Loop",p:["This loop is the single most important concept. Every robot does these five things — sophistication of each stage separates a Roomba from a humanoid.","FEEDBACK: The most underappreciated step. Without it, tiny errors compound. This is Control Systems Engineering.","The trading bridge: Sense market data → Think → Plan → Act (execute trade) → Feedback (measure result). Same loop, different domain."]},
-5:{t:"Two Ways Robots Think",p:["Rule-Based vs AI is one of the most important distinctions in all of technology — not just robotics.","Rule-Based: fast, reliable, brittle. Fails when programmer didn't anticipate a scenario.","Learning-Based: generalizes from data. Show it 10,000 images of boxes, it learns to recognize boxes.","Most real robots use BOTH: safety-critical decisions are rule-based; perception and navigation are AI-based.","Ask: Which do you trust more for a surgical robot? Why? This surfaces the reliability vs capability tension."]},
-6:{t:"Where Robots Work Today",p:["3.9 million industrial robots — doesn't count service robots, drones, surgical, or consumer robots.","Amazon paid $775M for Kiva Systems in 2012 — now one of the largest robotics deployments in history.","da Vinci costs $2M+ per unit but enables procedures otherwise requiring open surgery.","Space: 20-minute communication delay means the rover must make decisions autonomously."]},
-7:{t:"Why Adoption Is Accelerating",p:["The cost crossover has already happened. A cobot costs ~$35K. At $20/hr wages, ROI in under 2 years.","Post-COVID: Goldman Sachs estimates COVID pulled forward 5 years of automation investment in 18 months.","Zipline: saving lives that road infrastructure couldn't save. One of the most inspiring humanitarian robotics stories."]},
-8:{t:"The Next 5-10 Years",p:["Tesla Optimus is already doing battery cell sorting in Gigafactories. Figure AI raised $675M from Microsoft, OpenAI, NVIDIA in 2024.","RaaS: subscribe for $2K/month instead of buying a $100K robot. Dramatically lowers adoption barrier.","800M jobs: McKinsey's midpoint. Not all disappear — many transform. But disruption is real."]},
-9:{t:"Who's Shipping Humanoid Robots?",p:["China dominates with ~90% of global shipments. Unitree and AgiBot alone shipped over 10,000 combined.","Unitree's G1 starts at $13,500 — vs Tesla's projected $20K-$30K. China's supply chain = structural cost advantage.","US companies each shipped ~150 units in 2025. Pilot deployments, not commercial scale.","Ask: what does it mean for the US that China leads 90/10? Economic, military, and societal implications?"]},
-10:{t:"Tesla Optimus Gen 3",p:["22 DoF per hand vs the human hand's 27. The 'holy grail' quote is from Tesla engineers themselves.","The Fremont retooling is a massive signal — Tesla discontinued Model S and X to build Optimus.","$20K price point: small and medium businesses could automate, not just giant corporations.","Giga Texas target: 10 million units per year. Toyota produces ~10 million cars annually. That's the scale."]},
-11:{t:"Boston Dynamics Atlas",p:["Boston Dynamics = most technically sophisticated humanoid robotics — but not the volume leader.","Modular Architecture: reusable actuator modules mean you can repair faster and upgrade without a full redesign.","Electric vs hydraulic 2024: eliminated fluid maintenance, reduced noise, improved energy efficiency.","Passive Thermal: no fans = fewer failure modes. IP67 means you can literally hose it off."]},
-12:{t:"AI + Robotics + Data Integration",p:["Nano-robotics: ETH Zurich has demonstrated micro-robots navigating blood vessels in animal models.","The three opportunity layers: highest-margin robotics businesses are software companies.","For students interested in startups: you don't need to build robots to build a successful robotics business."]},
-13:{t:"Human Dignity & Justice",p:["Genesis 1:27 is the foundation of human rights in Western civilization. Imago Dei asks: does machine intelligence confer moral standing?","Justice & Labor: Proverbs 14:31 — automation displacing low-wage workers without redistribution mirrors what the prophets condemned.","Accountability Gap: When Uber's vehicle killed a pedestrian in 2018, prosecutors struggled. Romans 13 insists persons answer for systems."]},
-14:{t:"Marriage & Discussion",p:["Companion robots are not hypothetical — companies like Realbotix actively market them. This is a live pastoral issue.","Matthew 19:4-6: Jesus defines marriage citing Genesis. This is authoritative teaching, not cultural opinion.","Biblical love is self-giving and sacrificial. A machine cannot love — it can only simulate the appearance of love.","Pastoral note: be sensitive — some students may experience genuine loneliness. God's design is beautiful, not punitive."]},
-15:{t:"Summary",p:["Technology is embedded in social, economic, and spiritual context. It is never neutral.","The five-question structure is a repeatable framework for evaluating any emerging technology.","Biggest insight: build the software, data, and integration layers. You don't need to build robots.","Final challenge: passive consumer or active, thoughtful participant bringing a biblical worldview?"]}
+1:{t:"Title Slide — Welcome",p:[
+  "<strong>Opening line:</strong> 'In the next 20 minutes we are going to cover five questions that I believe every educated person — and every Christian — needs to be able to answer about robotics.'",
+  "<strong>Context-setting:</strong> Robotics is no longer science fiction. Right now, 3.9 million robots are on factory floors globally. Humanoid robots shipped commercially for the first time in 2025. The field is accelerating faster than public awareness.",
+  "<strong>Why this matters for BUS 670:</strong> Strategic AI isn't just software. Robotics is where AI meets the physical world — supply chains, healthcare, logistics, agriculture. Every business student will encounter this within 5 years of graduation.",
+  "<strong>Tone:</strong> Encourage questions throughout — especially on the theological slides. This is a conversation, not a lecture. The best insights will come from the room."
+]},
+2:{t:"What is Robotics? — Definition",p:[
+  "<strong>Anchor definition:</strong> Robotics = software + hardware that senses its environment, makes decisions, and takes physical action. Everything else builds from this.",
+  "<strong>SENSE — unpack it:</strong> A camera is a robot's eyes. GPS is spatial awareness. A gyroscope is its inner ear (balance). A touch sensor is its skin. Ask students: what happens if a sensor fails mid-task?",
+  "<strong>THINK — the AI connection:</strong> This is where everything has changed. Old robots were programmed — a human wrote every rule. New robots are trained — they learn from millions of examples. ChatGPT and robotics share the same underlying neural networks.",
+  "<strong>ACT — the physical bridge:</strong> Actuators convert digital decisions into physical force. Motors for precision (surgery), hydraulics for power (construction), pneumatics for speed and softness (food handling).",
+  "<strong>The trading analogy:</strong> A quantitative trading algorithm senses market data, thinks through a strategy, and acts by placing a trade. Robotics is the exact same architecture applied to the physical world. This analogy lands well for business students.",
+  "<strong>Discussion prompt:</strong> 'Can you name something that uses at least two of these three components — Sense, Think, Act — that you interact with every day?'"
+]},
+3:{t:"A Brief History — From Word to World-Changer",p:[
+  "<strong>'Robot' etymology:</strong> Karel Čapek coined it from Czech robota meaning forced labor or drudgery. His 1920 play R.U.R. featured artificial workers who eventually rebelled against their creators. The anxiety about robots displacing humans is literally baked into the word.",
+  "<strong>1954–1961 — The industrial leap:</strong> George Devol's 1954 patent for a programmable robotic arm led directly to Unimate on GM's assembly line in 1961. This was the moment automation moved from concept to commercial reality. 65 years later the factory robot is still the dominant use case.",
+  "<strong>1997 — Sojourner on Mars:</strong> A robot making navigation decisions 140 million miles from the nearest programmer. Round-trip communication delay = 20 minutes. The rover had to be autonomous by necessity. This set the template for all planetary exploration robots.",
+  "<strong>2002 — Roomba changes the narrative:</strong> For the first time, a robot enters the home as a consumer product. iRobot sold over 30 million units. This shifted public perception from 'robots are industrial' to 'robots are personal.'",
+  "<strong>The acceleration story:</strong> Notice the gaps — decades between early milestones, then years between modern ones. The timeline of robotics innovation is compressing rapidly, driven by cheap sensors, edge compute, and transformer AI models.",
+  "<strong>Transition line:</strong> 'The question is no longer whether robots will change your industry — it's whether you'll be ready when they do.'"
+]},
+4:{t:"The Continuous Loop — How Every Robot Operates",p:[
+  "<strong>Why this is the most important slide:</strong> Every robot ever built — from a $350 Roomba to a $2M surgical system to a Mars rover — runs this exact loop. The sophistication of each stage is what separates them.",
+  "<strong>SENSE — the data pipeline:</strong> A humanoid robot has 28+ cameras, force sensors in every fingertip, an IMU (inertial measurement unit), microphones, and proximity sensors — all streaming simultaneously at high frequency.",
+  "<strong>THINK — two flavors:</strong> Rule-based (IF/THEN logic) or AI-based (neural network inference). Most modern robots use both. Safety-critical decisions are rule-based for reliability; perception and navigation are AI-based for adaptability.",
+  "<strong>PLAN — the underrated step:</strong> Before acting, the robot calculates: optimal path, joint torques, timing, collision risk. A warehouse robot does this in milliseconds. This is computational geometry + AI + physics simulation running in real time.",
+  "<strong>FEEDBACK — control systems engineering:</strong> After acting, sensors measure what actually happened vs. what was planned. The difference (error) is fed back in to correct the next action. Without this loop, tiny errors compound into catastrophic failures.",
+  "<strong>The trading bridge:</strong> Sense market data → Think (analyze signals) → Plan (size and timing) → Act (execute order) → Feedback (measure slippage, adjust). Identical loop structure — robotics just does it in three physical dimensions.",
+  "<strong>Ask students:</strong> 'Where would this loop break down in a robot performing surgery? What's the highest-stakes step?'"
+]},
+5:{t:"Two Ways Robots Think — Rule-Based vs AI",p:[
+  "<strong>This distinction matters beyond robotics:</strong> Rule-based vs. learning-based is one of the most important architectural decisions in all of software engineering.",
+  "<strong>Rule-Based strengths:</strong> Deterministic, auditable, fast, reliable. You can trace exactly why a decision was made. Critical for safety-certified systems. Used in flight control, nuclear plants, medical devices.",
+  "<strong>Rule-Based weakness:</strong> Brittle. Works perfectly until an edge case the programmer didn't anticipate. A robot programmed to navigate around 'boxes' will fail when it encounters a cylinder.",
+  "<strong>Learning-Based (ML) strengths:</strong> Generalizes from data. Show it 50,000 images of obstacles and it learns to avoid them — even ones it was never trained on. This is how Tesla FSD and Boston Dynamics Atlas navigate novel environments.",
+  "<strong>Learning-Based weakness:</strong> Unpredictable. The robot may make a confident wrong decision. Hard to audit. Failure modes can be surprising and dangerous in safety-critical contexts.",
+  "<strong>The 'both' insight:</strong> Most production robots layer these: rule-based safety systems (guaranteed behavior) + AI perception layer (handles complexity). Like a car's ABS brakes (rule-based) combined with adaptive cruise control (AI-based).",
+  "<strong>Ask students:</strong> 'If you were designing a robot to perform spinal surgery, which would you trust more for the cutting motion — rule-based or AI? Why? What about for patient positioning?'"
+]},
+6:{t:"Where Robots Work Today — Current Applications",p:[
+  "<strong>Scale reality check:</strong> 3.9 million industrial robots is just the installed industrial base. Total deployed robotic systems — including service robots, surgical systems, drones, and consumer devices — is many times higher.",
+  "<strong>Manufacturing dominates:</strong> Controlled environment, repetitive tasks, high volume, ROI is clearest. FANUC, KUKA, and ABB are the dominant players. Tesla's Gigafactories are among the most automated manufacturing facilities in history.",
+  "<strong>Amazon is the logistics story:</strong> Amazon paid $775M for Kiva Systems (now Amazon Robotics) in 2012. Today they operate 750,000+ robots. Order fulfillment time dropped from 75 minutes to 15 minutes. This is a competitive moat — competitors literally cannot match the throughput.",
+  "<strong>da Vinci — the healthcare case study:</strong> $2M+ per unit, yet hospitals pay because it enables minimally invasive procedures that otherwise require open surgery. Surgeons control it — the robot doesn't operate autonomously. 10M+ procedures completed.",
+  "<strong>Waymo — autonomous vehicles as robots:</strong> A self-driving car is a robot. It senses (cameras + LiDAR), thinks (AI model), and acts (steering + braking). Waymo has now completed millions of fully driverless miles in US cities.",
+  "<strong>Space — the extreme case:</strong> NASA Perseverance rover operates with a 20-minute round-trip communication delay. Every navigation decision is autonomous. This is the frontier of AI-driven robotics: machines that must function completely independently.",
+  "<strong>Transition:</strong> 'These aren't future applications — they are happening right now, at scale, generating billions in revenue. The question is: what comes next?'"
+]},
+7:{t:"Why Adoption Is Accelerating — The Business Case",p:[
+  "<strong>The economics have crossed over:</strong> A Universal Robots UR5 cobot costs approximately $35,000. At $20/hour fully-loaded labor cost, it pays for itself in under two years — and then works three shifts with no overtime, benefits, or sick days.",
+  "<strong>The precision argument:</strong> A robot can hold a tolerance of ±0.1mm across 10 million repetitions. Human workers drift — fatigue, distraction, and variation are real. In semiconductor manufacturing and medical device assembly, this precision difference is the entire business.",
+  "<strong>The safety case:</strong> 340 warehouse workers die annually in the US. Repetitive stress injuries cost employers billions. Removing humans from dangerous roles — chemical plants, mines, blast furnaces, extreme cold — is not just ethical, it's a liability reduction strategy.",
+  "<strong>Amazon Robotics detail:</strong> The shelf comes to the worker — not the other way around. Workers used to walk 10–15 miles per shift. Now they stand at a station. Productivity went up, injuries went down, and order accuracy improved dramatically.",
+  "<strong>Zipline — the humanitarian case:</strong> In Rwanda and Ghana, Zipline autonomous drones deliver blood, vaccines, and medication to remote clinics where roads don't exist. Lives are being saved that geography previously made impossible to save.",
+  "<strong>Post-COVID acceleration:</strong> When supply chains collapsed in 2020–2021, companies couldn't hire workers fast enough. Goldman Sachs estimated COVID pulled forward 5 years of automation investment into 18 months. Labor fragility became the single most powerful driver of robotics adoption.",
+  "<strong>Ask students:</strong> 'If robots perform the economic output but no humans earn wages — who receives the value? Is that a theological question or just an economic one?'"
+]},
+8:{t:"The Next 5–10 Years — Future Applications",p:[
+  "<strong>The $260B market figure</strong> is from multiple analyst projections (Goldman Sachs, McKinsey, IFR). The humanoid category alone makes the range wide — anywhere from $200B to $400B — because humanoid deployment is so uncertain.",
+  "<strong>Humanoid labor — this is not hype:</strong> Tesla Optimus robots are already sorting battery cells in Tesla's Gigafactories right now. Figure AI raised $675M from Microsoft, OpenAI, and NVIDIA in early 2024. The bet is that humanoids can do any task designed for a human body.",
+  "<strong>RaaS (Robotics-as-a-Service):</strong> Instead of a $100K capital purchase, companies subscribe for $1,500–$2,500/month. This is exactly what SaaS did to enterprise software — lowering the barrier from capex to opex. Agility Robotics and Apptronik are already selling this way.",
+  "<strong>Autonomous trucking — closer than robotaxis:</strong> Highways are geometrically simpler than city intersections. Aurora and Kodiak have active commercial trucking partnerships. The freight industry faces a 80,000+ driver shortage in the US — the business case is compelling.",
+  "<strong>The 800M jobs figure</strong> is McKinsey's 2030 midpoint estimate. Low end: 400M. High end: 1.2B. Importantly, not all jobs disappear — many transform. But the transitions are real, they're painful, and they're uneven. Low-wage, repetitive roles are most exposed.",
+  "<strong>Iron Ox agriculture:</strong> Grows crops indoors using robots entirely — 90% less water, no pesticides, year-round production regardless of climate. This is what food security looks like in a world of climate volatility.",
+  "<strong>Transition:</strong> 'In 10 years, the question won't be whether your industry uses robots. It will be whether you understood the wave early enough to build on it.'"
+]},
+9:{t:"Who's Shipping Humanoid Robots? — 2025 Data",p:[
+  "<strong>This data is from Visual Capitalist / Rest of World, published early 2026 — the most current available.</strong> 2025 was the first year humanoid robots shipped in meaningful commercial volumes.",
+  "<strong>China's dominance is structural, not accidental:</strong> The Yangtze River Delta contains the world's most vertically integrated supply chain for humanoid robotics. Unitree, AgiBot, and their key suppliers are all within 100 miles of each other. China also dominates rare earth mineral production (~60% globally) — the raw materials for actuators and motors.",
+  "<strong>Unitree's price disruption:</strong> The G1 humanoid starts at $13,500. For context, Tesla projects Optimus at $20,000–$30,000. Unitree is using the same playbook as Chinese EV makers — price below Western competitors to capture volume and drive down the cost curve.",
+  "<strong>AgiBot is the wildcard:</strong> Backed by Chinese government funding, AgiBot shipped 4,200 units in 2025 — second only to Unitree. Most Western analysts hadn't heard of them a year ago. This is a pattern we've seen in EVs, solar panels, and batteries.",
+  "<strong>US companies are in pilot mode, not commercial mode:</strong> Tesla, Figure AI, and Agility Robotics each shipped ~150 units — essentially proving the technology works, not scaling it. Figure AI's $39B valuation despite 150 units shipped reflects investor bets on future potential.",
+  "<strong>Geopolitical dimension:</strong> This isn't just a technology race — it's a strategic competition. The US has imposed chip export restrictions on China. China has responded by accelerating domestic AI and robotics. Humanoid robots may become the next front in this competition.",
+  "<strong>Ask students:</strong> 'What does it mean for the United States if China leads humanoid robot production 90/10? How does this compare to what happened with semiconductors, solar panels, and electric vehicles?'"
+]},
+10:{t:"Tesla Optimus Gen 3 — Spotlight",p:[
+  "<strong>March 2026 context:</strong> This is the most current news in humanoid robotics. The recruitment video showing Gen 3 hands was released just weeks before this presentation.",
+  "<strong>22 degrees of freedom — why it matters:</strong> The human hand has 27 DoF. Gen 3 has 22. For the first time, a robot hand can perform the fine manipulation tasks — threading a needle, typing, handling fragile objects — that have been the barrier to general-purpose robotic labor.",
+  "<strong>'Superhero suit' quote</strong> is from a Tesla robotics engineer in the recruitment video: 'It won't even look like a robot. It will look like a human in a superhero suit. It will be something revolutionary.'",
+  "<strong>The Fremont retooling signal:</strong> Tesla discontinued the Model S and Model X — flagship vehicles that defined the company — to retool those factory lines for Optimus production. This is not incremental investment. This is a full strategic pivot.",
+  "<strong>Scale ambition:</strong> 1 million units/year at Fremont. 10 million units/year at Giga Texas when Gen 4 arrives. For context, Toyota — the world's largest automaker — produces approximately 10 million vehicles per year globally. Musk is projecting Optimus at that scale.",
+  "<strong>The economic impact claim:</strong> Musk has stated a single Optimus robot performing useful work generates $30,000–$50,000 of economic value per year. At 1 billion units (his long-term projection), that's $30–50 trillion in annual economic output from robots alone.",
+  "<strong>Pastoral note:</strong> Musk's projections are aggressive. Tesla has missed timelines before. But the direction is clear and the capability is real — what matters for your students is developing a framework for engaging with this technology, not predicting exact timelines."
+]},
+11:{t:"Boston Dynamics Atlas — Enterprise Design",p:[
+  "<strong>Boston Dynamics is not the volume leader — but they are the technical standard.</strong> Their robots appear in viral videos because they are genuinely the most capable. Hyundai acquired them for $1.1B in 2021 specifically for the Hyundai manufacturing use case.",
+  "<strong>Design driven by utility:</strong> Every BD design decision is evaluated against 'does this make Atlas more useful in a factory or warehouse?' The ring-light face and rounded body are deliberate — CEO Robert Playter said designs that looked 'too human' seemed threatening. They borrowed from Pixar's lamp design for approachability.",
+  "<strong>Modular actuators — the manufacturing insight:</strong> By building reusable actuator modules, BD can produce at scale, repair faster, and upgrade subsystems without redesigning the whole robot. This is how you get from research prototype to commercial product — exactly like modular smartphone components.",
+  "<strong>Electric vs hydraulic — the 2024 transition:</strong> The old Atlas was hydraulic — powerful but loud, fluid maintenance required, less energy efficient. The new electric Atlas eliminated all of that. Custom planetary roller screw actuators match hydraulic force density while being far simpler to maintain.",
+  "<strong>Safety by design:</strong> Eliminating pinch points and adding padding meets OSHA and ISO collaborative robot safety standards. Any robot working alongside humans in an industrial setting must pass these certifications. BD built this in from the ground up.",
+  "<strong>Passive thermal management — the elegant solution:</strong> No fans means no moving parts in the cooling system, no noise, no dust ingestion, no failure modes from fan motors. The chassis itself acts as a heat sink. This also contributed to the IP67 water/dust resistance rating — you can literally hose it off.",
+  "<strong>2026 deployment:</strong> First Atlas units are going to Hyundai's Metaplant in Georgia for parts sequencing. Google DeepMind is receiving units to integrate Gemini Robotics AI. This is no longer a research project — it is a commercial product in production."
+]},
+12:{t:"AI + Robotics + Data Integration — The 20-Year Horizon",p:[
+  "<strong>Frame the business opportunity first:</strong> The highest-margin businesses in the robotics wave will not be robot manufacturers — they will be the software, data, and integration companies riding the hardware wave. Think of it like the internet: Amazon didn't make computers, they built software on top of the infrastructure.",
+  "<strong>Software layer — concrete examples:</strong> Fleet management dashboards (which robot is where, doing what), predictive maintenance AI (flag a bearing failure before it happens), task optimization algorithms (route 200 robots through a warehouse with zero collisions). These are SaaS businesses with 70%+ gross margins.",
+  "<strong>Data layer — the compounding moat:</strong> Every robot generates sensor data. That data can train better AI models, optimize workflows, and predict equipment failures. The company that accumulates the most operational robotics data will have a self-reinforcing competitive advantage — exactly like Google's search data.",
+  "<strong>Integration layer — the enterprise opportunity:</strong> Most companies run ERP (SAP, Oracle), WMS (warehouse management), and MES (manufacturing execution) systems. None of them were designed to interface with robots. API integration between robotic systems and business software is a massive greenfield opportunity.",
+  "<strong>Space — why robots always go first:</strong> NASA's Artemis program explicitly requires robotic construction of lunar habitats before humans arrive. Robots don't need air, food, or radiation protection. On Mars, the 20-minute communication delay makes human remote operation impossible — full autonomy is required.",
+  "<strong>Nano-robotics — the 20-year bet:</strong> ETH Zurich published peer-reviewed research demonstrating micro-robots navigating blood vessels in animal models. Targeted drug delivery and in-vivo diagnostics are the target applications. Clinical human trials are estimated 15–25 years away.",
+  "<strong>Climate remediation — the hopeful case:</strong> The Ocean Cleanup project uses autonomous systems. Coral reef restoration robots have been deployed in the Great Barrier Reef. AI-guided reforestation drones can plant trees at rates no human crew can match. This is technology serving creation stewardship."
+]},
+13:{t:"Human Dignity & the Call to Justice — Theological Implications",p:[
+  "<strong>Frame the theological stakes clearly:</strong> Scripture doesn't mention robots. But its principles about human dignity, personhood, work, justice, and creation stewardship apply directly — and with enormous practical consequence.",
+  "<strong>Human Dignity — the foundational question:</strong> Genesis 1:27 is the basis of human rights in Western civilization. The Imago Dei — bearing God's image — has historically meant humans possess inherent dignity that cannot be bought, sold, or automated away. Robotics forces us to answer: what precisely grounds this dignity? Is it rational capacity (which AI is approaching)? Or covenantal capacity — the ability to be in relationship with God and neighbor? The church's answer to this question matters enormously.",
+  "<strong>Justice for Workers — the prophetic word:</strong> Proverbs 14:31 — 'Whoever oppresses the poor shows contempt for their Maker.' Low-wage, repetitive roles bear the greatest displacement burden from automation. When productivity gains flow entirely to capital owners while workers are displaced without transition support, this is structurally identical to what Amos, Isaiah, and Micah condemned in Israel. The church cannot be silent here.",
+  "<strong>Creation Stewardship — technology is never neutral:</strong> Genesis 2:15 gives humanity the mandate to 'work and take care of' creation. Precision agriculture robots can reduce pesticide use by 90% — genuine stewardship. But the same automation logic enables faster resource extraction and environmental degradation. The question is always: toward what end, and for whom? Who decides?",
+  "<strong>The Accountability Gap — a genuine crisis:</strong> In 2018, an Uber self-driving car struck and killed Elaine Herzberg in Tempe, Arizona. Prosecutors struggled for three years to find a person to charge. The software made the decision. The safety driver was distracted. The engineer who wrote the code was following specifications. The company deployed prematurely. All bore some responsibility; none bore full responsibility. Romans 13 insists that authority — and accountability — must be located in persons. We have not solved this problem.",
+  "<strong>Ask students:</strong> 'If a hospital robot misdiagnoses a patient and that patient dies — who answers? The hospital that bought it? The company that built it? The engineer who wrote the algorithm? What does Romans 13 require of us when we build systems that make life-and-death decisions?'"
+]},
+14:{t:"God's Design in an Age of Companion Robots — Marriage & Discussion",p:[
+  "<strong>This is not hypothetical:</strong> Companies like Realbotix (maker of 'Harmony') and Lovotics are actively marketing companion and intimate robots. Japan's government has funded research into elder-care companion robots. South Korea's robotics industry is targeting the loneliness epidemic as a commercial opportunity. This is a live pastoral issue right now.",
+  "<strong>Matthew 19:5 — Jesus speaks directly:</strong> In Matthew 19:4–6, Jesus defines marriage by citing Genesis. He says 'at the beginning the Creator made them male and female' and quotes Genesis 2:24. This is not a cultural opinion or a Pauline pastoral recommendation — it is the Lord's own authoritative teaching grounded in creation order.",
+  "<strong>1 Corinthians 6:19–20 and the body:</strong> 'Your body is a temple of the Holy Spirit... you were bought at a price. Therefore honor God with your bodies.' The body is not a consumer product to be satisfied by a commercial device. Sexual intimacy is designed by God for the covenant of marriage — not outsourced to technology.",
+  "<strong>1 Corinthians 13 — robots cannot love:</strong> 'Love is patient, love is kind... it is not self-seeking.' Biblical love is sacrificial, covenantal, and self-giving. A machine can simulate the appearance of care and responsiveness — it can be programmed to say 'I love you' — but it cannot make a sacrifice. It cannot choose to stay. It cannot forgive. This is not love.",
+  "<strong>Pastoral sensitivity note:</strong> Some students in this room may be experiencing genuine loneliness, relational pain, or heartbreak. Approach this section with grace. God's design for marriage is beautiful and good — not a burden or a restriction. His answer to loneliness is genuine human community and ultimately himself, not a robot companion.",
+  "<strong>Autonomous weapons — the just-war question:</strong> Traditional just-war theory requires two things AI may not be able to provide: discrimination (distinguishing combatants from non-combatants) and proportionality (using only necessary force). The UN has been debating a ban on Lethal Autonomous Weapons Systems since 2013 with no consensus. Ask students: can an algorithm make a moral judgment?",
+  "<strong>Closing challenge:</strong> 'The church's role is not to be the last institution to engage with this — it is to be the first. We have the theological resources, the ethical framework, and the community to help people navigate this. The question is whether we will show up.'"
+]},
+15:{t:"Summary — Five Questions, Five Answers",p:[
+  "<strong>Five-question framework recap:</strong> These five questions are not just about robotics — they are a transferable framework for evaluating any emerging technology your students will encounter in their careers.",
+  "<strong>Question 1 — What is it?</strong> Machines that sense, think, and act. The Sense-Think-Act architecture is the foundation. Every robotics application builds on it.",
+  "<strong>Question 2 — How does it work?</strong> The continuous loop: Sense → Think → Plan → Act → Feedback, running hundreds of times per second. The sophistication of each stage separates simple automation from true autonomy.",
+  "<strong>Question 3 — Current use?</strong> Factories, warehouses, hospitals, farms, space — at massive scale, generating billions in revenue right now. This is not emerging technology — it is deployed technology.",
+  "<strong>Question 4 — Future use?</strong> Humanoids, autonomous trucking, nano-medicine, robotic construction, automated farms. The trajectory is clear even if exact timelines are uncertain.",
+  "<strong>Question 5 — Theology?</strong> Human dignity, worker justice, creation stewardship, marriage, accountability. These are the questions that will define whether robotics serves human flourishing or undermines it — and the church has an essential voice.",
+  "<strong>The Borgmann quote:</strong> Albert Borgmann was a philosopher of technology at the University of Montana. His book 'Technology and the Character of Contemporary Life' argued that technology is always embedded in social, economic, and spiritual context — it is never neutral, and it always reshapes the people who use it.",
+  "<strong>Biggest business insight:</strong> The best opportunities in robotics are not in building robots — they are in the software, data, and integration layers. High-margin, scalable, and riding the hardware wave without the hardware capex.",
+  "<strong>Final challenge:</strong> 'Leave them with a question: where will YOU engage with these technologies — as a passive consumer, or as an active, thoughtful participant who brings a biblical worldview to the conversation? The world needs people who can hold both the technical and the theological.'"
+]}
 };
 
 // Thumbnails
