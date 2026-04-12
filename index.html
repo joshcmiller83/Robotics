@@ -1,1318 +1,952 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Robotics — Josh Miller</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<style>
-:root {
-  /* Stripe core palette */
-  --bg:        #0a0a1a;
-  --surface:   #0f0f2e;
-  --card:      #13132b;
-  --card2:     #1a1a3e;
-  --border:    rgba(255,255,255,.08);
-  --border2:   rgba(255,255,255,.14);
-  --white:     #ffffff;
-  --off:       #f6f9fc;
-  --ink:       #ffffff;
-  --ink2:      rgba(255,255,255,.75);
-  --ink3:      rgba(255,255,255,.50);
-  --ink4:      rgba(255,255,255,.30);
-
-  /* Stripe accent — electric violet + indigo */
-  --violet:    #6772e5;
-  --violet-lt: #7c88ff;
-  --violet-xs: rgba(103,114,229,.15);
-  --indigo:    #4f46e5;
-  --cyan:      #00d4ff;
-  --cyan-dim:  rgba(0,212,255,.12);
-  --teal:      #0ea5e9;
-  --green:     #21c55d;
-  --green-dim: rgba(33,197,93,.12);
-
-  /* Stripe gradient mesh */
-  --grad1: linear-gradient(135deg,#6772e5 0%,#9c6fe4 50%,#00d4ff 100%);
-  --grad2: linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
-  --grad3: linear-gradient(135deg,#0ea5e9 0%,#6772e5 100%);
-
-  --font: 'Inter', -apple-system, sans-serif;
-  --mono: 'SF Mono','Menlo',monospace;
-  --r:    10px;
-  --rlg:  16px;
-  --sh:   0 0 0 1px rgba(255,255,255,.06), 0 8px 32px rgba(0,0,0,.5);
-  --sh2:  0 0 0 1px rgba(103,114,229,.3), 0 8px 40px rgba(103,114,229,.15);
-}
-
-*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
-body{font-family:var(--font);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:28px 16px 72px;min-height:100vh;color:var(--ink)}
-
-/* CHROME */
-.chrome{width:980px;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.chrome-title{font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--ink4);text-transform:uppercase}
-.chrome-count{font-family:var(--mono);font-size:11px;color:var(--ink4)}
-.prog{width:980px;max-width:100%;height:1px;background:rgba(255,255,255,.06);margin-bottom:16px;overflow:hidden}
-.prog-fill{height:100%;background:var(--grad1);transition:width .5s cubic-bezier(.4,0,.2,1)}
-
-/* SLIDE SHELL */
-.wrap{width:980px;max-width:100%}
-.slide{display:none;width:100%;min-height:540px;background:var(--surface);border-radius:var(--rlg);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden;flex-direction:column;animation:ap .3s ease;position:relative}
-.slide.active{display:flex}
-@keyframes ap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* Mesh glow — Stripe's signature bg shimmer */
-.slide::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(103,114,229,.12) 0%,transparent 70%),
-             radial-gradient(ellipse 40% 30% at 10% 80%,rgba(0,212,255,.07) 0%,transparent 70%)}
-
-/* LAYOUT */
-.sh{padding:36px 52px 0;flex-shrink:0;position:relative;z-index:1}
-.sb{flex:1;padding:20px 52px 36px;display:flex;flex-direction:column;position:relative;z-index:1}
-.sb.row{flex-direction:row;gap:40px}
-.col{flex:1;display:flex;flex-direction:column}
-.vr{width:1px;background:var(--border);align-self:stretch;flex-shrink:0}
-.sf{border-top:1px solid var(--border);padding:9px 52px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(0,0,0,.2);position:relative;z-index:1}
-.sf-l{font-size:10px;font-weight:500;letter-spacing:.06em;color:var(--ink4);text-transform:uppercase}
-.sf-n{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.15)}
-
-/* SECTION TAG */
-.tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
-.tag::before{content:'';width:16px;height:1.5px;border-radius:1px;background:currentColor;flex-shrink:0}
-.tag.v{color:var(--violet-lt)}.tag.c{color:var(--cyan)}.tag.g{color:var(--green)}.tag.k{color:var(--ink3)}
-
-/* TYPOGRAPHY */
-h2{font-size:32px;font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--white);margin-bottom:6px}
-.sub{font-size:15px;font-weight:400;color:var(--ink3);line-height:1.65;letter-spacing:-.005em;margin-bottom:4px}
-strong{color:var(--white);font-weight:600}
-
-/* PILLS */
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.pill{padding:3px 11px;border-radius:100px;font-size:11.5px;font-weight:500;border:1px solid}
-.pill.v{background:var(--violet-xs);color:var(--violet-lt);border-color:rgba(124,136,255,.3)}
-.pill.g{background:var(--green-dim);color:var(--green);border-color:rgba(33,197,93,.3)}
-.pill.gh{background:rgba(255,255,255,.05);color:var(--ink3);border-color:var(--border)}
-
-/* CARDS */
-.card{border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;background:var(--card);transition:border-color .2s,box-shadow .2s}
-.card:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(103,114,229,.1)}
-.card.vl{border-left:2px solid var(--violet)}
-.card.gl{border-left:2px solid var(--green)}
-.card.cl{border-left:2px solid var(--cyan)}
-.card.surf{background:rgba(255,255,255,.04);border-color:var(--border)}
-.ci{font-size:20px;margin-bottom:7px}
-.ct{font-size:13.5px;font-weight:600;color:var(--white);margin-bottom:3px}
-.cb{font-size:12.5px;color:var(--ink3);line-height:1.55}
-.c2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.c3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
-
-/* STATS */
-.stats{display:flex;gap:10px}
-.stat{flex:1;border-radius:var(--r);padding:16px;border:1px solid}
-.stat.v{background:var(--violet-xs);border-color:rgba(103,114,229,.3)}
-.stat.c{background:var(--cyan-dim);border-color:rgba(0,212,255,.25)}
-.stat.g{background:var(--green-dim);border-color:rgba(33,197,93,.25)}
-.sn{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1}
-.stat.v .sn{color:var(--violet-lt)}
-.stat.c .sn{color:var(--cyan)}
-.stat.g .sn{color:var(--green)}
-.sl{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4);margin-top:4px}
-
-/* STEPS */
-.steps{display:flex;flex-direction:column;gap:12px}
-.step{display:flex;align-items:center;gap:13px}
-.snum{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff}
-.snum.v{background:var(--violet)}.snum.g{background:var(--green)}.snum.k{background:rgba(255,255,255,.2)}
-.stxt{font-size:14px;color:var(--ink2);line-height:1.4}
-
-/* BLIST */
-.blist{list-style:none;display:flex;flex-direction:column;gap:9px}
-.blist li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--ink2);line-height:1.5}
-.blist li::before{content:'';flex-shrink:0;width:5px;height:5px;border-radius:50%;margin-top:7px}
-.blist.v li::before{background:var(--violet-lt)}
-.blist.g li::before{background:var(--green)}
-
-/* CALLOUT */
-.callout{border-radius:var(--r);padding:13px 17px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
-.callout.v{background:var(--violet-xs);border-left:2px solid var(--violet);border:1px solid rgba(103,114,229,.2);border-left:2px solid var(--violet)}
-.callout.g{background:var(--green-dim);border:1px solid rgba(33,197,93,.2);border-left:2px solid var(--green)}
-.callout.c{background:var(--cyan-dim);border:1px solid rgba(0,212,255,.2);border-left:2px solid var(--cyan)}
-
-/* QUOTE */
-.quote{border-left:2px solid var(--violet);padding:10px 17px;background:rgba(103,114,229,.08);border-radius:0 var(--r) var(--r) 0}
-.quote p{font-family:'Instrument Serif',serif;font-size:16px;font-style:italic;color:var(--ink2);line-height:1.6}
-.quote .attr{font-size:10.5px;color:var(--ink4);margin-top:5px}
-
-/* SCRIPTURE */
-.scr{border-radius:var(--r);padding:13px 17px;background:var(--green-dim);border:1px solid rgba(33,197,93,.2)}
-.scr-v{font-family:'Instrument Serif',serif;font-size:14px;font-style:italic;color:var(--ink2);line-height:1.6;margin-bottom:5px}
-.scr-r{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}
-
-/* TABLE */
-.tbl{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-table{width:100%;border-collapse:collapse}
-th{background:rgba(255,255,255,.04);padding:8px 13px;font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink4);text-align:left;border-bottom:1px solid var(--border)}
-td{padding:8px 13px;font-size:12.5px;color:var(--ink3);border-bottom:1px solid var(--border)}
-tr:last-child td{border-bottom:none}
-td:first-child{font-weight:600;color:var(--ink2)}
-tr:hover td{background:rgba(255,255,255,.02)}
-
-/* CODE */
-.code{font-family:var(--mono);font-size:11.5px;background:rgba(0,0,0,.4);border-radius:var(--r);padding:12px 15px;color:var(--violet-lt);line-height:1.9;border:1px solid var(--border)}
-
-/* TITLE SLIDE */
-.title-wrap{flex:1;position:relative;overflow:hidden;background:#050510;display:flex;flex-direction:column}
-#tc{position:absolute;inset:0;width:100%;height:100%;display:block}
-.title-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:64px 72px 52px}
-.title-divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0 20px}
-.title-by-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);margin-bottom:5px}
-.title-by-name{font-size:24px;font-weight:700;letter-spacing:-.02em;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
-/* HORIZ TIMELINE */
-.htl{display:flex;align-items:flex-start;position:relative;padding-top:8px}
-.htl-track{position:absolute;top:20px;left:0;right:0;height:1px;background:var(--border)}
-.htl-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;padding:0 4px}
-.htl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-bottom:10px;border:1.5px solid var(--surface)}
-.htl-dot.v{background:var(--violet)}.htl-dot.g{background:var(--green)}
-.htl-yr{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--ink4);margin-bottom:5px;text-align:center}
-.htl-txt{font-size:11px;color:var(--ink3);line-height:1.4;text-align:center}
-
-/* BAR CHART */
-.bar-wrap{display:flex;flex-direction:column;gap:7px}
-.bar-row{display:flex;align-items:center;gap:8px}
-.bar-label{width:118px;flex-shrink:0;font-size:11px;font-weight:600;color:var(--ink2);text-align:right}
-.bar-track{flex:1;height:20px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
-.bar-fill{height:100%;border-radius:4px;transition:width .7s ease}
-.bar-val{width:44px;flex-shrink:0;font-family:var(--mono);font-size:10px;color:var(--ink4)}
-
-/* IMAGE FRAME */
-.img-frame{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:rgba(0,0,0,.3);position:relative}
-.img-frame img{width:100%;display:block;object-fit:cover}
-.img-src{font-family:var(--mono);font-size:8px;color:var(--ink4);letter-spacing:.04em;padding:5px 10px;border-top:1px solid var(--border);background:rgba(0,0,0,.3)}
-
-/* NOTES */
-.nshell{width:980px;max-width:100%;border-radius:0 0 var(--r) var(--r);overflow:hidden}
-.nbtn{width:100%;background:#ffffff;border:none;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-top:1px solid #e0e6ed;transition:background .2s}
-.nbtn:hover{background:#f6f9fc}
-.nbtn-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#697386;text-transform:uppercase}
-.narr{color:#697386;font-size:10px;transition:transform .2s}
-.nbtn.open .narr{transform:rotate(180deg)}
-.npanel{background:#ffffff;max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:1px solid #e0e6ed}
-.npanel.open{max-height:440px}
-.ninner{padding:18px 26px 22px;display:none}
-.npanel.open .ninner{display:block}
-.ntag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#8792a2;text-transform:uppercase;margin-bottom:10px;display:block}
-.ninner ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.ninner li{font-size:13px;color:#4f566b;line-height:1.7;padding-left:14px;position:relative}
-.ninner li::before{content:'–';position:absolute;left:0;color:#b4c0cc}
-.ninner strong{color:#1a1f36;font-weight:600}
-
-/* NAV */
-.nav{width:980px;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-top:14px}
-.nbtn2{padding:8px 20px;border-radius:6px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
-.ng{background:rgba(255,255,255,.06);color:var(--ink3);border:1px solid var(--border)}
-.ng:hover{background:rgba(255,255,255,.1);color:var(--ink2)}
-.ng:disabled{opacity:.3;cursor:default}
-.ns{background:var(--violet);color:#fff;box-shadow:0 2px 12px rgba(103,114,229,.4)}
-.ns:hover{background:var(--violet-lt);box-shadow:0 4px 18px rgba(103,114,229,.5)}
-.ns:disabled{opacity:.35;cursor:default}
-
-/* THUMBS */
-.thumbs{width:980px;max-width:100%;display:flex;gap:5px;margin-top:11px;overflow-x:auto;padding-bottom:4px}
-.thumb{flex-shrink:0;width:68px;height:42px;background:var(--card);border-radius:var(--r);border:1.5px solid transparent;cursor:pointer;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:all .15s}
-.thumb:hover{transform:translateY(-2px);border-color:var(--border2)}
-.thumb.active{border-color:var(--violet)}
-.th-bar{height:3px;width:100%;flex-shrink:0}
-.th-num{flex:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink4)}
-
-/* GRADIENT BADGE */
-.grad-badge{display:inline-block;padding:3px 12px;border-radius:100px;font-size:11px;font-weight:600;background:var(--grad1);color:#fff;letter-spacing:.02em}
-
-@media(max-width:760px){
-  .wrap,.chrome,.prog,.nav,.thumbs,.nshell{width:100%}
-  .sh{padding:22px 20px 0}.sb{padding:14px 20px 22px}
-  .sb.row{flex-direction:column;gap:18px}
-  .vr{width:100%;height:1px}
-  h2{font-size:24px}.sf{padding:9px 20px}
-  .c2,.c3{grid-template-columns:1fr}.stats{flex-wrap:wrap}
-  #tc{display:none}.title-content{padding:36px 28px 32px}
-  .htl{flex-direction:column;gap:14px}.htl-track{display:none}
-  .htl-item{flex-direction:row;align-items:flex-start;gap:10px}
-  .htl-dot{margin-bottom:0;margin-top:2px}
-}
-
-/* ═══ LIGHT ALTERNATING SLIDES (2,4,6,8,10,12,14) ═══ */
-.slide.light{background:#f6f9fc;border-color:#e0e6ed}
-.slide.light::before{background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(103,114,229,.07) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 10% 80%,rgba(0,212,255,.04) 0%,transparent 70%)}
-.slide.light h2{color:#1a1f36}
-.slide.light .sub{color:#4f566b}
-.slide.light .sf{border-top-color:#e0e6ed;background:#eef2f7}
-.slide.light .sf-l{color:#8792a2}
-.slide.light .sf-n{color:#c8d0da}
-.slide.light .tag.v{color:#5469d4}
-.slide.light .tag.c{color:#0a7abf}
-.slide.light .tag.g{color:#1a9e54}
-.slide.light .tag.k{color:#697386}
-.slide.light .vr{background:#e0e6ed}
-.slide.light strong{color:#1a1f36}
-
-/* Cards */
-.slide.light .card{background:#ffffff;border-color:#e0e6ed;color:#4f566b}
-.slide.light .card:hover{border-color:#c4cdd6;box-shadow:0 4px 20px rgba(103,114,229,.08)}
-.slide.light .card.vl{border-left:2px solid #5469d4}
-.slide.light .card.gl{border-left:2px solid #1a9e54}
-.slide.light .card.cl{border-left:2px solid #0a7abf}
-.slide.light .card.surf{background:#f6f9fc;border-color:#e0e6ed}
-.slide.light .ct{color:#1a1f36}
-.slide.light .cb{color:#4f566b}
-
-/* Stats */
-.slide.light .stat.v{background:#eef0ff;border-color:#b7bff8}
-.slide.light .stat.c{background:#e6f6fd;border-color:#9dd6f5}
-.slide.light .stat.g{background:#eafaf1;border-color:#9ddcb8}
-.slide.light .stat.v .sn{color:#3d4eac}
-.slide.light .stat.c .sn{color:#0a7abf}
-.slide.light .stat.g .sn{color:#1a8a4a}
-.slide.light .sl{color:#8792a2}
-
-/* Steps */
-.slide.light .stxt{color:#4f566b}
-.slide.light .stxt strong{color:#1a1f36}
-
-/* Bullets */
-.slide.light .blist li{color:#4f566b}
-.slide.light .blist li strong{color:#1a1f36}
-.slide.light .blist.v li::before{background:#5469d4}
-.slide.light .blist.g li::before{background:#1a9e54}
-
-/* Callouts */
-.slide.light .callout{color:#1a1f36}
-.slide.light .callout.v{background:#eef0ff;border-left:2px solid #5469d4;border:1px solid #c4caff;border-left:2px solid #5469d4}
-.slide.light .callout.g{background:#eafaf1;border:1px solid #9ddcb8;border-left:2px solid #1a9e54}
-.slide.light .callout.c{background:#e6f6fd;border:1px solid #9dd6f5;border-left:2px solid #0a7abf}
-
-/* Quote */
-.slide.light .quote{background:#eef2f7;border-left:2px solid #b7bff8}
-.slide.light .quote p{color:#4f566b}
-.slide.light .quote .attr{color:#8792a2}
-
-/* Scripture */
-.slide.light .scr{background:#eafaf1;border-color:#9ddcb8}
-.slide.light .scr-v{color:#1a1f36}
-.slide.light .scr-r{color:#1a9e54}
-
-/* Table */
-.slide.light .tbl{border-color:#e0e6ed}
-.slide.light th{background:#eef2f7;border-bottom-color:#e0e6ed;color:#697386}
-.slide.light td{border-bottom-color:#e0e6ed;color:#4f566b}
-.slide.light td:first-child{color:#1a1f36}
-.slide.light tr:hover td{background:rgba(103,114,229,.03)}
-
-/* Code */
-.slide.light .code{background:#eef2f7;border-color:#e0e6ed;color:#3d4eac}
-
-/* Pills */
-.slide.light .pill.v{background:#eef0ff;color:#3d4eac;border-color:#b7bff8}
-.slide.light .pill.g{background:#eafaf1;color:#1a8a4a;border-color:#9ddcb8}
-.slide.light .pill.gh{background:#f6f9fc;color:#697386;border-color:#e0e6ed}
-
-/* Bar chart */
-.slide.light .bar-track{background:#eef2f7;border-color:#e0e6ed}
-.slide.light .bar-label{color:#1a1f36}
-.slide.light .bar-val{color:#697386}
-
-/* Image frame */
-.slide.light .img-frame{border-color:#e0e6ed;background:#eef2f7}
-.slide.light .img-src{color:#8792a2;border-top-color:#e0e6ed;background:#f6f9fc}
-
-/* Timeline */
-.slide.light .htl-track{background:#e0e6ed}
-.slide.light .htl-dot{border-color:#f6f9fc}
-.slide.light .htl-yr{color:#8792a2}
-.slide.light .htl-txt{color:#4f566b}
-
-/* Section label above spotlight cards */
-.slide.light [style*="color:var(--green)"],
-.slide.light [style*="color:var(--ink4)"]{color:#697386 !important}
-
-/* ═══════════════════════════════════════════════
-   REFERENCE-STYLE LAYOUT  (slides 2-8, 12-15)
-   Light background · Stripe palette · Template feel
-═══════════════════════════════════════════════ */
-
-/* Shell */
-.rs { background:#f6f9fc; border-color:#dce2ea; }
-.rs::before { background: radial-gradient(ellipse 50% 30% at 95% 5%, rgba(84,105,212,.06) 0%, transparent 70%); }
-
-/* Top accent bar — gradient stripe across the top */
-.rs-bar {
-  height: 5px; width: 100%; flex-shrink: 0;
-  background: linear-gradient(90deg, #5469d4 0%, #00c2ff 100%);
-}
-
-/* Left panel — colored sidebar used on some slides */
-.rs-left {
-  width: 280px; flex-shrink: 0;
-  background: linear-gradient(160deg, #5469d4 0%, #00c2ff 100%);
-  padding: 40px 32px;
-  display: flex; flex-direction: column; justify-content: center; gap: 16px;
-  position: relative; overflow: hidden;
-}
-.rs-left::after {
-  content: ''; position: absolute;
-  width: 200px; height: 200px; border-radius: 50%;
-  background: rgba(255,255,255,.06);
-  right: -60px; bottom: -60px;
-}
-.rs-left h2 { color: #fff; font-size: 28px; margin-bottom: 0; }
-.rs-left .rs-lsub { font-size: 13px; color: rgba(255,255,255,.75); line-height: 1.6; }
-.rs-left .rs-ldots { display:flex; gap:6px; margin-top:auto; }
-.rs-left .rs-ldot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4); }
-.rs-left .rs-ldot.on { background:#fff; }
-
-/* Right content area */
-.rs-right { flex:1; padding: 36px 44px; display:flex; flex-direction:column; }
-
-/* Section label in reference style */
-.rs-tag {
-  font-size: 10px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: #5469d4;
-  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-}
-.rs-tag::before {
-  content: ''; width: 20px; height: 2px;
-  background: linear-gradient(90deg,#5469d4,#00c2ff);
-  border-radius: 1px; flex-shrink: 0;
-}
-
-/* Headings */
-.rs h2 { color: #1a1f36; font-size: 26px; margin-bottom: 4px; }
-.rs .sub { color: #697386; font-size: 14px; }
-
-/* Icon circle — teal gradient, reference style */
-.ic {
-  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, #5469d4, #00c2ff);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; box-shadow: 0 4px 14px rgba(84,105,212,.3);
-}
-.ic.sm { width:36px; height:36px; font-size:16px; }
-
-/* Feature row — icon + text side by side */
-.frow { display:flex; align-items:flex-start; gap:14px; }
-.frow-body .ft { font-size:13.5px; font-weight:600; color:#1a1f36; margin-bottom:2px; }
-.frow-body .fb { font-size:12px; color:#697386; line-height:1.5; }
-
-/* Cards in reference style */
-.rs .card { background:#fff; border:1px solid #e0e6ed; border-radius:10px; padding:16px 18px; }
-.rs .card:hover { box-shadow:0 4px 16px rgba(84,105,212,.08); border-color:#c4caff; }
-.rs .card.vl { border-left:3px solid #5469d4; }
-.rs .card.gl { border-left:3px solid #1a9e54; }
-.rs .card.cl { border-left:3px solid #00a8d4; }
-.rs .ct { color:#1a1f36; }
-.rs .cb { color:#697386; }
-
-/* Stats in reference style */
-.rs .stat.v { background:#eef0ff; border-color:#b7bff8; }
-.rs .stat.c { background:#e3f9ff; border-color:#8de0f8; }
-.rs .stat.g { background:#eafaf1; border-color:#9ddcb8; }
-.rs .stat.v .sn { color:#3d4eac; }
-.rs .stat.c .sn { color:#0a7abf; }
-.rs .stat.g .sn { color:#1a8a4a; }
-.rs .sl { color:#8792a2; }
-
-/* Callout */
-.rs .callout.v { background:#eef0ff; border:1px solid #c4caff; border-left:3px solid #5469d4; color:#1a1f36; }
-.rs .callout.g { background:#eafaf1; border:1px solid #9ddcb8; border-left:3px solid #1a9e54; color:#1a1f36; }
-.rs .callout.c { background:#e3f9ff; border:1px solid #8de0f8; border-left:3px solid #0a7abf; color:#1a1f36; }
-
-/* Quote */
-.rs .quote { background:#f0f4ff; border-left:3px solid #5469d4; }
-.rs .quote p { color:#4f566b; }
-.rs .quote .attr { color:#8792a2; }
-
-/* Scripture */
-.rs .scr { background:#eafaf1; border:1px solid #9ddcb8; }
-.rs .scr-v { color:#1a1f36; }
-.rs .scr-r { color:#1a9e54; }
-
-/* Blist */
-.rs .blist li { color:#4f566b; }
-.rs .blist li strong { color:#1a1f36; }
-.rs .blist.v li::before { background:#5469d4; }
-.rs .blist.g li::before { background:#1a9e54; }
-
-/* Steps */
-.rs .stxt { color:#4f566b; }
-.rs .stxt strong { color:#1a1f36; }
-
-/* Pills */
-.rs .pill.v { background:#eef0ff; color:#3d4eac; border-color:#b7bff8; }
-.rs .pill.g { background:#eafaf1; color:#1a8a4a; border-color:#9ddcb8; }
-.rs .pill.gh { background:#f0f4f8; color:#697386; border-color:#dce2ea; }
-
-/* Table */
-.rs .tbl { border-color:#e0e6ed; }
-.rs th { background:#f0f4f8; border-bottom-color:#e0e6ed; color:#697386; }
-.rs td { border-bottom-color:#e0e6ed; color:#4f566b; }
-.rs td:first-child { color:#1a1f36; }
-.rs tr:hover td { background:#fafbff; }
-
-/* Code */
-.rs .code { background:#f0f4f8; border-color:#dce2ea; color:#3d4eac; }
-
-/* Bar chart */
-.rs .bar-track { background:#eef0ff; border-color:#dce2ea; }
-.rs .bar-label { color:#1a1f36; }
-.rs .bar-val { color:#8792a2; }
-
-/* VR divider */
-.rs .vr { background:#e0e6ed; }
-
-/* Footer */
-.rs .sf { border-top-color:#e0e6ed; background:#eef2f7; }
-.rs .sf-l { color:#8792a2; }
-.rs .sf-n { color:#c8d0da; }
-
-/* Dot nav in footer */
-.rs-dots { display:flex; gap:5px; align-items:center; }
-.rs-dot { width:5px; height:5px; border-radius:50%; background:#dce2ea; }
-.rs-dot.on { background:#5469d4; width:14px; border-radius:3px; }
-
-/* 3-col icon grid */
-.icon-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
-.icon-cell { display:flex; flex-direction:column; align-items:flex-start; gap:10px; padding:16px; background:#fff; border-radius:10px; border:1px solid #e0e6ed; }
-.icon-cell .ic { margin-bottom:0; }
-.icon-cell .ft { font-size:13px; font-weight:600; color:#1a1f36; }
-.icon-cell .fb { font-size:11.5px; color:#697386; line-height:1.5; }
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robotics: Technology, Commercial Applications, and Christian Implications</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: rgba(255,255,255,0.88);
+      --card-strong: #ffffff;
+      --text: #162033;
+      --muted: #5b667a;
+      --accent: #315efb;
+      --accent-2: #16a2b8;
+      --accent-3: #7c4dff;
+      --line: rgba(22,32,51,0.10);
+      --shadow: 0 18px 45px rgba(35, 56, 99, 0.10);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(49,94,251,0.10), transparent 30%),
+        radial-gradient(circle at top right, rgba(22,162,184,0.10), transparent 28%),
+        linear-gradient(180deg, #fbfcfe 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(49,94,251,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(49,94,251,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%);
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 5.4vh 5vw 6vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 2.2vh;
+      opacity: 0;
+      transform: translateX(36px) scale(0.985);
+      transition: opacity 420ms ease, transform 420ms ease;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      backdrop-filter: blur(8px);
+    }
+
+    .slide-number {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .hero, .panel, .grid, .two-col, .three-col {
+      min-height: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: stretch;
+    }
+
+    .hero-card, .panel, .mini, .stat, .source-box, .quote-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card {
+      padding: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.2rem;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    h1 { font-size: clamp(2.6rem, 4.4vw, 5.2rem); }
+    h2 { font-size: clamp(1.8rem, 2.9vw, 3.2rem); }
+    h3 { font-size: clamp(1.1rem, 1.35vw, 1.35rem); }
+
+    p, li {
+      font-size: clamp(1rem, 1.22vw, 1.18rem);
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 1.45vw, 1.3rem);
+      color: var(--muted);
+      max-width: 52rem;
+      line-height: 1.5;
+    }
+
+    .accent-line {
+      width: 5rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    }
+
+    .hero-visual {
+      padding: 1.7rem;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 1rem;
+    }
+
+    .robot-graphic {
+      position: relative;
+      min-height: 320px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(49,94,251,0.22), transparent 26%),
+        radial-gradient(circle at 70% 32%, rgba(124,77,255,0.20), transparent 28%),
+        linear-gradient(180deg, #fdfefe 0%, #edf4ff 100%);
+      border: 1px solid rgba(49,94,251,0.12);
+      overflow: hidden;
+    }
+
+    .robot-graphic::before, .robot-graphic::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(49,94,251,0.08);
+    }
+
+    .robot-graphic::before {
+      width: 380px;
+      height: 380px;
+      right: -90px;
+      top: -90px;
+    }
+
+    .robot-graphic::after {
+      width: 260px;
+      height: 260px;
+      left: -80px;
+      bottom: -80px;
+    }
+
+    .robot {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .robot svg {
+      width: min(78%, 360px);
+      height: auto;
+      filter: drop-shadow(0 16px 30px rgba(49,94,251,0.12));
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .chip {
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(49,94,251,0.08);
+      border: 1px solid rgba(49,94,251,0.12);
+      color: #2140b8;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .panel {
+      padding: 1.6rem 1.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .two-col { grid-template-columns: 1fr 1fr; }
+    .three-col { grid-template-columns: repeat(3, 1fr); }
+
+    .mini {
+      padding: 1.15rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .mini p, .panel p, .panel li, .quote-box p, .source-box p { margin: 0; }
+
+    ul.clean {
+      margin: 0;
+      padding-left: 1.15rem;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.9rem;
+      align-items: stretch;
+    }
+
+    .step {
+      position: relative;
+      padding: 1.2rem 1rem 1.2rem;
+      border-radius: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .stat {
+      padding: 1.25rem 1.2rem;
+    }
+
+    .stat .num {
+      font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .stat .label {
+      margin-top: 0.35rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .compare .panel { min-height: 100%; }
+
+    .tag {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.84rem;
+      border-radius: 999px;
+      color: white;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .tag.now { background: linear-gradient(135deg, #17a46d, #1fb5a3); }
+    .tag.future { background: linear-gradient(135deg, #315efb, #7c4dff); }
+    .tag.theology { background: linear-gradient(135deg, #6d4ccf, #315efb); }
+
+    .source-box {
+      padding: 0.9rem 1rem;
+      font-size: 0.88rem;
+      line-height: 1.38;
+      color: var(--muted);
+      background: rgba(255,255,255,0.78);
+    }
+
+    .source-box strong { color: var(--text); }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .footer .left {
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 68%;
+      line-height: 1.4;
+    }
+
+    .footer .right {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .kbd {
+      padding: 0.28rem 0.5rem;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.85);
+      font-size: 0.85rem;
+      color: var(--text);
+      font-weight: 700;
+      min-width: 2rem;
+      text-align: center;
+    }
+
+    .quote-box {
+      padding: 1.35rem 1.4rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(244,247,255,0.96));
+      border: 1px solid rgba(49,94,251,0.15);
+    }
+
+    .quote-box blockquote {
+      margin: 0;
+      font-size: clamp(1.02rem, 1.25vw, 1.2rem);
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .quote-box cite {
+      display: block;
+      margin-top: 0.8rem;
+      font-style: normal;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .notes {
+      display: none;
+    }
+
+    .controls {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      display: flex;
+      gap: 0.55rem;
+      z-index: 20;
+    }
+
+    .controls button {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.88);
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 5px;
+      background: rgba(49,94,251,0.08);
+      z-index: 20;
+    }
+
+    .progress > div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      transition: width 320ms ease;
+    }
+
+    @media (max-width: 1100px) {
+      .hero, .two-col, .three-col, .compare, .stats, .process {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero { align-items: start; }
+    }
+
+    @media (max-width: 800px) {
+      body { overflow: auto; }
+      .deck { height: auto; }
+      .slide {
+        position: relative;
+        opacity: 1;
+        transform: none;
+        min-height: 100vh;
+        pointer-events: auto;
+      }
+      .hero, .two-col, .three-col, .compare, .stats, .process {
+        grid-template-columns: 1fr;
+      }
+      .controls, .progress { display: none; }
+      .footer { flex-direction: column; align-items: start; }
+      .footer .left { max-width: 100%; }
+    }
+  </style>
 </head>
 <body>
-<div class="chrome">
-  <div class="chrome-title">Robotics — A Modern Overview</div>
-  <div class="chrome-count" id="counter">1 / 15</div>
-</div>
-<div class="prog"><div class="prog-fill" id="prog" style="width:6.67%"></div></div>
-<div class="wrap">
-<!-- SLIDE 1: TITLE -->
-<div class="slide active" id="slide-1">
-  <div class="title-wrap">
-    <canvas id="tc"></canvas>
-    <div class="title-content">
-      <div style="margin-top:auto"></div>
-      <hr class="title-divider"/>
-      <div class="title-by-label">Presented by</div>
-      <div class="title-by-name">Josh Miller</div>
-    </div>
-  </div>
-</div>
+  <div class="deck" id="deck">
 
-<!-- SLIDE 2: WHAT IS ROBOTICS -->
-<div class="slide rs light" id="slide-2">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 1 of 5</div>
-      <h2>What is Robotics?</h2>
-      <p class="rs-lsub">Machines that Sense · Think · Act — operating with autonomy in the physical world.</p>
-      <div class="callout" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-left:3px solid #fff;color:#fff;font-size:12.5px;margin-top:8px"><strong style="color:#fff">Robotics</strong> = software + hardware that senses, decides, and acts</div>
-      <div class="rs-ldots" style="margin-top:16px"><div class="rs-ldot on"></div><div class="rs-ldot"></div><div class="rs-ldot"></div></div>
-    </div>
-    <div class="rs-right" style="gap:12px;justify-content:center">
-      <div class="rs-tag">Core Components</div>
-      <div class="icon-grid">
-        <div class="icon-cell"><div class="ic">📡</div><div class="ft">Sense</div><div class="fb">Cameras · GPS · Gyroscopes · Touch</div></div>
-        <div class="icon-cell"><div class="ic">🧠</div><div class="ft">Think</div><div class="fb">Code · Algorithms · AI models</div></div>
-        <div class="icon-cell"><div class="ic">⚙️</div><div class="ft">Act</div><div class="fb">Motors · Hydraulics · Pneumatics</div></div>
+    <section class="slide active">
+      <div class="topbar">
+        <div class="eyebrow">MBA Presentation • Robotics • Christian Lens</div>
+        <div class="slide-number">01 / 13</div>
       </div>
-      <div class="pills"><span class="pill v">Engineering</span><span class="pill v">Computer Science</span><span class="pill v">AI</span><span class="pill gh">Control Theory</span></div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">What is Robotics?</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">02</span></div>
-</div>
-
-<!-- SLIDE 3: HISTORY -->
-<div class="slide rs" id="slide-3">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 1 — History</div>
-      <h2>From Word to World-Changer</h2>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">1920</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Word coined</div></div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">1961</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">First factory robot</div></div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">3.9M</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">In factories today</div></div>
-      </div>
-    </div>
-    <div class="rs-right" style="justify-content:center;gap:20px">
-      <div class="rs-tag">Key Milestones</div>
-      <div style="position:relative;padding:0 4px">
-        <div class="htl-track" style="background:#e0e6ed"></div>
-        <div class="htl">
-          <div class="htl-item"><div class="htl-dot v" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1920</div><div class="htl-txt" style="color:#4f566b">Čapek coins "robot" in <em>R.U.R.</em></div></div>
-          <div class="htl-item"><div class="htl-dot v" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1954</div><div class="htl-txt" style="color:#4f566b">Devol patents first arm</div></div>
-          <div class="htl-item"><div class="htl-dot g" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1961</div><div class="htl-txt" style="color:#4f566b">Unimate on GM line</div></div>
-          <div class="htl-item"><div class="htl-dot g" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">1997</div><div class="htl-txt" style="color:#4f566b">NASA Sojourner on Mars</div></div>
-          <div class="htl-item"><div class="htl-dot v" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">2002</div><div class="htl-txt" style="color:#4f566b">Roomba enters the home</div></div>
-          <div class="htl-item"><div class="htl-dot g" style="border-color:#f6f9fc"></div><div class="htl-yr" style="color:#8792a2">2020s</div><div class="htl-txt" style="color:#4f566b">AI humanoids go commercial</div></div>
+      <div class="hero">
+        <div class="hero-card">
+          <div class="accent-line"></div>
+          <h1>Robotics</h1>
+          <p class="subtitle">What the technology is, how it works, where it creates business value today, where it is headed next, and why its theological implications matter.</p>
+          <div class="chips">
+            <span class="chip">Technology</span>
+            <span class="chip">Commercial Applications</span>
+            <span class="chip">Strategy</span>
+            <span class="chip">Christian Ethics</span>
+          </div>
+          <div>
+            <p><strong>Joshua Miller</strong><br>William Jessup University • MBA</p>
+          </div>
+        </div>
+        <div class="hero-card hero-visual">
+          <div class="robot-graphic">
+            <div class="robot">
+              <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="90" y="18" width="80" height="48" rx="18" fill="#315EFB" opacity="0.15"/>
+                <rect x="75" y="42" width="110" height="74" rx="26" fill="#ffffff" stroke="#315EFB" stroke-width="4"/>
+                <circle cx="108" cy="78" r="10" fill="#315EFB"/>
+                <circle cx="152" cy="78" r="10" fill="#315EFB"/>
+                <rect x="106" y="96" width="48" height="8" rx="4" fill="#16A2B8"/>
+                <rect x="126" y="0" width="8" height="30" rx="4" fill="#7C4DFF"/>
+                <circle cx="130" cy="0" r="9" fill="#7C4DFF"/>
+                <rect x="86" y="122" width="88" height="72" rx="24" fill="#ffffff" stroke="#16A2B8" stroke-width="4"/>
+                <rect x="112" y="144" width="36" height="18" rx="9" fill="#315EFB" opacity="0.18"/>
+                <path d="M86 142L46 115" stroke="#315EFB" stroke-width="8" stroke-linecap="round"/>
+                <path d="M174 142L214 115" stroke="#315EFB" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="42" cy="112" r="16" fill="#ffffff" stroke="#315EFB" stroke-width="4"/>
+                <circle cx="218" cy="112" r="16" fill="#ffffff" stroke="#315EFB" stroke-width="4"/>
+                <path d="M112 194L88 236" stroke="#16A2B8" stroke-width="8" stroke-linecap="round"/>
+                <path d="M148 194L172 236" stroke="#16A2B8" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="84" cy="240" r="16" fill="#ffffff" stroke="#16A2B8" stroke-width="4"/>
+                <circle cx="176" cy="240" r="16" fill="#ffffff" stroke="#16A2B8" stroke-width="4"/>
+              </svg>
+            </div>
+          </div>
+          <div class="source-box"><strong>Framing source:</strong> IFR defines a robot as a “programmed actuated mechanism with a degree of autonomy” used for locomotion, manipulation, or positioning. This definition anchors today’s deck.</div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">What is Robotics?</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">03</span></div>
-</div>
+      <div class="footer">
+        <div class="left">Sources on slides are intentionally concise for presentation use; fuller references can be expanded for an APA handout.</div>
+        <div class="right"><span class="kbd">←</span><span class="kbd">→</span> Navigate • <span class="kbd">F</span> Fullscreen</div>
+      </div>
+      <div class="notes">Open by framing robotics as both a technical and business topic. Emphasize that the presentation also asks whether commercial efficiency alone should decide adoption.</div>
+    </section>
 
-<!-- SLIDE 4: THE LOOP -->
-<div class="slide rs light" id="slide-4">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 2 of 5</div>
-      <h2>The Continuous Loop</h2>
-      <p class="rs-lsub">Runs hundreds of times per second. Every robot follows this same cycle.</p>
-      <div class="callout" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-left:3px solid #fff;color:rgba(255,255,255,.9);font-size:12px;margin-top:12px"><strong style="color:#fff">↻ Repeat</strong> — never stops while the robot runs</div>
-    </div>
-    <div class="rs-right" style="justify-content:center">
-      <div class="rs-tag">5-Step Process — Runs 100s of Times/Second</div>
-      <div class="steps" style="gap:10px">
-        <div class="step"><div class="snum v">01</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Sense</strong> — Cameras, LiDAR, GPS, touch &amp; temp gather real-world data continuously</div></div>
-        <div class="step"><div class="snum v">02</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Think</strong> — Controller software answers: obstacle ahead? safe path? emergency stop?</div></div>
-        <div class="step"><div class="snum v">03</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Plan</strong> — Calculates optimal path, speed, torque &amp; timing before acting</div></div>
-        <div class="step"><div class="snum g">04</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Act</strong> — Motors, hydraulics &amp; servos execute with precision across dozens of joints</div></div>
-        <div class="step"><div class="snum g">05</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Feedback</strong> — "Did I land correctly?" Sensors measure result and correct instantly</div></div>
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Agenda</div>
+        <div class="slide-number">02 / 13</div>
       </div>
-      <div class="quote" style="margin-top:10px"><p>Robotics = automation in the physical world. Your trading algorithm senses data, thinks, and acts. A robot does the same — but in three dimensions.</p><div class="attr">The key bridge between software and robotics</div></div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">How It Works</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n">04</span></div>
-</div>
-
-<!-- SLIDE 5: TWO WAYS ROBOTS THINK -->
-<div class="slide rs" id="slide-5">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 2 — Brain</div>
-      <h2>Two Ways Robots Think</h2>
-      <p class="rs-lsub">Most robots use both — rule-based safety with AI-powered perception layered on top.</p>
-      <div style="display:flex;gap:8px;margin-top:12px"><span class="pill v" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">Predictable</span><span class="pill g" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.25)">Adaptive</span></div>
-    </div>
-    <div class="rs-right" style="gap:12px">
-      <div class="rs-tag">Logic Models</div>
-      <div class="c2" style="gap:10px">
-        <div class="card vl" style="background:#eef0ff">
-          <div class="ic sm">📋</div>
-          <div class="ct" style="margin-top:8px">A · Rule-Based Logic</div>
-          <div class="code" style="margin-top:8px;font-size:11px">IF obstacle → STOP<br>IF clear → MOVE<br>IF low battery → RETURN</div>
-        </div>
-        <div class="card gl" style="background:#eafaf1">
-          <div class="ic sm">🧠</div>
-          <div class="ct" style="margin-top:8px">B · Learning-Based AI</div>
-          <div class="cb" style="margin-top:6px">Learns from data. Improves over time. Handles unknown scenarios.</div>
-        </div>
-        <div class="card vl"><div class="frow"><div class="ic sm">📷</div><div class="frow-body" style="padding-top:2px"><div class="ft">Sensors &amp; Compute</div><div class="fb">Cameras · LiDAR · GPS · Edge AI</div></div></div></div>
-        <div class="card gl"><div class="frow"><div class="ic sm">💡</div><div class="frow-body" style="padding-top:2px"><div class="ft">Core Insight</div><div class="fb"><strong style="color:#1a1f36">Most robots use both</strong></div></div></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">How It Works</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div></div><span class="sf-n" style="color:#c8d0da">05</span></div>
-</div>
-
-<!-- SLIDE 6: WHERE ROBOTS WORK TODAY -->
-<div class="slide rs light" id="slide-6">
-  <div class="rs-bar"></div>
-  <div class="rs-right" style="padding-top:28px;padding-bottom:16px">
-    <div class="rs-tag">Section 3 of 5 — Current Applications</div>
-    <h2 style="color:#1a1f36;margin-bottom:4px">Where Robots Work Today</h2>
-    <p class="sub" style="color:#697386;margin-bottom:12px">3.9 million industrial robots operating worldwide — growing ~10% annually.</p>
-    <div class="tbl">
-      <table>
-        <thead><tr><th>Industry</th><th>What Robots Do</th><th>Real Example</th><th>Why It Matters</th></tr></thead>
-        <tbody>
-          <tr><td>🏭 Manufacturing</td><td>Weld, paint, assemble, inspect</td><td>Tesla Gigafactory arms</td><td>Precision + 24/7 output</td></tr>
-          <tr><td>📦 Warehousing</td><td>Move shelves, sort, pick</td><td>Amazon Robotics (750K+ bots)</td><td>Order time: 75 → 15 min</td></tr>
-          <tr><td>🏥 Healthcare</td><td>Surgery, medication, disinfection</td><td>da Vinci Surgical System</td><td>10M+ procedures worldwide</td></tr>
-          <tr><td>🚗 Autonomous Vehicles</td><td>Navigate traffic without humans</td><td>Waymo robotaxis in US cities</td><td>Reduce 40K deaths/yr</td></tr>
-          <tr><td>🌾 Agriculture</td><td>Plant, harvest, spray, monitor</td><td>John Deere autonomous tractor</td><td>Addresses labor shortages</td></tr>
-          <tr><td>🛸 Space</td><td>Explore, collect, experiment</td><td>NASA Perseverance rover</td><td>Humans can't survive there</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">Current Applications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">06</span></div>
-</div>
-
-<!-- SLIDE 7: WHY ADOPTION IS ACCELERATING -->
-<div class="slide rs" id="slide-7">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 3 — Impact</div>
-      <h2>Why Adoption Is Accelerating</h2>
-      <p class="rs-lsub">The economics, precision, and safety case has already been made.</p>
-      <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
-        <div class="card vl" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);padding:10px 14px"><div class="ft" style="color:#fff">Amazon Robotics</div><div class="fb" style="color:rgba(255,255,255,.7)">750K+ robots · 75 → 15 min</div></div>
-        <div class="card vl" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);padding:10px 14px"><div class="ft" style="color:#fff">da Vinci Surgery</div><div class="fb" style="color:rgba(255,255,255,.7)">7,500+ systems · 10M+ procedures</div></div>
-        <div class="card vl" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);padding:10px 14px"><div class="ft" style="color:#fff">Zipline Africa</div><div class="fb" style="color:rgba(255,255,255,.7)">Drones where roads don't reach</div></div>
-      </div>
-    </div>
-    <div class="rs-right" style="justify-content:center">
-      <div class="rs-tag">5 Driving Forces Behind Rapid Adoption</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="frow"><div class="ic sm">💵</div><div class="frow-body"><div class="ft">Economics</div><div class="fb">Robot prices down ~50% since 2010. A Universal Robots cobot costs ~$35K and pays for itself in under 2 years at $20/hr labor rates</div></div></div>
-        <div class="frow"><div class="ic sm">🎯</div><div class="frow-body"><div class="ft">Precision at Scale</div><div class="fb">Micron-level consistency across millions of repetitions. Human workers fatigue — robots don't drift after hour 8</div></div></div>
-        <div class="frow"><div class="ic sm">🛡️</div><div class="frow-body"><div class="ft">Workplace Safety</div><div class="fb">Removes people from chemical plants, mines, extreme heat &amp; repetitive-strain roles. 340 warehouse workers die annually in the US</div></div></div>
-        <div class="frow"><div class="ic sm">⏰</div><div class="frow-body"><div class="ft">24/7 Operation</div><div class="fb">No breaks, no sick days, no overtime. Lights-out factories — fully automated with no humans on the floor — already exist</div></div></div>
-        <div class="frow"><div class="ic sm">📦</div><div class="frow-body"><div class="ft">Post-COVID Acceleration</div><div class="fb">Supply-chain fragility compressed 5 years of automation investment into 18 months. Goldman Sachs confirmed the pull-forward</div></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Current Applications</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">07</span></div>
-</div>
-
-<!-- SLIDE 8: NEXT 5-10 YEARS -->
-<div class="slide rs light" id="slide-8">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 4 of 5</div>
-      <h2>The Next 5–10 Years</h2>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Market 2030</span><span style="font-size:20px;font-weight:800;color:#fff">$260B</span></div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Humanoids 2035</span><span style="font-size:20px;font-weight:800;color:#fff">1M+</span></div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)">Jobs by 2030</span><span style="font-size:20px;font-weight:800;color:#fff">800M</span></div>
-      </div>
-      <div style="margin-top:12px;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.85)"><strong style="color:#fff">RaaS</strong> — Subscribe monthly instead of buying. Like SaaS, but physical.</div>
-    </div>
-    <div class="rs-right" style="justify-content:center">
-      <div class="rs-tag">What's Coming in the Next Decade</div>
-      <div style="display:flex;flex-direction:column;gap:9px">
-        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Humanoid Labor</div><div class="fb">Tesla Optimus, Figure AI &amp; Agility Digit now doing real warehouse tasks. Figure AI raised $675M from Microsoft, OpenAI &amp; NVIDIA</div></div></div>
-        <div class="frow"><div class="ic sm">🚛</div><div class="frow-body"><div class="ft">Autonomous Trucking</div><div class="fb">Aurora &amp; Kodiak targeting commercial highway freight. Highways are simpler than city streets — closer than you think</div></div></div>
-        <div class="frow"><div class="ic sm">🏗️</div><div class="frow-body"><div class="ft">Robotic Construction</div><div class="fb">3D-printed homes, automated bricklayers, robotic rebar tying — addressing the housing shortage and skilled-trades gap</div></div></div>
-        <div class="frow"><div class="ic sm">🏥</div><div class="frow-body"><div class="ft">AI-Powered Healthcare</div><div class="fb">Robotic nurses for vitals &amp; medication, elder-care assistants (Japan is 29% over 65), semi-autonomous surgery</div></div></div>
-        <div class="frow"><div class="ic sm">🌾</div><div class="frow-body"><div class="ft">Automated Farms</div><div class="fb">John Deere autonomous tractors already shipping. Iron Ox grows crops indoors with 90% less water using robots entirely</div></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">Future Applications</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot on"></div></div><span class="sf-n">08</span></div>
-</div>
-
-<!-- SLIDE 9: WHO'S SHIPPING HUMANOID ROBOTS -->
-<div class="slide light" id="slide-9">
-  <div class="sh">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px">
-      <div><div class="tag v">The Humanoid Race</div><h2>Who's Shipping Humanoid Robots?</h2><p class="sub">2025 global shipments · Source: Visual Capitalist / Rest of World</p></div>
-      <div class="stat v" style="flex:none;min-width:130px;text-align:center;padding:12px 16px"><div class="sn">~90%</div><div class="sl">from China</div></div>
-    </div>
-  </div>
-  <div class="sb row" style="gap:28px">
-    <div class="col" style="justify-content:center">
-      <div class="bar-wrap" id="bars"></div>
-      <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--violet)"></div><span style="font-size:11px;color:var(--ink4)">🇨🇳 China</span></div>
-        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div><span style="font-size:11px;color:var(--ink4)">🇺🇸 United States</span></div>
-        <div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--cyan)"></div><span style="font-size:11px;color:var(--ink4)">🇰🇷 South Korea</span></div>
-      </div>
-    </div>
-    <div class="vr"></div>
-    <div class="col" style="justify-content:center;gap:10px">
-      <div class="img-frame" style="flex:1">
-        <img src="https://www.visualcapitalist.com/wp-content/uploads/2025/03/Humanoid-Robots_Site.jpg" alt="Humanoid robots ranked" onerror="this.parentElement.innerHTML='<div style=\'padding:24px;text-align:center;font-size:12px;color:var(--ink4)\'>📊 visualcapitalist.com</div>'"/>
-        <div class="img-src">SOURCE: VISUALCAPITALIST.COM · REST OF WORLD · 2025</div>
-      </div>
-      <div class="callout v" style="font-size:12px"><strong>Total 2025:</strong> 14,500+ globally. China's Yangtze River Delta supply chain is the structural advantage.</div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">The Humanoid Race</span><span class="sf-n">09</span></div>
-</div>
-
-<!-- SLIDE 10: TESLA OPTIMUS GEN 3 -->
-<div class="slide light" id="slide-10">
-  <div class="sh"><div class="tag v">Spotlight — Tesla Optimus Gen 3</div><h2>Tesla Optimus Gen 3</h2><p class="sub">March 2026 · The "superhero suit" era begins</p></div>
-  <div class="sb row" style="gap:28px">
-    <div class="col" style="flex:0 0 340px;gap:10px">
-      <div class="img-frame" style="flex:1">
-        <img src="https://www.notateslaapp.com/img/containers/article_images/optimus/optimus-human-hands-1.webp/5eda2cf04bea6526acda329d6188bfc1/optimus-human-hands-1.jpg" alt="Tesla Optimus Gen 3" style="height:260px" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div style="display:none;height:260px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--ink4);font-size:12px;text-align:center;padding:20px">🤖<br>Tesla Optimus Gen 3</div>
-        <div class="img-src">SOURCE: NOTATESLAAPP.COM · @MARIONAWFAL / X · 2026</div>
-      </div>
-    </div>
-    <div class="col" style="justify-content:center;gap:9px">
-      <div class="card vl"><div class="ci">🤲</div><div class="ct">22 Degrees of Freedom Per Hand</div><div class="cb">Human hand has 27 DoF — the closest any robot has come</div></div>
-      <div class="card vl"><div class="ci">🏭</div><div class="ct">Production Begins Summer 2026</div><div class="cb">Fremont retooled (Model S &amp; X discontinued) · 1M/yr target</div></div>
-      <div class="card gl"><div class="ci">💰</div><div class="ct">~$20,000 Price Target at Scale</div><div class="cb">Public sales: 2027 · Giga Texas: 10M units/year</div></div>
-      <div class="callout v" style="font-size:12.5px">"Get Optimus to high-volume production as fast as possible." — Tesla, 2026</div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">Tesla Optimus Gen 3</span><span class="sf-n">10</span></div>
-</div>
-
-<!-- SLIDE 11: BOSTON DYNAMICS ATLAS -->
-<div class="slide light" id="slide-11">
-  <div class="sh"><div class="tag g">Spotlight — Boston Dynamics Atlas</div><h2>Enterprise Humanoid Design</h2><p class="sub">Electric Atlas — production-ready 2026 · Deployed at Hyundai &amp; Google DeepMind</p></div>
-  <div class="sb row" style="gap:28px">
-    <div class="col" style="flex:0 0 300px;gap:10px">
-      <div class="img-frame" style="flex:1">
-        <img src="https://techcrunch.com/wp-content/uploads/2024/04/DSC07581243.jpg" alt="Boston Dynamics Atlas" style="height:260px" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div style="display:none;height:260px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--ink4);font-size:12px;text-align:center;padding:20px">🤖<br>Boston Dynamics Atlas</div>
-        <div class="img-src">SOURCE: BOSTON DYNAMICS / TECHCRUNCH · 2024</div>
-      </div>
-    </div>
-    <div class="col" style="gap:8px">
-      <div class="c2" style="flex:1;align-content:start">
-        <div class="card gl"><div class="ci">🏗️</div><div class="ct">1 · Designed for Real-World Use</div><div class="cb">Built for factories &amp; warehouses — not to look human</div></div>
-        <div class="card gl"><div class="ci">🔧</div><div class="ct">2 · Modular Architecture</div><div class="cb">Reusable actuators → faster upgrades &amp; lower costs</div></div>
-        <div class="card vl"><div class="ci">⚡</div><div class="ct">3 · Advanced Actuation</div><div class="cb">Continuous rotation → wider range of motion</div></div>
-        <div class="card vl"><div class="ci">🛡️</div><div class="ct">4 · Safety by Design</div><div class="cb">No pinch points · Padding protects humans &amp; robot</div></div>
-      </div>
-      <div class="card cl"><div class="ci">🌡️</div><div class="ct">5 · Passive Thermal Management</div><div class="cb">No fans — natural airflow. 6.2 ft · 66 lb payload · 4hr battery · IP67</div></div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">Boston Dynamics Atlas</span><span class="sf-n">11</span></div>
-</div>
-
-<!-- SLIDE 12: AI + ROBOTICS + DATA -->
-<div class="slide rs light" id="slide-12">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 4 — Horizon</div>
-      <h2>AI + Robotics + Data</h2>
-      <p class="rs-lsub">The biggest opportunity is not building robots — it's building the layers around them.</p>
-      <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">💻</strong> Software Layer</div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">📊</strong> Data Layer</div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 13px;font-size:12px;color:#fff"><strong style="color:#fff">🔗</strong> Integration Layer</div>
-      </div>
-    </div>
-    <div class="rs-right" style="gap:10px;justify-content:center">
-      <div class="rs-tag">The 20-Year Horizon</div>
-      <div class="icon-grid">
-        <div class="icon-cell"><div class="ic">🛸</div><div class="ft">Space Economy</div><div class="fb">NASA Artemis requires robots to build lunar habitats before humans arrive. Mars colonization depends on them</div></div>
-        <div class="icon-cell"><div class="ic">💊</div><div class="ft">Nano-Robotics</div><div class="fb">ETH Zurich has demonstrated micro-robots navigating blood vessels in animals. Drug delivery, diagnostics in 20 years</div></div>
-        <div class="icon-cell"><div class="ic">🌿</div><div class="ft">Climate Repair</div><div class="fb">Coral reef restoration bots, ocean plastic cleanup, AI-guided reforestation at scales humans alone can't achieve</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        <div class="card vl" style="padding:10px 12px"><div class="ft" style="font-size:11.5px">💻 Software Layer</div><div class="fb">Control systems, dashboards, optimization tools</div></div>
-        <div class="card gl" style="padding:10px 12px"><div class="ft" style="font-size:11.5px">📊 Data Layer</div><div class="fb">Predictive analytics, fleet performance tracking</div></div>
-        <div class="card cl" style="padding:10px 12px"><div class="ft" style="font-size:11.5px">🔗 Integration</div><div class="fb">APIs linking robots to ERP, WMS &amp; workflows</div></div>
-      </div>
-      <div class="callout v" style="font-size:12.5px"><strong>Biggest opportunity:</strong> The software, data &amp; integration layers — not building robots. These are high-margin, scalable software businesses riding the robotics wave</div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">Future Applications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n">12</span></div>
-</div>
-
-<!-- SLIDE 13: HUMAN DIGNITY & JUSTICE -->
-<div class="slide rs" id="slide-13">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 5 of 5</div>
-      <h2>Human Dignity &amp; Justice</h2>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:12px 14px">
-          <div style="font-family:'Instrument Serif',serif;font-size:13px;font-style:italic;color:#fff;line-height:1.6">"So God created mankind in his own image."</div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">Genesis 1:27</div>
-        </div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:12px 14px">
-          <div style="font-family:'Instrument Serif',serif;font-size:13px;font-style:italic;color:#fff;line-height:1.6">"The worker deserves his wages."</div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">Luke 10:7</div>
+      <div class="panel">
+        <h2>Presentation Roadmap</h2>
+        <div class="grid two-col">
+          <div class="mini"><h3>1. What is the technology?</h3><p>Definition, categories, and why robotics is broader than factory arms.</p></div>
+          <div class="mini"><h3>2. How does it work?</h3><p>Hardware, sensing, software, control loops, and increasing use of AI.</p></div>
+          <div class="mini"><h3>3. Current commercial applications</h3><p>Manufacturing, logistics, healthcare, retail, field, and service environments.</p></div>
+          <div class="mini"><h3>4. Future commercial applications</h3><p>Humanoids, autonomous mobility, healthcare expansion, agriculture, and construction.</p></div>
+          <div class="mini"><h3>5. Theological implications</h3><p>Christian reflection on work, stewardship, responsibility, and human–robot intimacy.</p></div>
+          <div class="mini"><h3>Business thread throughout</h3><p>Adoption drivers include labor shortages, productivity, safety, quality, and new service models.</p></div>
         </div>
       </div>
-    </div>
-    <div class="rs-right" style="justify-content:center;gap:10px">
-      <div class="rs-tag">Four Theological Questions Robotics Forces Us to Answer</div>
-      <div class="frow"><div class="ic sm">👑</div><div class="frow-body"><div class="ft">Human Dignity</div><div class="fb">Genesis 1:27 — mankind bears God's image. Robotics asks: does intelligence in a machine confer moral standing? The church must answer carefully and clearly</div></div></div>
-      <div class="frow"><div class="ic sm">⚖️</div><div class="frow-body"><div class="ft">Justice for Workers</div><div class="fb">Proverbs 14:31 — "Whoever oppresses the poor shows contempt for their Maker." Automation that displaces low-wage workers without redistribution mirrors what the prophets condemned</div></div></div>
-      <div class="frow"><div class="ic sm">🌿</div><div class="frow-body"><div class="ft">Creation Stewardship</div><div class="fb">Technology is never neutral. Robots can restore coral reefs or accelerate resource extraction. The question is always: toward what end, and for whom? (Genesis 2:15)</div></div></div>
-      <div class="frow"><div class="ic sm">⚡</div><div class="frow-body"><div class="ft">Accountability Gap</div><div class="fb">When Uber's self-driving car killed a pedestrian in 2018, prosecutors couldn't find one person to charge. Scripture insists persons must answer for systems they build (Romans 13)</div></div></div>
-    </div>
-  </div>
-  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Theological Implications</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">13</span></div>
-</div>
-
-<!-- SLIDE 14: MARRIAGE & DISCUSSION -->
-<div class="slide rs light" id="slide-14">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Section 5 — Marriage</div>
-      <h2>God's Design &amp; Companion Robots</h2>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:11px 13px"><div style="font-family:'Instrument Serif',serif;font-size:12.5px;font-style:italic;color:#fff;line-height:1.6">"A man shall leave his father and mother and be united to his wife."</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">Matthew 19:5</div></div>
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:11px 13px"><div style="font-family:'Instrument Serif',serif;font-size:12.5px;font-style:italic;color:#fff;line-height:1.6">"Your body is a temple of the Holy Spirit."</div><div style="font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px">1 Corinthians 6:19</div></div>
+      <div class="footer">
+        <div class="left">Sources: deck structure synthesized from the assignment prompt; supporting business themes drawn from IFR 2025, McKinsey 2025–2026, and WEF 2026.</div>
+        <div class="right">Teaching goal: explain, apply, evaluate</div>
       </div>
-    </div>
-    <div class="rs-right" style="gap:9px;justify-content:center">
-      <div class="rs-tag">What Scripture Says &amp; What We Must Discuss</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px">
-        <div class="frow"><div class="ic sm">💍</div><div class="frow-body"><div class="ft">Marriage is a Covenant</div><div class="fb">Between a man and a woman — Genesis 2:18–24, Matthew 19:4–6. This is not cultural preference; it is Christ's own teaching citing creation</div></div></div>
-        <div class="frow"><div class="ic sm">❤️</div><div class="frow-body"><div class="ft">Intimacy Belongs in Covenant</div><div class="fb">Hebrews 13:4, 1 Cor. 6:18–20 — the body is a temple of the Holy Spirit. Sexual intimacy is designed for the marriage covenant, not commercial products</div></div></div>
-        <div class="frow"><div class="ic sm">🤖</div><div class="frow-body"><div class="ft">Robots Cannot Love</div><div class="fb">1 Corinthians 13 — love is patient, kind, self-giving, sacrificial. A machine can simulate the appearance of care, but it cannot participate in love</div></div></div>
-        <div class="frow"><div class="ic sm">🏘️</div><div class="frow-body"><div class="ft">Loneliness Is Real — But God's Answer Is Community</div><div class="fb">Genesis 2:18 — "It is not good for man to be alone." God's answer is human covenant community, not a robot companion</div></div></div>
+      <div class="notes">Tell the class the deck moves from definition to mechanism to market to theology. That gives a clear flow and signals the MBA emphasis on application and decision making.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 1</div>
+        <div class="slide-number">03 / 13</div>
       </div>
-      <div class="rs-tag" style="margin-bottom:5px">Class Discussion</div>
-      <div class="c2" style="gap:7px">
-        <div class="card vl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">🪞 What makes us irreducibly human?</div></div>
-        <div class="card vl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">⚖️ Who owns the productivity gains?</div></div>
-        <div class="card gl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">⚔️ Can an algorithm wage just war?</div></div>
-        <div class="card cl" style="padding:9px 12px"><div class="ct" style="font-size:11.5px">🙏 Should the church lead or follow?</div></div>
+      <div class="grid two-col">
+        <div class="panel">
+          <h2>What Is Robotics Technology?</h2>
+          <p>At its core, robotics combines <strong>mechanical systems</strong>, <strong>sensors</strong>, <strong>software</strong>, and <strong>control</strong> so machines can act in the physical world with some degree of autonomy.</p>
+          <ul class="clean">
+            <li><strong>Industrial robots:</strong> designed for automated production tasks such as welding, handling, and assembly.</li>
+            <li><strong>Service robots:</strong> designed to perform useful tasks for humans or equipment outside classic industrial automation.</li>
+            <li><strong>Medical robots:</strong> a specialized domain including surgical and assistive systems.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Why robotics matters in business</h3>
+          <ul class="clean">
+            <li>Moves automation from digital workflows into the physical economy.</li>
+            <li>Improves consistency, throughput, safety, and labor leverage.</li>
+            <li>Creates new business models in logistics, healthcare, mobility, and services.</li>
+          </ul>
+          <div class="quote-box">
+            <blockquote>“A robot is defined as a programmed actuated mechanism with a degree of autonomy to perform locomotion, manipulation or positioning.”</blockquote>
+            <cite>IFR summary of ISO 8373 terminology</cite>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="sf"><span class="sf-l">Theological Implications</span><div class="rs-dots"><div class="rs-dot"></div><div class="rs-dot on"></div></div><span class="sf-n">14</span></div>
-</div>
-
-<!-- SLIDE 15: SUMMARY -->
-<div class="slide rs" id="slide-15">
-  <div class="rs-bar"></div>
-  <div style="display:flex;flex:1;overflow:hidden">
-    <div class="rs-left">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px">Conclusion</div>
-      <h2>Five Questions. Five Answers.</h2>
-      <p class="rs-lsub">A framework for evaluating any emerging technology through a biblical worldview.</p>
-      <div class="quote" style="background:rgba(255,255,255,.12);border-left:3px solid rgba(255,255,255,.5);margin-top:14px">
-        <p style="color:rgba(255,255,255,.9);font-size:13px">"Technology is always embedded in a social, economic, and spiritual context."</p>
-        <div class="attr" style="color:rgba(255,255,255,.5)">— Albert Borgmann</div>
+      <div class="footer">
+        <div class="left">Sources: IFR/ISO robot definition and service robot definition, 2025–2026 materials (IFR standardisation; IFR Service Robots definition page; ISO 8373 language via IFR). citeturn828555search14turn828555search3</div>
+        <div class="right">Key idea: robotics = software + embodiment</div>
       </div>
-    </div>
-    <div class="rs-right" style="justify-content:center;gap:6px">
-      <div class="rs-tag">Summary</div>
-      <div class="steps" style="gap:11px">
-        <div class="step"><div class="snum v">1</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">What is it?</strong> — Machines that sense, think &amp; act</div></div>
-        <div class="step"><div class="snum v">2</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">How does it work?</strong> — Sense → Think → Plan → Act → Feedback</div></div>
-        <div class="step"><div class="snum g">3</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Current use?</strong> — Factories, hospitals, farms &amp; space</div></div>
-        <div class="step"><div class="snum g">4</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Future use?</strong> — Humanoids, autonomous vehicles, nano-medicine</div></div>
-        <div class="step"><div class="snum k">5</div><div class="stxt" style="color:#4f566b"><strong style="color:#1a1f36">Theology?</strong> — Dignity, justice, marriage &amp; accountability</div></div>
+      <div class="notes">Differentiate robotics from pure AI. AI can classify or generate, but robotics acts in the physical environment. That embodiment raises both operational and ethical stakes.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 2</div>
+        <div class="slide-number">04 / 13</div>
       </div>
-      <div class="callout v" style="margin-top:10px;font-size:12.5px"><strong>Biggest insight:</strong> Build the software, data &amp; integration layers — not the robots themselves.</div>
-      <div class="pills" style="margin-top:8px"><span class="pill v">End of Presentation</span><span class="pill g">Questions Welcome</span></div>
-    </div>
+      <div class="panel">
+        <h2>How Robotics Works</h2>
+        <div class="process">
+          <div class="step"><div class="step-num">1</div><h3>Sense</h3><p>Cameras, LiDAR, force sensors, and encoders capture the robot’s environment and internal state.</p></div>
+          <div class="step"><div class="step-num">2</div><h3>Perceive</h3><p>Software interprets objects, location, obstacles, and task-relevant signals.</p></div>
+          <div class="step"><div class="step-num">3</div><h3>Plan</h3><p>Algorithms determine a feasible path or sequence of actions.</p></div>
+          <div class="step"><div class="step-num">4</div><h3>Act</h3><p>Motors, actuators, grippers, and end-effectors execute the motion.</p></div>
+          <div class="step"><div class="step-num">5</div><h3>Adjust</h3><p>Feedback loops update actions in real time when the world changes.</p></div>
+        </div>
+        <div class="grid two-col" style="margin-top:1rem;">
+          <div class="source-box"><strong>Traditional robotics:</strong> largely depended on structured environments and preprogrammed motions.</div>
+          <div class="source-box"><strong>Newer physical AI:</strong> increasingly adds vision, simulation, learning, and force feedback to handle messier environments.</div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: Amazon Science describes force/torque sensing and real-time feedback in Vulcan; NVIDIA robotics materials highlight simulation and sensor-rich development environments. citeturn520141view1turn828555search4</div>
+        <div class="right">Control loop: sense → decide → act</div>
+      </div>
+      <div class="notes">Emphasize that the hard part is not only motion but robust adaptation. Modern systems are valuable because they are becoming better at uncertainty, contact, and variation.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 2</div>
+        <div class="slide-number">05 / 13</div>
+      </div>
+      <div class="grid two-col">
+        <div class="panel">
+          <h2>From Rigid Automation to Physical AI</h2>
+          <p>One of the most important shifts in robotics is the move from “don’t touch anything” automation to systems that can <strong>see</strong>, <strong>feel</strong>, and <strong>adapt</strong>.</p>
+          <ul class="clean">
+            <li>Amazon’s Vulcan adds touch sensing to picking and stowing tasks.</li>
+            <li>Force and torque sensors help the robot know how hard it is pushing.</li>
+            <li>Depth cameras provide feedback when items shift during manipulation.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Why this matters commercially</h3>
+          <ul class="clean">
+            <li>Expands automation into less structured environments.</li>
+            <li>Reduces damage risk and increases usable task coverage.</li>
+            <li>Improves the economics of warehouse and fulfillment operations.</li>
+          </ul>
+          <div class="quote-box">
+            <blockquote>“What’s really new and unique and exciting is we are using a sense of touch in addition to vision.”</blockquote>
+            <cite>Amazon Science, Vulcan robotics article</cite>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: Amazon Science technical explanation of Vulcan’s force/torque sensing and depth camera feedback; About Amazon launch article. citeturn520141view1turn520141view2</div>
+        <div class="right">Trend: more autonomy in less structured spaces</div>
+      </div>
+      <div class="notes">This slide gives a vivid example for “how it works.” It also prepares the class for why robotics is expanding beyond fixed factory settings into warehouses, stores, and public spaces.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 3</div>
+        <div class="slide-number">06 / 13</div>
+      </div>
+      <div class="panel">
+        <h2>Current Commercial Applications</h2>
+        <div class="stats">
+          <div class="stat"><div class="num">542K</div><div class="label">industrial robots installed globally in 2024</div></div>
+          <div class="stat"><div class="num">74%</div><div class="label">of new 2024 industrial robot deployments were in Asia</div></div>
+          <div class="stat"><div class="num">~200K</div><div class="label">professional service robots sold in 2024</div></div>
+          <div class="stat"><div class="num">9%</div><div class="label">growth in professional service robot sales in 2024</div></div>
+        </div>
+        <div class="grid three-col" style="margin-top:1rem;">
+          <div class="mini"><h3>Manufacturing</h3><p>Welding, assembly, material handling, palletizing, and quality tasks.</p></div>
+          <div class="mini"><h3>Logistics</h3><p>Sorting, pick-assist, autonomous movement, stowing, and packaging.</p></div>
+          <div class="mini"><h3>Healthcare</h3><p>Surgery, imaging, rehabilitation, and hospital support workflows.</p></div>
+          <div class="mini"><h3>Retail & Service</h3><p>Inventory scanning, cleaning, delivery, and customer support use cases.</p></div>
+          <div class="mini"><h3>Agriculture</h3><p>Harvesting, spraying, monitoring, and precision field operations.</p></div>
+          <div class="mini"><h3>Public Safety</h3><p>Inspection, hazardous environments, and remote or teleoperated tasks.</p></div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: IFR World Robotics 2025 industrial data and IFR 2025 service robot release. citeturn243772search15turn828555search2turn319740view0</div>
+        <div class="right">Robotics is no longer only a factory story</div>
+      </div>
+      <div class="notes">Use the statistics to show the market is already large and scaling. This answers the “current applications” question with both examples and adoption evidence.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 3</div>
+        <div class="slide-number">07 / 13</div>
+      </div>
+      <div class="grid two-col">
+        <div class="panel">
+          <span class="tag now">Logistics Example</span>
+          <h2>Warehouse Robotics</h2>
+          <ul class="clean">
+            <li>Amazon says its network now includes more than 1 million robots supporting fulfillment operations.</li>
+            <li>Sequoia helps identify and store inventory faster; Vulcan adds touch-enabled picking and stowing.</li>
+            <li>Robotics is positioned as both an efficiency tool and a safety/ergonomics tool.</li>
+          </ul>
+          <div class="source-box"><strong>Business takeaway:</strong> logistics robots reduce travel time, improve throughput, and change the labor mix toward supervision, maintenance, and technical operations.</div>
+        </div>
+        <div class="panel">
+          <span class="tag now">Healthcare Example</span>
+          <h2>Surgical Robotics</h2>
+          <ul class="clean">
+            <li>Intuitive reports over <strong>3.2 million procedures</strong> on its systems in 2025.</li>
+            <li>Its installed base exceeded <strong>12,100 systems</strong> globally by year-end 2025.</li>
+            <li>Robotic platforms create value through precision, workflow standardization, training ecosystems, and expanded access.</li>
+          </ul>
+          <div class="source-box"><strong>Business takeaway:</strong> in healthcare, robotics often scales through platforms, training, data, and switching costs, not just hardware sales.</div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: Amazon robotics network and Sequoia/Vulcan updates; Intuitive 2025 annual report and 2026 release. citeturn243772search9turn243772search1turn319740view2turn243772search10</div>
+        <div class="right">MBA angle: robotics can be a platform business</div>
+      </div>
+      <div class="notes">Show the class that commercial value differs by sector. Warehouses care heavily about throughput and safety. Healthcare cares about outcomes, training, installed base, and ecosystem lock-in.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Business Value</div>
+        <div class="slide-number">08 / 13</div>
+      </div>
+      <div class="grid two-col">
+        <div class="panel">
+          <h2>Why Firms Adopt Robotics</h2>
+          <ul class="clean">
+            <li><strong>Productivity:</strong> higher throughput and more consistent output.</li>
+            <li><strong>Labor leverage:</strong> supports operations when hiring is difficult.</li>
+            <li><strong>Safety:</strong> shifts people away from repetitive or hazardous tasks.</li>
+            <li><strong>Quality:</strong> reduces process variation and error rates.</li>
+            <li><strong>Scalability:</strong> enables 24/7 or high-demand operations.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Strategic questions for managers</h3>
+          <ul class="clean">
+            <li>Is the process structured enough to automate economically?</li>
+            <li>Will robotics substitute labor, complement labor, or both?</li>
+            <li>What training, maintenance, and change-management costs follow?</li>
+            <li>Does adoption create a moat through data, workflow, or customer lock-in?</li>
+          </ul>
+          <div class="quote-box">
+            <blockquote>The future of work is increasingly described as a partnership of people, agents, and robots rather than a simple replacement story.</blockquote>
+            <cite>McKinsey Global Institute, 2025</cite>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: McKinsey on partnerships between people, agents, and robots; IFR 2025 service robot release notes staff shortages as a driver. citeturn828555search9turn828555search2</div>
+        <div class="right">Managerial lens: adoption is a redesign decision</div>
+      </div>
+      <div class="notes">This is the explicit MBA slide. Make clear that buying a robot is not the strategy. Redesigning the operating model is the strategy.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 4</div>
+        <div class="slide-number">09 / 13</div>
+      </div>
+      <div class="compare">
+        <div class="panel">
+          <span class="tag now">Current</span>
+          <h2>Where Robotics Wins Today</h2>
+          <ul class="clean">
+            <li>Structured or semi-structured environments</li>
+            <li>Repeatable tasks with measurable ROI</li>
+            <li>Industrial production, logistics, and surgical platforms</li>
+            <li>Human-supervised systems with defined workflows</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <span class="tag future">Future</span>
+          <h2>Where Robotics Is Heading</h2>
+          <ul class="clean">
+            <li>General-purpose manipulation in messier environments</li>
+            <li>Humanoid or human-compatible systems in existing spaces</li>
+            <li>Field robotics in agriculture, mobility, and infrastructure</li>
+            <li>Greater autonomy through simulation, better models, and multimodal sensing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:1rem;">
+        <h3>Forward-looking sectors</h3>
+        <div class="grid three-col">
+          <div class="mini"><h3>Healthcare</h3><p>More procedures, more autonomy support, more remote capabilities.</p></div>
+          <div class="mini"><h3>Agriculture</h3><p>Autonomous scouting, selective harvesting, and precision treatment.</p></div>
+          <div class="mini"><h3>Construction & Infrastructure</h3><p>Inspection, repetitive building tasks, and hazardous-site operations.</p></div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: WEF 2026 physical autonomy briefing; McKinsey 2025 and 2026 materials on robotics expansion beyond manufacturing into healthcare, agriculture, and logistics. citeturn243772search3turn243772search11turn828555search17turn828555search10</div>
+        <div class="right">Trajectory: from narrow automation to broader physical autonomy</div>
+      </div>
+      <div class="notes">Stress that future adoption is not guaranteed in every setting. Many use cases still face reliability, safety, regulation, and economics hurdles. But the direction of travel is clear.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 4</div>
+        <div class="slide-number">10 / 13</div>
+      </div>
+      <div class="grid two-col">
+        <div class="panel">
+          <h2>Future Commercial Implications</h2>
+          <ul class="clean">
+            <li><strong>Industry structure:</strong> firms with better data, simulation, and integration may gain durable advantage.</li>
+            <li><strong>Workforce:</strong> demand may shift from routine physical labor toward technical oversight and systems management.</li>
+            <li><strong>CapEx to platform logic:</strong> value may increasingly come from software, updates, and ecosystem services.</li>
+            <li><strong>Governance:</strong> more deployment in shared spaces means more regulatory and reputational risk.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Managerial watch list</h3>
+          <ul class="clean">
+            <li>Safety standards and liability rules</li>
+            <li>Return on investment by workflow, not by robot alone</li>
+            <li>Human acceptance and trust</li>
+            <li>Cybersecurity and data stewardship</li>
+            <li>Public perception when robots enter social spaces</li>
+          </ul>
+          <div class="source-box"><strong>Bottom line:</strong> the most strategic question may not be “Can we automate?” but “What kind of organization do we become when physical autonomy scales?”</div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: McKinsey technology trends and work-partnership framing; WEF 2026 physical autonomy scenarios. citeturn828555search13turn828555search9turn243772search3</div>
+        <div class="right">Future value depends on operating-model fit</div>
+      </div>
+      <div class="notes">Link future applications to leadership. Executives will need to manage economics, workforce change, and ethical legitimacy at the same time.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Question 5</div>
+        <div class="slide-number">11 / 13</div>
+      </div>
+      <div class="grid two-col">
+        <div class="panel">
+          <span class="tag theology">Christian Lens</span>
+          <h2>Theological Implications of Robotics</h2>
+          <ul class="clean">
+            <li><strong>Stewardship:</strong> technology can be used to relieve suffering, improve care, and serve human flourishing.</li>
+            <li><strong>Work and vocation:</strong> automation may free people from some burdens while also disrupting livelihoods and identity.</li>
+            <li><strong>Moral responsibility:</strong> humans remain accountable for how robots are designed, deployed, and governed.</li>
+            <li><strong>Power and dignity:</strong> efficiency gains do not automatically justify dehumanizing uses of technology.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Human–robot relationships and marriage</h3>
+          <ul class="clean">
+            <li>A Christian framework treats marriage as a covenantal human union, not merely a customizable experience.</li>
+            <li>As social and intimate robotics advance, the ethical issue is not only capability, but whether artificial substitutes reshape human love, commitment, and community in unhealthy ways.</li>
+            <li>This raises concerns about emotional displacement, consent, formation of desire, and the replacement of mutual human relationship with controllable simulation.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Sources: Biola on Christian preparation for AI; CBHD on science/technology ethics and human dignity; academic and legal work on human–robot intimacy and robot marriage. citeturn520141view4turn104301search0turn104301search11turn695543search1turn695543search7turn695543search17</div>
+        <div class="right">Theological test: does this serve human flourishing?</div>
+      </div>
+      <div class="notes">Keep this section serious and non-sensational. The key point is not predicting robot marriage tomorrow. It is asking what happens when technology simulates intimacy and competes with embodied human relationships.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Synthesis</div>
+        <div class="slide-number">12 / 13</div>
+      </div>
+      <div class="panel">
+        <h2>Key Takeaways</h2>
+        <div class="grid three-col">
+          <div class="mini"><h3>Technology</h3><p>Robotics is the convergence of mechanics, sensing, software, and control in the physical world.</p></div>
+          <div class="mini"><h3>Commercial reality</h3><p>Robots already create value in factories, warehouses, hospitals, and field operations.</p></div>
+          <div class="mini"><h3>Future trajectory</h3><p>Physical AI is pushing robotics toward less structured, more human-centered environments.</p></div>
+          <div class="mini"><h3>Management challenge</h3><p>Winning with robotics requires workflow redesign, talent adaptation, and governance.</p></div>
+          <div class="mini"><h3>Christian concern</h3><p>Innovation should serve people rather than reduce humans to replaceable or programmable units.</p></div>
+          <div class="mini"><h3>Bottom line</h3><p>Robotics is not only an engineering story; it is also a strategic and moral story.</p></div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Synthesis based on IFR, McKinsey, WEF, Amazon, Intuitive Surgical, Biola, CBHD, and academic human–robot relationship sources cited throughout the deck.</div>
+        <div class="right">Conclusion: evaluate both value and virtue</div>
+      </div>
+      <div class="notes">This is your closing argument. Summarize the entire deck in one minute: what robotics is, why firms care, where it is going, and why theology should still shape the discussion.</div>
+    </section>
+
+    <section class="slide">
+      <div class="topbar">
+        <div class="eyebrow">Discussion</div>
+        <div class="slide-number">13 / 13</div>
+      </div>
+      <div class="hero">
+        <div class="hero-card">
+          <div class="accent-line"></div>
+          <h1>Q&amp;A</h1>
+          <p class="subtitle">Possible discussion prompt: Should firms evaluate robotics primarily by ROI, or should they also apply explicit standards for human flourishing, work, and relational integrity?</p>
+        </div>
+        <div class="hero-card">
+          <h3>References used in this deck</h3>
+          <p class="subtitle" style="font-size:1rem; max-width:none;">
+            IFR World Robotics 2025; IFR service robot and ISO definition pages; Amazon/ Amazon Science on Vulcan and warehouse robotics; Intuitive Surgical 2025 annual report and 2026 releases; McKinsey 2025–2026 research; WEF 2026 physical autonomy briefing; Biola and CBHD resources; academic work on human–robot intimacy and robot romance.
+          </p>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="left">Prepared as a single-file HTML presentation for classroom projection and GitHub Pages hosting.</div>
+        <div class="right"><span class="kbd">N</span> Notes in HTML • <span class="kbd">F</span> Fullscreen</div>
+      </div>
+      <div class="notes">Invite discussion here. A strong MBA follow-up question is whether the moral framework should be internal to leadership decisions or left to regulation and public pressure.</div>
+    </section>
+
   </div>
-  <div class="sf" style="background:#eef2f7;border-top-color:#e0e6ed"><span class="sf-l" style="color:#8792a2">Summary</span><div class="rs-dots"><div class="rs-dot on"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div><div class="rs-dot"></div></div><span class="sf-n" style="color:#c8d0da">15</span></div>
-</div>
 
-</div><!-- /wrap -->
-<!-- NOTES + NAV -->
-<div class="nshell">
-  <button class="nbtn" id="nbtn" onclick="toggleNotes()">
-    <span class="nbtn-l">🎤 Speaker Notes</span>
-    <span class="narr" id="narr">▼</span>
-  </button>
-  <div class="npanel" id="npanel">
-    <div class="ninner" id="ninner"></div>
+  <div class="controls">
+    <button id="prevBtn" aria-label="Previous slide">←</button>
+    <button id="nextBtn" aria-label="Next slide">→</button>
   </div>
-</div>
-<div class="nav">
-  <button class="nbtn2 ng" id="prev" onclick="go(-1)" disabled>← Previous</button>
-  <button class="nbtn2 ng" onclick="enterFullscreen()">⛶ Fullscreen</button>
-  <button class="nbtn2 ns" id="next" onclick="go(1)">Next →</button>
-</div>
-<div class="thumbs" id="thumbs"></div>
+  <div class="progress"><div id="progressBar"></div></div>
 
-<!-- FULLSCREEN OVERLAY -->
-<div id="fs-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#0a0a1a;flex-direction:column;align-items:center;justify-content:center;">
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progressBar = document.getElementById('progressBar');
+    let current = 0;
 
-  <!-- Progress bar -->
-  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.06)">
-    <div id="fs-prog" style="height:100%;background:linear-gradient(90deg,#6772e5,#00d4ff);transition:width .4s ease;width:6.67%"></div>
-  </div>
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === current);
+      });
+      const progress = ((current + 1) / slides.length) * 100;
+      progressBar.style.width = progress + '%';
+    }
 
-  <!-- Counter -->
-  <div id="fs-counter" style="position:absolute;top:14px;right:20px;font-family:'SF Mono','Menlo',monospace;font-size:12px;color:rgba(255,255,255,.3)">1 / 15</div>
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
 
-  <!-- Close button -->
-  <button onclick="exitFullscreen()" style="position:absolute;top:10px;left:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">✕ Exit</button>
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
 
-  <!-- Slide container — scales to fill screen -->
-  <div id="fs-slide-wrap" style="width:92vw;max-width:1400px;height:calc(92vw * 0.5510);max-height:86vh;position:relative;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 32px 80px rgba(0,0,0,.7)">
-    <div id="fs-inner" style="position:absolute;inset:0;transform-origin:top left"></div>
-  </div>
-
-  <!-- Nav buttons -->
-  <div style="display:flex;gap:16px;margin-top:20px;align-items:center">
-    <button id="fs-prev" onclick="go(-1)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:14px;font-weight:500;padding:10px 28px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;min-width:120px" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'" disabled>← Previous</button>
-
-    <!-- Dot indicators -->
-    <div id="fs-dots" style="display:flex;gap:5px;align-items:center"></div>
-
-    <button id="fs-next" onclick="go(1)" style="background:#6772e5;border:none;color:#fff;font-size:14px;font-weight:500;padding:10px 28px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;min-width:120px;box-shadow:0 2px 12px rgba(103,114,229,.4)" onmouseover="this.style.background='#7c88ff'" onmouseout="this.style.background='#6772e5'">Next →</button>
-  </div>
-
-  <!-- Keyboard hint -->
-  <div style="position:absolute;bottom:14px;font-size:11px;color:rgba(255,255,255,.2);font-family:'SF Mono','Menlo',monospace;letter-spacing:.04em">← → ARROW KEYS · ESC TO EXIT</div>
-</div>
-
-<script>
-const TOTAL=15;
-const BARS_DATA=['#050510','#6772e5','#6772e5','#4f46e5','#4f46e5','#6772e5','#6772e5','#21c55d','#21c55d','#6772e5','#21c55d','#21c55d','#1a1a3e','#1a1a3e','#6772e5'];
-let cur=1,notesOpen=false;
-
-const NOTES={
-1:{t:"Title Slide — Welcome",p:[
-  "<strong>Opening line:</strong> 'In the next 20 minutes we are going to cover five questions that I believe every educated person — and every Christian — needs to be able to answer about robotics.'",
-  "<strong>Context-setting:</strong> Robotics is no longer science fiction. Right now, 3.9 million robots are on factory floors globally. Humanoid robots shipped commercially for the first time in 2025. The field is accelerating faster than public awareness.",
-  "<strong>Why this matters for BUS 670:</strong> Strategic AI isn't just software. Robotics is where AI meets the physical world — supply chains, healthcare, logistics, agriculture. Every business student will encounter this within 5 years of graduation.",
-  "<strong>Tone:</strong> Encourage questions throughout — especially on the theological slides. This is a conversation, not a lecture. The best insights will come from the room."
-]},
-2:{t:"What is Robotics? — Definition",p:[
-  "<strong>Anchor definition:</strong> Robotics = software + hardware that senses its environment, makes decisions, and takes physical action. Everything else builds from this.",
-  "<strong>SENSE — unpack it:</strong> A camera is a robot's eyes. GPS is spatial awareness. A gyroscope is its inner ear (balance). A touch sensor is its skin. Ask students: what happens if a sensor fails mid-task?",
-  "<strong>THINK — the AI connection:</strong> This is where everything has changed. Old robots were programmed — a human wrote every rule. New robots are trained — they learn from millions of examples. ChatGPT and robotics share the same underlying neural networks.",
-  "<strong>ACT — the physical bridge:</strong> Actuators convert digital decisions into physical force. Motors for precision (surgery), hydraulics for power (construction), pneumatics for speed and softness (food handling).",
-  "<strong>The trading analogy:</strong> A quantitative trading algorithm senses market data, thinks through a strategy, and acts by placing a trade. Robotics is the exact same architecture applied to the physical world. This analogy lands well for business students.",
-  "<strong>Discussion prompt:</strong> 'Can you name something that uses at least two of these three components — Sense, Think, Act — that you interact with every day?'"
-]},
-3:{t:"A Brief History — From Word to World-Changer",p:[
-  "<strong>'Robot' etymology:</strong> Karel Čapek coined it from Czech robota meaning forced labor or drudgery. His 1920 play R.U.R. featured artificial workers who eventually rebelled against their creators. The anxiety about robots displacing humans is literally baked into the word.",
-  "<strong>1954–1961 — The industrial leap:</strong> George Devol's 1954 patent for a programmable robotic arm led directly to Unimate on GM's assembly line in 1961. This was the moment automation moved from concept to commercial reality. 65 years later the factory robot is still the dominant use case.",
-  "<strong>1997 — Sojourner on Mars:</strong> A robot making navigation decisions 140 million miles from the nearest programmer. Round-trip communication delay = 20 minutes. The rover had to be autonomous by necessity. This set the template for all planetary exploration robots.",
-  "<strong>2002 — Roomba changes the narrative:</strong> For the first time, a robot enters the home as a consumer product. iRobot sold over 30 million units. This shifted public perception from 'robots are industrial' to 'robots are personal.'",
-  "<strong>The acceleration story:</strong> Notice the gaps — decades between early milestones, then years between modern ones. The timeline of robotics innovation is compressing rapidly, driven by cheap sensors, edge compute, and transformer AI models.",
-  "<strong>Transition line:</strong> 'The question is no longer whether robots will change your industry — it's whether you'll be ready when they do.'"
-]},
-4:{t:"The Continuous Loop — How Every Robot Operates",p:[
-  "<strong>Why this is the most important slide:</strong> Every robot ever built — from a $350 Roomba to a $2M surgical system to a Mars rover — runs this exact loop. The sophistication of each stage is what separates them.",
-  "<strong>SENSE — the data pipeline:</strong> A humanoid robot has 28+ cameras, force sensors in every fingertip, an IMU (inertial measurement unit), microphones, and proximity sensors — all streaming simultaneously at high frequency.",
-  "<strong>THINK — two flavors:</strong> Rule-based (IF/THEN logic) or AI-based (neural network inference). Most modern robots use both. Safety-critical decisions are rule-based for reliability; perception and navigation are AI-based for adaptability.",
-  "<strong>PLAN — the underrated step:</strong> Before acting, the robot calculates: optimal path, joint torques, timing, collision risk. A warehouse robot does this in milliseconds. This is computational geometry + AI + physics simulation running in real time.",
-  "<strong>FEEDBACK — control systems engineering:</strong> After acting, sensors measure what actually happened vs. what was planned. The difference (error) is fed back in to correct the next action. Without this loop, tiny errors compound into catastrophic failures.",
-  "<strong>The trading bridge:</strong> Sense market data → Think (analyze signals) → Plan (size and timing) → Act (execute order) → Feedback (measure slippage, adjust). Identical loop structure — robotics just does it in three physical dimensions.",
-  "<strong>Ask students:</strong> 'Where would this loop break down in a robot performing surgery? What's the highest-stakes step?'"
-]},
-5:{t:"Two Ways Robots Think — Rule-Based vs AI",p:[
-  "<strong>This distinction matters beyond robotics:</strong> Rule-based vs. learning-based is one of the most important architectural decisions in all of software engineering.",
-  "<strong>Rule-Based strengths:</strong> Deterministic, auditable, fast, reliable. You can trace exactly why a decision was made. Critical for safety-certified systems. Used in flight control, nuclear plants, medical devices.",
-  "<strong>Rule-Based weakness:</strong> Brittle. Works perfectly until an edge case the programmer didn't anticipate. A robot programmed to navigate around 'boxes' will fail when it encounters a cylinder.",
-  "<strong>Learning-Based (ML) strengths:</strong> Generalizes from data. Show it 50,000 images of obstacles and it learns to avoid them — even ones it was never trained on. This is how Tesla FSD and Boston Dynamics Atlas navigate novel environments.",
-  "<strong>Learning-Based weakness:</strong> Unpredictable. The robot may make a confident wrong decision. Hard to audit. Failure modes can be surprising and dangerous in safety-critical contexts.",
-  "<strong>The 'both' insight:</strong> Most production robots layer these: rule-based safety systems (guaranteed behavior) + AI perception layer (handles complexity). Like a car's ABS brakes (rule-based) combined with adaptive cruise control (AI-based).",
-  "<strong>Ask students:</strong> 'If you were designing a robot to perform spinal surgery, which would you trust more for the cutting motion — rule-based or AI? Why? What about for patient positioning?'"
-]},
-6:{t:"Where Robots Work Today — Current Applications",p:[
-  "<strong>Scale reality check:</strong> 3.9 million industrial robots is just the installed industrial base. Total deployed robotic systems — including service robots, surgical systems, drones, and consumer devices — is many times higher.",
-  "<strong>Manufacturing dominates:</strong> Controlled environment, repetitive tasks, high volume, ROI is clearest. FANUC, KUKA, and ABB are the dominant players. Tesla's Gigafactories are among the most automated manufacturing facilities in history.",
-  "<strong>Amazon is the logistics story:</strong> Amazon paid $775M for Kiva Systems (now Amazon Robotics) in 2012. Today they operate 750,000+ robots. Order fulfillment time dropped from 75 minutes to 15 minutes. This is a competitive moat — competitors literally cannot match the throughput.",
-  "<strong>da Vinci — the healthcare case study:</strong> $2M+ per unit, yet hospitals pay because it enables minimally invasive procedures that otherwise require open surgery. Surgeons control it — the robot doesn't operate autonomously. 10M+ procedures completed.",
-  "<strong>Waymo — autonomous vehicles as robots:</strong> A self-driving car is a robot. It senses (cameras + LiDAR), thinks (AI model), and acts (steering + braking). Waymo has now completed millions of fully driverless miles in US cities.",
-  "<strong>Space — the extreme case:</strong> NASA Perseverance rover operates with a 20-minute round-trip communication delay. Every navigation decision is autonomous. This is the frontier of AI-driven robotics: machines that must function completely independently.",
-  "<strong>Transition:</strong> 'These aren't future applications — they are happening right now, at scale, generating billions in revenue. The question is: what comes next?'"
-]},
-7:{t:"Why Adoption Is Accelerating — The Business Case",p:[
-  "<strong>The economics have crossed over:</strong> A Universal Robots UR5 cobot costs approximately $35,000. At $20/hour fully-loaded labor cost, it pays for itself in under two years — and then works three shifts with no overtime, benefits, or sick days.",
-  "<strong>The precision argument:</strong> A robot can hold a tolerance of ±0.1mm across 10 million repetitions. Human workers drift — fatigue, distraction, and variation are real. In semiconductor manufacturing and medical device assembly, this precision difference is the entire business.",
-  "<strong>The safety case:</strong> 340 warehouse workers die annually in the US. Repetitive stress injuries cost employers billions. Removing humans from dangerous roles — chemical plants, mines, blast furnaces, extreme cold — is not just ethical, it's a liability reduction strategy.",
-  "<strong>Amazon Robotics detail:</strong> The shelf comes to the worker — not the other way around. Workers used to walk 10–15 miles per shift. Now they stand at a station. Productivity went up, injuries went down, and order accuracy improved dramatically.",
-  "<strong>Zipline — the humanitarian case:</strong> In Rwanda and Ghana, Zipline autonomous drones deliver blood, vaccines, and medication to remote clinics where roads don't exist. Lives are being saved that geography previously made impossible to save.",
-  "<strong>Post-COVID acceleration:</strong> When supply chains collapsed in 2020–2021, companies couldn't hire workers fast enough. Goldman Sachs estimated COVID pulled forward 5 years of automation investment into 18 months. Labor fragility became the single most powerful driver of robotics adoption.",
-  "<strong>Ask students:</strong> 'If robots perform the economic output but no humans earn wages — who receives the value? Is that a theological question or just an economic one?'"
-]},
-8:{t:"The Next 5–10 Years — Future Applications",p:[
-  "<strong>The $260B market figure</strong> is from multiple analyst projections (Goldman Sachs, McKinsey, IFR). The humanoid category alone makes the range wide — anywhere from $200B to $400B — because humanoid deployment is so uncertain.",
-  "<strong>Humanoid labor — this is not hype:</strong> Tesla Optimus robots are already sorting battery cells in Tesla's Gigafactories right now. Figure AI raised $675M from Microsoft, OpenAI, and NVIDIA in early 2024. The bet is that humanoids can do any task designed for a human body.",
-  "<strong>RaaS (Robotics-as-a-Service):</strong> Instead of a $100K capital purchase, companies subscribe for $1,500–$2,500/month. This is exactly what SaaS did to enterprise software — lowering the barrier from capex to opex. Agility Robotics and Apptronik are already selling this way.",
-  "<strong>Autonomous trucking — closer than robotaxis:</strong> Highways are geometrically simpler than city intersections. Aurora and Kodiak have active commercial trucking partnerships. The freight industry faces a 80,000+ driver shortage in the US — the business case is compelling.",
-  "<strong>The 800M jobs figure</strong> is McKinsey's 2030 midpoint estimate. Low end: 400M. High end: 1.2B. Importantly, not all jobs disappear — many transform. But the transitions are real, they're painful, and they're uneven. Low-wage, repetitive roles are most exposed.",
-  "<strong>Iron Ox agriculture:</strong> Grows crops indoors using robots entirely — 90% less water, no pesticides, year-round production regardless of climate. This is what food security looks like in a world of climate volatility.",
-  "<strong>Transition:</strong> 'In 10 years, the question won't be whether your industry uses robots. It will be whether you understood the wave early enough to build on it.'"
-]},
-9:{t:"Who's Shipping Humanoid Robots? — 2025 Data",p:[
-  "<strong>This data is from Visual Capitalist / Rest of World, published early 2026 — the most current available.</strong> 2025 was the first year humanoid robots shipped in meaningful commercial volumes.",
-  "<strong>China's dominance is structural, not accidental:</strong> The Yangtze River Delta contains the world's most vertically integrated supply chain for humanoid robotics. Unitree, AgiBot, and their key suppliers are all within 100 miles of each other. China also dominates rare earth mineral production (~60% globally) — the raw materials for actuators and motors.",
-  "<strong>Unitree's price disruption:</strong> The G1 humanoid starts at $13,500. For context, Tesla projects Optimus at $20,000–$30,000. Unitree is using the same playbook as Chinese EV makers — price below Western competitors to capture volume and drive down the cost curve.",
-  "<strong>AgiBot is the wildcard:</strong> Backed by Chinese government funding, AgiBot shipped 4,200 units in 2025 — second only to Unitree. Most Western analysts hadn't heard of them a year ago. This is a pattern we've seen in EVs, solar panels, and batteries.",
-  "<strong>US companies are in pilot mode, not commercial mode:</strong> Tesla, Figure AI, and Agility Robotics each shipped ~150 units — essentially proving the technology works, not scaling it. Figure AI's $39B valuation despite 150 units shipped reflects investor bets on future potential.",
-  "<strong>Geopolitical dimension:</strong> This isn't just a technology race — it's a strategic competition. The US has imposed chip export restrictions on China. China has responded by accelerating domestic AI and robotics. Humanoid robots may become the next front in this competition.",
-  "<strong>Ask students:</strong> 'What does it mean for the United States if China leads humanoid robot production 90/10? How does this compare to what happened with semiconductors, solar panels, and electric vehicles?'"
-]},
-10:{t:"Tesla Optimus Gen 3 — Spotlight",p:[
-  "<strong>March 2026 context:</strong> This is the most current news in humanoid robotics. The recruitment video showing Gen 3 hands was released just weeks before this presentation.",
-  "<strong>22 degrees of freedom — why it matters:</strong> The human hand has 27 DoF. Gen 3 has 22. For the first time, a robot hand can perform the fine manipulation tasks — threading a needle, typing, handling fragile objects — that have been the barrier to general-purpose robotic labor.",
-  "<strong>'Superhero suit' quote</strong> is from a Tesla robotics engineer in the recruitment video: 'It won't even look like a robot. It will look like a human in a superhero suit. It will be something revolutionary.'",
-  "<strong>The Fremont retooling signal:</strong> Tesla discontinued the Model S and Model X — flagship vehicles that defined the company — to retool those factory lines for Optimus production. This is not incremental investment. This is a full strategic pivot.",
-  "<strong>Scale ambition:</strong> 1 million units/year at Fremont. 10 million units/year at Giga Texas when Gen 4 arrives. For context, Toyota — the world's largest automaker — produces approximately 10 million vehicles per year globally. Musk is projecting Optimus at that scale.",
-  "<strong>The economic impact claim:</strong> Musk has stated a single Optimus robot performing useful work generates $30,000–$50,000 of economic value per year. At 1 billion units (his long-term projection), that's $30–50 trillion in annual economic output from robots alone.",
-  "<strong>Pastoral note:</strong> Musk's projections are aggressive. Tesla has missed timelines before. But the direction is clear and the capability is real — what matters for your students is developing a framework for engaging with this technology, not predicting exact timelines."
-]},
-11:{t:"Boston Dynamics Atlas — Enterprise Design",p:[
-  "<strong>Boston Dynamics is not the volume leader — but they are the technical standard.</strong> Their robots appear in viral videos because they are genuinely the most capable. Hyundai acquired them for $1.1B in 2021 specifically for the Hyundai manufacturing use case.",
-  "<strong>Design driven by utility:</strong> Every BD design decision is evaluated against 'does this make Atlas more useful in a factory or warehouse?' The ring-light face and rounded body are deliberate — CEO Robert Playter said designs that looked 'too human' seemed threatening. They borrowed from Pixar's lamp design for approachability.",
-  "<strong>Modular actuators — the manufacturing insight:</strong> By building reusable actuator modules, BD can produce at scale, repair faster, and upgrade subsystems without redesigning the whole robot. This is how you get from research prototype to commercial product — exactly like modular smartphone components.",
-  "<strong>Electric vs hydraulic — the 2024 transition:</strong> The old Atlas was hydraulic — powerful but loud, fluid maintenance required, less energy efficient. The new electric Atlas eliminated all of that. Custom planetary roller screw actuators match hydraulic force density while being far simpler to maintain.",
-  "<strong>Safety by design:</strong> Eliminating pinch points and adding padding meets OSHA and ISO collaborative robot safety standards. Any robot working alongside humans in an industrial setting must pass these certifications. BD built this in from the ground up.",
-  "<strong>Passive thermal management — the elegant solution:</strong> No fans means no moving parts in the cooling system, no noise, no dust ingestion, no failure modes from fan motors. The chassis itself acts as a heat sink. This also contributed to the IP67 water/dust resistance rating — you can literally hose it off.",
-  "<strong>2026 deployment:</strong> First Atlas units are going to Hyundai's Metaplant in Georgia for parts sequencing. Google DeepMind is receiving units to integrate Gemini Robotics AI. This is no longer a research project — it is a commercial product in production."
-]},
-12:{t:"AI + Robotics + Data Integration — The 20-Year Horizon",p:[
-  "<strong>Frame the business opportunity first:</strong> The highest-margin businesses in the robotics wave will not be robot manufacturers — they will be the software, data, and integration companies riding the hardware wave. Think of it like the internet: Amazon didn't make computers, they built software on top of the infrastructure.",
-  "<strong>Software layer — concrete examples:</strong> Fleet management dashboards (which robot is where, doing what), predictive maintenance AI (flag a bearing failure before it happens), task optimization algorithms (route 200 robots through a warehouse with zero collisions). These are SaaS businesses with 70%+ gross margins.",
-  "<strong>Data layer — the compounding moat:</strong> Every robot generates sensor data. That data can train better AI models, optimize workflows, and predict equipment failures. The company that accumulates the most operational robotics data will have a self-reinforcing competitive advantage — exactly like Google's search data.",
-  "<strong>Integration layer — the enterprise opportunity:</strong> Most companies run ERP (SAP, Oracle), WMS (warehouse management), and MES (manufacturing execution) systems. None of them were designed to interface with robots. API integration between robotic systems and business software is a massive greenfield opportunity.",
-  "<strong>Space — why robots always go first:</strong> NASA's Artemis program explicitly requires robotic construction of lunar habitats before humans arrive. Robots don't need air, food, or radiation protection. On Mars, the 20-minute communication delay makes human remote operation impossible — full autonomy is required.",
-  "<strong>Nano-robotics — the 20-year bet:</strong> ETH Zurich published peer-reviewed research demonstrating micro-robots navigating blood vessels in animal models. Targeted drug delivery and in-vivo diagnostics are the target applications. Clinical human trials are estimated 15–25 years away.",
-  "<strong>Climate remediation — the hopeful case:</strong> The Ocean Cleanup project uses autonomous systems. Coral reef restoration robots have been deployed in the Great Barrier Reef. AI-guided reforestation drones can plant trees at rates no human crew can match. This is technology serving creation stewardship."
-]},
-13:{t:"Human Dignity & the Call to Justice — Theological Implications",p:[
-  "<strong>Frame the theological stakes clearly:</strong> Scripture doesn't mention robots. But its principles about human dignity, personhood, work, justice, and creation stewardship apply directly — and with enormous practical consequence.",
-  "<strong>Human Dignity — the foundational question:</strong> Genesis 1:27 is the basis of human rights in Western civilization. The Imago Dei — bearing God's image — has historically meant humans possess inherent dignity that cannot be bought, sold, or automated away. Robotics forces us to answer: what precisely grounds this dignity? Is it rational capacity (which AI is approaching)? Or covenantal capacity — the ability to be in relationship with God and neighbor? The church's answer to this question matters enormously.",
-  "<strong>Justice for Workers — the prophetic word:</strong> Proverbs 14:31 — 'Whoever oppresses the poor shows contempt for their Maker.' Low-wage, repetitive roles bear the greatest displacement burden from automation. When productivity gains flow entirely to capital owners while workers are displaced without transition support, this is structurally identical to what Amos, Isaiah, and Micah condemned in Israel. The church cannot be silent here.",
-  "<strong>Creation Stewardship — technology is never neutral:</strong> Genesis 2:15 gives humanity the mandate to 'work and take care of' creation. Precision agriculture robots can reduce pesticide use by 90% — genuine stewardship. But the same automation logic enables faster resource extraction and environmental degradation. The question is always: toward what end, and for whom? Who decides?",
-  "<strong>The Accountability Gap — a genuine crisis:</strong> In 2018, an Uber self-driving car struck and killed Elaine Herzberg in Tempe, Arizona. Prosecutors struggled for three years to find a person to charge. The software made the decision. The safety driver was distracted. The engineer who wrote the code was following specifications. The company deployed prematurely. All bore some responsibility; none bore full responsibility. Romans 13 insists that authority — and accountability — must be located in persons. We have not solved this problem.",
-  "<strong>Ask students:</strong> 'If a hospital robot misdiagnoses a patient and that patient dies — who answers? The hospital that bought it? The company that built it? The engineer who wrote the algorithm? What does Romans 13 require of us when we build systems that make life-and-death decisions?'"
-]},
-14:{t:"God's Design in an Age of Companion Robots — Marriage & Discussion",p:[
-  "<strong>This is not hypothetical:</strong> Companies like Realbotix (maker of 'Harmony') and Lovotics are actively marketing companion and intimate robots. Japan's government has funded research into elder-care companion robots. South Korea's robotics industry is targeting the loneliness epidemic as a commercial opportunity. This is a live pastoral issue right now.",
-  "<strong>Matthew 19:5 — Jesus speaks directly:</strong> In Matthew 19:4–6, Jesus defines marriage by citing Genesis. He says 'at the beginning the Creator made them male and female' and quotes Genesis 2:24. This is not a cultural opinion or a Pauline pastoral recommendation — it is the Lord's own authoritative teaching grounded in creation order.",
-  "<strong>1 Corinthians 6:19–20 and the body:</strong> 'Your body is a temple of the Holy Spirit... you were bought at a price. Therefore honor God with your bodies.' The body is not a consumer product to be satisfied by a commercial device. Sexual intimacy is designed by God for the covenant of marriage — not outsourced to technology.",
-  "<strong>1 Corinthians 13 — robots cannot love:</strong> 'Love is patient, love is kind... it is not self-seeking.' Biblical love is sacrificial, covenantal, and self-giving. A machine can simulate the appearance of care and responsiveness — it can be programmed to say 'I love you' — but it cannot make a sacrifice. It cannot choose to stay. It cannot forgive. This is not love.",
-  "<strong>Pastoral sensitivity note:</strong> Some students in this room may be experiencing genuine loneliness, relational pain, or heartbreak. Approach this section with grace. God's design for marriage is beautiful and good — not a burden or a restriction. His answer to loneliness is genuine human community and ultimately himself, not a robot companion.",
-  "<strong>Autonomous weapons — the just-war question:</strong> Traditional just-war theory requires two things AI may not be able to provide: discrimination (distinguishing combatants from non-combatants) and proportionality (using only necessary force). The UN has been debating a ban on Lethal Autonomous Weapons Systems since 2013 with no consensus. Ask students: can an algorithm make a moral judgment?",
-  "<strong>Closing challenge:</strong> 'The church's role is not to be the last institution to engage with this — it is to be the first. We have the theological resources, the ethical framework, and the community to help people navigate this. The question is whether we will show up.'"
-]},
-15:{t:"Summary — Five Questions, Five Answers",p:[
-  "<strong>Five-question framework recap:</strong> These five questions are not just about robotics — they are a transferable framework for evaluating any emerging technology your students will encounter in their careers.",
-  "<strong>Question 1 — What is it?</strong> Machines that sense, think, and act. The Sense-Think-Act architecture is the foundation. Every robotics application builds on it.",
-  "<strong>Question 2 — How does it work?</strong> The continuous loop: Sense → Think → Plan → Act → Feedback, running hundreds of times per second. The sophistication of each stage separates simple automation from true autonomy.",
-  "<strong>Question 3 — Current use?</strong> Factories, warehouses, hospitals, farms, space — at massive scale, generating billions in revenue right now. This is not emerging technology — it is deployed technology.",
-  "<strong>Question 4 — Future use?</strong> Humanoids, autonomous trucking, nano-medicine, robotic construction, automated farms. The trajectory is clear even if exact timelines are uncertain.",
-  "<strong>Question 5 — Theology?</strong> Human dignity, worker justice, creation stewardship, marriage, accountability. These are the questions that will define whether robotics serves human flourishing or undermines it — and the church has an essential voice.",
-  "<strong>The Borgmann quote:</strong> Albert Borgmann was a philosopher of technology at the University of Montana. His book 'Technology and the Character of Contemporary Life' argued that technology is always embedded in social, economic, and spiritual context — it is never neutral, and it always reshapes the people who use it.",
-  "<strong>Biggest business insight:</strong> The best opportunities in robotics are not in building robots — they are in the software, data, and integration layers. High-margin, scalable, and riding the hardware wave without the hardware capex.",
-  "<strong>Final challenge:</strong> 'Leave them with a question: where will YOU engage with these technologies — as a passive consumer, or as an active, thoughtful participant who brings a biblical worldview to the conversation? The world needs people who can hold both the technical and the theological.'"
-]}
-};
-
-// Thumbnails
-(function(){
-  const row=document.getElementById('thumbs');
-  for(let i=0;i<TOTAL;i++){
-    const n=i+1,el=document.createElement('div');
-    el.className='thumb'+(n===1?' active':'');
-    el.id='th-'+n;el.onclick=()=>goTo(n);
-    const bar=document.createElement('div');bar.className='th-bar';bar.style.background=BARS_DATA[i];
-    const num=document.createElement('div');num.className='th-num';num.textContent=n;
-    el.appendChild(bar);el.appendChild(num);row.appendChild(el);
-  }
-})();
-
-// Bar chart
-(function(){
-  const data=[
-    {company:'Unitree',country:'cn',units:6000},{company:'AgiBot',country:'cn',units:4200},
-    {company:'UBTECH',country:'cn',units:1100},{company:'Galaxy General',country:'cn',units:800},
-    {company:'Fourier',country:'cn',units:600},{company:'Leju Robotics',country:'cn',units:500},
-    {company:'Tesla',country:'us',units:150},{company:'Figure AI',country:'us',units:150},
-    {company:'Agility Robotics',country:'us',units:150},{company:'Boston Dynamics',country:'kr',units:100},
-  ];
-  const max=data[0].units;
-  const colors={cn:'#6772e5',us:'#21c55d',kr:'#00d4ff'};
-  const flags={cn:'🇨🇳',us:'🇺🇸',kr:'🇰🇷'};
-  const wrap=document.getElementById('bars');if(!wrap)return;
-  data.forEach(d=>{
-    const pct=(d.units/max*100).toFixed(1);
-    const row=document.createElement('div');row.className='bar-row';
-    row.innerHTML=`<div class="bar-label">${flags[d.country]} ${d.company}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colors[d.country]};opacity:.85"></div></div><div class="bar-val">${d.units>=1000?(d.units/1000).toFixed(1)+'K':d.units}</div>`;
-    wrap.appendChild(row);
-  });
-})();
-
-// Notes
-function renderNotes(n){
-  const d=NOTES[n],el=document.getElementById('ninner');
-  if(!d){el.innerHTML='<span class="ntag">No notes</span>';return;}
-  let h=`<span class="ntag">Slide ${n} — ${d.t}</span><ul>`;
-  d.p.forEach(p=>{h+=`<li>${p}</li>`;});
-  el.innerHTML=h+'</ul>';
-}
-function toggleNotes(){
-  notesOpen=!notesOpen;
-  document.getElementById('npanel').classList.toggle('open',notesOpen);
-  document.getElementById('nbtn').classList.toggle('open',notesOpen);
-  if(notesOpen)renderNotes(cur);
-}
-
-// Nav
-function goTo(n){
-  document.getElementById('slide-'+cur).classList.remove('active');
-  document.getElementById('th-'+cur).classList.remove('active');
-  cur=n;
-  document.getElementById('slide-'+cur).classList.add('active');
-  document.getElementById('th-'+cur).classList.add('active');
-  document.getElementById('counter').textContent=cur+' / '+TOTAL;
-  document.getElementById('prog').style.width=(cur/TOTAL*100)+'%';
-  document.getElementById('prev').disabled=cur===1;
-  document.getElementById('next').disabled=cur===TOTAL;
-  document.getElementById('th-'+cur).scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  if(notesOpen)renderNotes(cur);
-  if(fsActive)syncFS();
-}
-function go(d){if(cur+d>=1&&cur+d<=TOTAL)goTo(cur+d);}
-
-// ── FULLSCREEN SYSTEM ─────────────────────────────────────────────
-let fsActive = false;
-
-function enterFullscreen(){
-  fsActive = true;
-  const overlay = document.getElementById('fs-overlay');
-  overlay.style.display = 'flex';
-
-  // Build dot indicators
-  const dotsEl = document.getElementById('fs-dots');
-  dotsEl.innerHTML = '';
-  for(let i=0;i<TOTAL;i++){
-    const d = document.createElement('div');
-    d.id = 'fsd-'+(i+1);
-    d.style.cssText = `width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .2s`;
-    d.onclick = (function(n){return function(){goTo(n);};})(i+1);
-    dotsEl.appendChild(d);
-  }
-
-  // Try native fullscreen for true immersion
-  if(overlay.requestFullscreen) overlay.requestFullscreen().catch(()=>{});
-
-  syncFS();
-  document.addEventListener('keydown', fsKeyHandler);
-}
-
-function exitFullscreen(){
-  fsActive = false;
-  document.getElementById('fs-overlay').style.display = 'none';
-  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-  document.removeEventListener('keydown', fsKeyHandler);
-}
-
-function syncFS(){
-  if(!fsActive) return;
-  const slide = document.getElementById('slide-'+cur);
-  const inner = document.getElementById('fs-inner');
-  const wrap  = document.getElementById('fs-slide-wrap');
-
-  // Clone the current slide into the fs inner container
-  inner.innerHTML = '';
-  const clone = slide.cloneNode(true);
-  clone.style.cssText = 'display:flex!important;position:absolute;inset:0;animation:none;border-radius:0';
-  clone.id = 'fs-clone';
-  inner.appendChild(clone);
-
-  // Scale clone to fill the wrap container
-  requestAnimationFrame(()=>{
-    const wW = wrap.offsetWidth;
-    const wH = wrap.offsetHeight;
-    const cW = slide.offsetWidth  || 980;
-    const cH = slide.offsetHeight || 540;
-    const scale = Math.min(wW/cW, wH/cH);
-    clone.style.transform = `scale(${scale})`;
-    clone.style.transformOrigin = 'top left';
-    clone.style.width  = cW + 'px';
-    clone.style.height = cH + 'px';
-    inner.style.width  = Math.round(cW * scale) + 'px';
-    inner.style.height = Math.round(cH * scale) + 'px';
-    wrap.style.width   = Math.round(cW * scale) + 'px';
-    wrap.style.height  = Math.round(cH * scale) + 'px';
-  });
-
-  // Sync progress bar
-  document.getElementById('fs-prog').style.width = (cur/TOTAL*100)+'%';
-  document.getElementById('fs-counter').textContent = cur+' / '+TOTAL;
-
-  // Sync prev/next buttons
-  document.getElementById('fs-prev').disabled = cur===1;
-  document.getElementById('fs-next').style.opacity = cur===TOTAL ? '.4' : '1';
-  document.getElementById('fs-next').disabled = cur===TOTAL;
-
-  // Sync dots
-  for(let i=1;i<=TOTAL;i++){
-    const d = document.getElementById('fsd-'+i);
-    if(d) d.style.background = i===cur ? '#6772e5' : 'rgba(255,255,255,.25)';
-    if(d) d.style.width  = i===cur ? '18px' : '6px';
-    if(d) d.style.borderRadius = '3px';
-  }
-}
-
-function fsKeyHandler(e){
-  if(e.key==='Escape'){exitFullscreen();return;}
-  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
-  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}
-}
-
-// Handle native fullscreen exit (user pressed Esc in browser)
-document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement && fsActive) exitFullscreen();
-});
-
-window.addEventListener('resize', ()=>{ if(fsActive) syncFS(); });
-
-document.addEventListener('keydown',e=>{
-  if(fsActive) return; // handled by fsKeyHandler
-  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
-  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}
-  if(e.key==='f'||e.key==='F') enterFullscreen();
-  if(e.key==='n'||e.key==='N') toggleNotes();
-});
-
-// Canvas — Stripe violet/cyan palette
-(function(){
-  const canvas=document.getElementById('tc');if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  let W,H,t=0,raf;
-  function resize(){W=canvas.offsetWidth;H=canvas.offsetHeight;canvas.width=W*devicePixelRatio;canvas.height=H*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);}
-  function frame(){
-    t+=0.004;
-    const off=document.createElement('canvas');off.width=W;off.height=H;
-    const oc=off.getContext('2d');
-    const cols=70,rows=44,cw=W/cols,ch=H/rows;
-    for(let j=0;j<rows;j++){
-      for(let i=0;i<cols;i++){
-        const nx=i/cols,ny=j/rows;
-        const w1=Math.sin(nx*5+t*1.1+Math.cos(ny*3.5+t*.7)*1.4);
-        const w2=Math.cos(ny*4.5-t*.85+Math.sin(nx*2.5+t*.9)*1.1);
-        const w3=Math.sin((nx+ny)*3.5+t*.55);
-        const cx2=nx-.5,cy2=ny-.5;
-        const spiral=Math.sin(Math.atan2(cy2,cx2)*3-Math.sqrt(cx2*cx2+cy2*cy2)*10+t*2);
-        const val=(w1*.5+w2*.35+w3*.15+spiral*.4);
-        const b=(val+1.4)/2.8;
-        // Stripe palette: deep indigo → violet → cyan
-        let r,g,bl;
-        if(b<.33){const f=b/.33;r=Math.floor(5+f*98);g=Math.floor(5+f*62);bl=Math.floor(16+f*213);}
-        else if(b<.66){const f=(b-.33)/.33;r=Math.floor(103+f*(-50));g=Math.floor(67+f*67);bl=Math.floor(229+f*(255-229));}
-        else{const f=(b-.66)/.34;r=Math.floor(53+f*(-53));g=Math.floor(134+f*(212-134));bl=255;}
-        oc.fillStyle=`rgb(${r},${g},${bl})`;
-        oc.fillRect(i*cw,j*ch,cw+1,ch+1);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        nextSlide();
       }
-    }
-    // Sparkles
-    for(let s=0;s<16;s++){
-      const sx=W*(.5+Math.sin(s*2.3+t*.45)*.45);
-      const sy=H*(.5+Math.cos(s*1.8+t*.35)*.42);
-      const sr=1+Math.abs(Math.sin(s*2.9+t*.9))*3;
-      const sa=.3+Math.abs(Math.sin(s*1.4+t*.7))*.7;
-      oc.beginPath();oc.arc(sx,sy,sr,0,Math.PI*2);
-      oc.fillStyle=`rgba(180,220,255,${sa})`;oc.fill();
-    }
-    ctx.fillStyle='#050510';ctx.fillRect(0,0,W,H);
-    const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
-    const tc2=tmp.getContext('2d');
-    tc2.drawImage(off,0,0);
-    tc2.globalCompositeOperation='destination-in';
-    let fs=Math.min(W*.145,H*.42);
-    tc2.font=`800 ${fs}px 'Inter',-apple-system,sans-serif`;
-    while(tc2.measureText('ROBOTICS').width>W*.9&&fs>20){fs-=2;tc2.font=`800 ${fs}px 'Inter',-apple-system,sans-serif`;}
-    tc2.textAlign='center';tc2.textBaseline='middle';tc2.fillStyle='#fff';
-    tc2.fillText('ROBOTICS',W/2,H*.40);
-    ctx.drawImage(tmp,0,0);
-    raf=requestAnimationFrame(frame);
-  }
-  const obs=new IntersectionObserver(es=>{
-    if(es[0].isIntersecting){resize();frame();}
-    else{cancelAnimationFrame(raf);raf=null;}
-  },{threshold:.1});
-  obs.observe(canvas);
-  window.addEventListener('resize',()=>{cancelAnimationFrame(raf);resize();frame();});
-  resize();frame();
-})();
-</script>
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        event.preventDefault();
+        prevSlide();
+      }
+      if (event.key.toLowerCase() === 'f') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.();
+        } else {
+          document.exitFullscreen?.();
+        }
+      }
+      if (event.key.toLowerCase() === 'home') showSlide(0);
+      if (event.key.toLowerCase() === 'end') showSlide(slides.length - 1);
+    });
+
+    showSlide(0);
+  </script>
 </body>
 </html>
